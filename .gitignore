@@ -17,3 +17,5 @@
 
 # ignore powder's env config
 .powenv
+
+.DS_Store
