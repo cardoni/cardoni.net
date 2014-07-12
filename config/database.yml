@@ -16,5 +16,5 @@ production:
   database: cardoni_net_production
   username: cardoni_net
   password: cardoni_net
-  # TODO: Store password in environment var
+  # TODO: Get pow (and thus .powenv files) working in OS X Yosemite
   # password: <%= ENV['CARDONI_NET_DATABASE_PASSWORD'] %>
