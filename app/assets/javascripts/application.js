@@ -1,4 +1,5 @@
 //= require jquery
 //= require jquery_ujs
-//= require angularjs/angular
+//= require angular/angular
+//= require angular/main
 //= require_tree .
