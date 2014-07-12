@@ -1,0 +1,7 @@
+<a href="/#">index</a>
+<ul ng-repeat="post in posts">
+  <li>
+    <a ng-click="viewPost(post.id)">{{ post.title }}</a>
+    <p>{{ post.content }}</p>
+  </li>
+</ul>
