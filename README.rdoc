@@ -1,3 +1,5 @@
 == Cardoni.net
 
 Angular/Rails blog for Cardoni.net
+
+.
