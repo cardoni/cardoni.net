@@ -3,18 +3,18 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle:
-description:
-author: John Doe
-email:
+title: Cardoni.net
+subtitle: Reflections on Philosophy & Engineering
+description: The thoughts and questions of a philosopher-turned-software-engineer.
+author: Greg Cardoni
+email: greg@cardoni.net
 language:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://cardoni.net
 root: /
-permalink: :year/:month/:day/:title/
+permalink: :title/
 tag_dir: tags
 archive_dir: archives
 category_dir: categories
