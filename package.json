@@ -3,7 +3,6 @@
   "version": "2.8.3",
   "private": false,
   "dependencies": {
-    "hexo-migrator-wordpress": "^0.1.1",
     "hexo-renderer-ejs": "*",
     "hexo-renderer-marked": "^0.1.0",
     "hexo-renderer-stylus": "*"
