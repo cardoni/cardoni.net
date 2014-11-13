@@ -1,13 +1,17 @@
 title: "Code Academy Has Begun!"
-id: 22
-comment: false
-categories:
-  - Personal Pivot
-date: 2012-01-10 20:25:28
 tags:
+  - mahalo
+  - jason calacanis
+  - next level
+  - ruby
+  - rails
+  - popcorn
+categories:
+  - personal pivot
+date: 2012-01-10 20:25:28
 ---
 
-Remember that one time when I moved to Chicago to start [Code Academy](http://codeacademy.org/ "Code Academy")? Oh wait, that just happened!
+Remember that one time when I moved to Chicago to start ~~[Code Academy](http://codeacademy.org/ "Code Academy in Chicago, IL")~~ [The Starter League](http://www.starterleague.com/ "The Starter League in Chicago, IL")? Oh wait, that just happened!
 
 # Back Story
 
@@ -15,7 +19,7 @@ After graduating from college, I wisely decided to pursue my interests in techno
 
 I absolutely fell in love with startups. I soon realized that I wanted to become more technical myself so that I could start actualizing my own ideas and start a company of my own. _Enter Code Academy_.
 
-# Why Code Academy?
+# Why ~~[Code Academy](http://codeacademy.org/ "Code Academy in Chicago, IL")~~ [The Starter League](http://www.starterleague.com/ "The Starter League in Chicago, IL")?
 
 Of course, there are [many](http://www.codecademy.com/ "Codecademy") [nice](http://codeyear.org/ "Code Year (Codecademy)"), [free](http://www.trybloc.com/ "Bloc"), [online](http://teamtreehouse.com/ "treehouse") and interactive "teach yourself how to program" resources these days that enable an aspiring developer to teach herself various languages at her own pace, on her own time (not to mention all of the free and paid video courses that have been available for years).
 
