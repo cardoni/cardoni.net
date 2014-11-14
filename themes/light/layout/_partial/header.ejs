@@ -1,6 +1,6 @@
 <div class="alignleft">
-  <h1><a href="<%- config.root %>"><%= config.title %></a></h1>
-  <h2><a href="<%- config.root %>"><% if (config.subtitle){ %><%= config.subtitle %><% } %></a></h2>
+  <h1><a href="<%- config.url %>" title="<%- config.title %>"><%= config.title %></a></h1>
+  <% if (config.subtitle){ %><h2><a href="<%- config.url %>" title="<%- config.subtitle %>"><%= config.subtitle %></a></h2><% } %>
 </div>
 <nav id="main-nav" class="alignright">
   <ul>
