@@ -93,7 +93,8 @@ Copy over and unpack the provided example server config—`server.conf.gz`—to 
     ```
 
 Edit `/etc/openvpn/server.conf` to ensure it contains the settings that make sense for your intended setup.
-* You'll want to make sure it points to the correct location of your certs, keys, and `dh2048.pem` file (Diffie–Hellman–Merkle parameters) that you generated earlier.
+
+You'll want to make sure it points to the correct location of your certs, keys, and `dh2048.pem` file (Diffie–Hellman–Merkle parameters) that you generated earlier.
 
 Here's an example of some lines you should configure (or uncomment) in `server.conf`
     ```bash

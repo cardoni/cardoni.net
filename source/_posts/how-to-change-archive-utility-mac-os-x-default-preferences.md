@@ -26,13 +26,14 @@ At this point, you need only find the _Archive Utility_ App within the Finder w
 ## Let's Get All Fancy-like
 Want to add a new icon to OS X's _System Preferences_ app, enabling all users to set their own _Archive Utility_ preferences? Do the following:
 
-1. Open up _Terminal_ and enter this beautiful one-liner:
+Open up _Terminal_ and enter this beautiful one-liner:
     ```bash
     open /System/Library/CoreServices/Archive Utility.app/Contents/Resources/
     ```
 
-2. In the Finder window that opens as a result, locate and double-click on the `Archives.prefPane` file.
-3. If you're asked to enter your Admin password, _DO IT IMMEDIATELY WITHOUT HESITATION_. This isn't a drill and your life could depend on it. Of course, that's simply false. But the truth is that at this point, OS X wants to add a dedicated preference icon for _Archive Utility_ to its _System Preferences_ App and wants you to confirm this action by entering your password. Honest!
+In the Finder window that opens as a result, locate and double-click on the `Archives.prefPane` file.
+
+If you're asked to enter your Admin password, _DO IT IMMEDIATELY WITHOUT HESITATION_. This isn't a drill and your life could depend on it. Of course, that's simply false. But the truth is that at this point, OS X wants to add a dedicated preference icon for _Archive Utility_ to its _System Preferences_ App and wants you to confirm this action by entering your password. Honest!
 
 Enjoy the following panel that you now have access to and configure the settings until you're blue in the face!
 
