@@ -36,7 +36,7 @@ Want to add a new icon to OS X's _System Preferences_ app, enabling all users t
 
 Enjoy the following panel that you now have access to and configure the settings until you're blue in the face!
 
-![OS X Archives Settings Panel](//cdn.cardoni.net.global.prod.fastly.net/media/os_x_archive_utility_preferences_panel.png "OS X Archives Settings Panel")
+![OS X Archives Settings Panel](//cardoni.net/media/os_x_archive_utility_preferences_panel.png "OS X Archives Settings Panel")
 
 ## Hat Tippity Tip / Source:
 This "how to" article was adopted from one I originally read on TAUW [right here](http://www.tuaw.com/2010/10/21/mac-101-use-archive-utility-preferences-for-control-over-archiv/ "Mac 101: Use Archive Utility preferences for control over archives (by  TJ Luoma)"), which itself was apparently adopted from an even earlier article, currently located on Macworld.com [right here](http://hints.macworld.com/article.php?story=20071028161249238 "http://hints.macworld.com/article.php?story=20071028161249238 (by JoolsG4)"). Enjoy!
