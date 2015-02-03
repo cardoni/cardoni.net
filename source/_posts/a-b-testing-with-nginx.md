@@ -11,7 +11,7 @@ keywords: ['nginx', 'a/b testing', 'product validation']
 date: 2015-01-30 16:12:36
 ---
 
-[Hone](http://gohone.com) is an incredibly data-driven company. Whenever possible, we use analytics data (combined with customer feedback) to drive decision making about which features to add, modify, and remove — among other things.
+[Hone](//gohone.com) is an incredibly data-driven company. Whenever possible, we use analytics data (combined with customer feedback) to drive decision making about which features to add, modify, and remove — among other things.
 
 ### An Example
 We recently wanted to know how some proposed styling changes would affect user interaction rates of a widget in our web client. To accomplish this, we needed to run a few A/B tests.
@@ -37,3 +37,11 @@ Using our Nginx load-balancer, we decided to split incoming traffic in half: 50%
         # access_log          off;
     }
 ```
+
+The http server config above utilizes Nginx’s [*ngx_http_split_clients_module*](//nginx.org/en/docs/http/ngx_http_split_clients_module.html) functionality to assign all incoming requests into one of *n*-buckets — and then redirects them to the corresponding test page.
+
+## Results
+We run A/B tests until a [statistically-significant](//en.wikipedia.org/wiki/Statistical_significance) number of visitors have passed through them. For this particular widget being tested, we needed 10k visitors: ~5k going to each of our *A*- and *B*-test widgets.
+
+What did we learn? After examining our analytics data, it was immediately clear: A much higher percentage of users interacted in the ways we wanted with the new, redesigned widget compared to the old widget. And — importantly — the higher-than-previous engagement remained steady during the following weeks and months — meaning it wasn’t merely a temporary lift.
+
