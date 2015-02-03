@@ -29,12 +29,11 @@ Using our Nginx load-balancer, we decided to split incoming traffic in half: 50%
         listen              80;
         server_name         abtest.your_domain.com;
         root                /var/www/your_abtests_folder;
+        # access_log          off;                # enable if you'd like logging
 
         location / {
             rewrite ^\/$ "${scheme}://${variant}" redirect;
         }
-
-        # access_log          off;
     }
 ```
 
@@ -45,3 +44,8 @@ We run A/B tests until a [statistically-significant](//en.wikipedia.org/wiki/Sta
 
 What did we learn? After examining our analytics data, it was immediately clear: A much higher percentage of users interacted in the ways we wanted with the new, redesigned widget compared to the old widget. And — importantly — the higher-than-previous engagement remained steady during the following weeks and months — meaning it wasn’t merely a temporary lift.
 
+## More Advanced A/B Testing
+If you’re interested in learning more, check out [this article by Lawson Kurtz](//viget.com/extend/split-test-traffic-distribution-with-nginx) that details some more advanced configs and methods of A/B testing using Nginx.
+
+## Work At [Hone](//gohone.com)
+Interested in working at a small, ambitious startup? [Check us out](//gohone.com)!
