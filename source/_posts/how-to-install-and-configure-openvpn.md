@@ -6,6 +6,7 @@ tags:
   - security
 categories:
   - security
+  - nginx
 date: 2014-11-13 10:00:00
 ---
 
