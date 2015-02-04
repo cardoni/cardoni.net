@@ -6,7 +6,7 @@ tags:
   - security
 categories:
   - security
-  - nginx
+kwyeords: [ 'vpn', 'openvpn', 'open vpn', 'digital ocean', 'private networking', 'nginx', 'ifconfig' ]
 date: 2014-11-13 10:00:00
 ---
 
