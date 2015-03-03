@@ -7,6 +7,7 @@ tags:
   - version control
 categories:
   - personal pivot
+keywords: [ 'git', 'version control', 'revision control system' ]
 date: 2012-02-29 03:54:37
 ---
 

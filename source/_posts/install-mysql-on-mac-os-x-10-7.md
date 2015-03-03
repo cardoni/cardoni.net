@@ -8,6 +8,7 @@ tags:
   - coding
 categories:
   - personal pivot
+keywords: [ 'mysql', 'mac os', 'homebrew', 'brew', 'postgres', 'postgresql' ]
 date: 2012-05-02 00:06:37
 ---
 

@@ -6,6 +6,7 @@ tags:
   - coding
 categories:
   - personal pivot
+keywords: [ 'homebrew', 'brew', 'mac os', 'brew update' ]
 date: 2012-05-01 23:34:00
 ---
 

@@ -9,6 +9,7 @@ tags:
   - sqlite
 categories:
   - personal pivot
+keywords: [ 'postgres', 'postgresql', 'mac os' ]
 date: 2012-03-08 16:04:47
 ---
 

@@ -6,6 +6,7 @@ tags:
   - url helpers
 categories:
   - personal pivot
+keywords: [ 'rails', 'button_to', 'link_to', 'ruby' ]
 date: 2012-03-05 15:28:33
 ---
 
