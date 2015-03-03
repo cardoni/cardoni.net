@@ -9,7 +9,7 @@ tags:
     - wordpos module
     - wordpos
 categories:
- - javascript
+ - regex
 keywords: [ 'regex', 'parsing', 'proper nouns', 'word extraction', 'regular expression', 'wordpos' ]
 date: 2015-02-28 14:10:05
 ---
