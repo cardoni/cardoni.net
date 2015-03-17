@@ -1,8 +1,13 @@
-.DS_Store
-Thumbs.db
+# Node
 db.json
 debug.log
 node_modules/
+
+# Apple
+.DS_Store
+Thumbs.db
+
+# Other
 public/
 .deploy/
 _config.yml
