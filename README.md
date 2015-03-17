@@ -19,7 +19,7 @@ Using nginx to split traffic into *n*-groups in pursuit of A/B-testing things.
 
 #### Published: Nov 13, 2014
 
-First I realized that [DigitalOcean][digital_ocean]'s so-called "private networking" wasn't truly private ( see: any box in their NYC3-datacenter can see all traffic over the private `eth1` interface on their VMs ). Then I wrote this article on how to install and configure OpenVPN ( on any unix server ) and layer a secure network on top of an insecure one, enabling one a new, virtual `tun0` interface over which secure communication is afforded between machines on the same local network. Boom.
+First I realized that [DigitalOcean](https://www.digitalocean.com/?refcode=503c9a20587b)'s so-called "private networking" wasn't truly private ( see: any box in their NYC3-datacenter can see all traffic over the private `eth1` interface on their VMs ). Then I wrote this article on how to install and configure OpenVPN ( on any unix server ) and layer a secure network on top of an insecure one, enabling one a new, virtual `tun0` interface over which secure communication is afforded between machines on the same local network. Boom.
 
 ## [Getting Started With Git](https://cardoni.net/how-to-use-git-with-personal-projects/)
 
@@ -35,5 +35,3 @@ I published this article when I first started to enjoy using `git` for version c
 * [How to Change OS X's Archive Utility Preferences](https://cardoni.net/how-to-change-archive-utility-mac-os-x-default-preferences/)
 * [Don't Forget to Rake After Deploying to Heroku](https://cardoni.net/rake-after-deploying-to-heroku/)
 * [~~Code Academy~~ Starter League Has Begun!](https://cardoni.net/code-academy-has-begun/)
-
-[digital_ocean]: (https://www.digitalocean.com/?refcode=503c9a20587b)
