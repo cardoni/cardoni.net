@@ -4,26 +4,22 @@ Hi there, I'm Greg. This my personal site, created using [Ghost](https://ghost.o
 Check out some of my recent posts below.
 
 ## [Parsing Proper Nouns](https://cardoni.net/parsing-proper-nouns-with-regex/)
-
-#### Published: Feb 28, 2015
+> Published: Feb 28, 2015
 
 How I implemented a proper-noun parser in regex, in order to retrieve desired nouns from any given website.
 
 ## [A/B Testing With Nginx](https://cardoni.net/a-b-testing-with-nginx/)
-
-#### Published: Jan 30, 2015
+> Published: Jan 30, 2015
 
 Using nginx to split traffic into *n*-groups in pursuit of A/B-testing things.
 
 ## [How to Install and Configure OpenVPN](https://cardoni.net/how-to-install-and-configure-openvpn/)
-
-#### Published: Nov 13, 2014
+> Published: Nov 13, 2014
 
 First I realized that [DigitalOcean]'s so-called "private networking" wasn't truly private ( see: any box in their NYC3-datacenter can see all traffic over the private `eth1` interface on their VMs ). Then I wrote this article on how to install and configure OpenVPN ( on any unix server ) and layer a secure network on top of an insecure one, enabling one a new, virtual `tun0` interface over which secure communication is afforded between machines on the same local network. Boom.
 
 ## [Getting Started With Git](https://cardoni.net/how-to-use-git-with-personal-projects/)
-
-#### Published: Feb 29, 2012
+> Published: Feb 29, 2012
 
 I published this article when I first started to enjoy using `git` for version control. Now you can learn from my mistakes and come to understand and utilize `git` like a champ. ( I'd like to add some additional git-related articles in the future. Keep an eye out for that: #4 )
 
