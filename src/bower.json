@@ -1,0 +1,22 @@
+{
+  "name": "cardoni.net",
+  "version": "0.0.1",
+  "homepage": "https://github.com/cardoni/cardoni.net",
+  "authors": [
+    "Greg Cardoni <greg@cardoni.net>"
+  ],
+  "description": "http://cardoni.net",
+  "main": "index.jade",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5",
+    "core-ajax": "Polymer/core-ajax#^0.5"
+  }
+}
