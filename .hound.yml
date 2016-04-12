@@ -1,0 +1,19 @@
+fail_on_violations: true
+javascript:
+  enabled: true
+  ignore_file: .javascript_ignore
+coffeescript:
+  enabled: true
+  config_file: .coffeescript-style.json
+eslint:
+  enabled: true
+  config_file: .eslintrc
+scss:
+  enabled: true
+  config_file: .scss-style.yml
+jscs:
+  enabled: true
+  config_file: .jscsrc
+haml:
+  enabled: true
+  config_file: .haml-style.yml
