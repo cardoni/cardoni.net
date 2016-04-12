@@ -1,0 +1,21 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="ip-address" noscript>
+
+  <template>
+    <p>
+      IP Address:
+    </p>
+    <core-ajax
+      auto
+      url="http://geoip.gohone.com/ip"
+      handleAs="json"
+      response="{{resp}}">
+    </core-ajax>
+    <textarea value="{{resp.ip}}"></textarea>
+  </template>
+
+
+
+</polymer-element>
