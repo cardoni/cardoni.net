@@ -3,9 +3,9 @@ import PostCard from '@/components/PostCard';
 import { Metadata } from 'next';
 
 interface CategoryPageParams {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export async function generateMetadata(
@@ -13,7 +13,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const decodedCategory = decodeURIComponent(await Promise.resolve(params).then(p => p.category));
   return {
-    title: `${decodedCategory} | Cardoni.net`,
+    title: `${decodedCategory} Category | Cardoni.net`,
     description: `Articles and posts in the ${decodedCategory} category`,
   };
 }
@@ -34,9 +34,9 @@ export default async function CategoryPage(
   return (
     <div className="archives">
       <div className="page-title mb-8">
-        <h1 className="title">{decodedCategory}</h1>
+        <h1 className="title">{decodedCategory} Category</h1>
         <div className="subtitle text-gray-600">
-          {categoryPosts.length} {categoryPosts.length === 1 ? 'post' : 'posts'} in this category
+          {categoryPosts.length} {categoryPosts.length === 1 ? 'post' : 'posts'} found
         </div>
       </div>
 

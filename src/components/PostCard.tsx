@@ -11,11 +11,11 @@ const formatDate = (dateString: string) => {
   try {
     // Try to parse as ISO date first
     return format(parseISO(dateString), 'MMMM d, yyyy');
-  } catch (error) {
+  } catch (_) {
     try {
       // If that fails, try with regular Date constructor
       return format(new Date(dateString), 'MMMM d, yyyy');
-    } catch (error) {
+    } catch (_) {
       // If all parsing fails, return the original string
       return dateString;
     }
@@ -24,44 +24,54 @@ const formatDate = (dateString: string) => {
 
 export default function PostCard({ post }: PostCardProps) {
   return (
-    <article className="post mb-8">
-      <div className="post-content">
-        <header>
-          <div className="icon"></div>
-          <time dateTime={post.date}>
-            <Link href={`/blog/${post.id}`}>
-              {post.date ? formatDate(post.date) : 'No date'}
-            </Link>
-          </time>
-          <h2 className="title">
-            <Link href={`/blog/${post.id}`} className="hover:text-blue-600">
-              {post.title}
-            </Link>
-          </h2>
-        </header>
-        <div className="entry">
-          <p>{post.excerpt}</p>
+    <div className="post-card mb-8 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+      <h2 className="text-2xl font-bold mb-2">
+        <Link href={`/blog/${post.id}`} className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
+          {post.title}
+        </Link>
+      </h2>
+      
+      {post.date && (
+        <div className="text-gray-600 mb-3">
+          <time dateTime={post.date}>{formatDate(post.date)}</time>
         </div>
-        <footer>
-          <div className="alignleft">
-            <Link href={`/blog/${post.id}`} className="more-link">
-              Read More →
-            </Link>
+      )}
+      
+      {post.excerpt && (
+        <div className="text-gray-700 mb-4">
+          {post.excerpt}
+        </div>
+      )}
+      
+      <div className="flex flex-wrap gap-2">
+        {post.categories && post.categories.length > 0 && (
+          <div className="categories mr-4">
+            <span className="text-gray-600 mr-1">Categories:</span>
+            {post.categories.map((category, index) => (
+              <span key={category}>
+                <Link href={`/categories/${category}`} className="text-blue-500 hover:text-blue-700">
+                  {category}
+                </Link>
+                {index < post.categories!.length - 1 ? ', ' : ''}
+              </span>
+            ))}
           </div>
-          {post.tags && post.tags.length > 0 && (
-            <div className="alignright">
-              {post.tags.map((tag) => (
-                <span key={tag} className="tag mr-2">
-                  <Link href={`/tags/${tag}`} className="text-xs text-gray-600">
-                    #{tag}
-                  </Link>
-                </span>
-              ))}
-            </div>
-          )}
-          <div className="clearfix"></div>
-        </footer>
+        )}
+        
+        {post.tags && post.tags.length > 0 && (
+          <div className="tags">
+            <span className="text-gray-600 mr-1">Tags:</span>
+            {post.tags.map((tag, index) => (
+              <span key={tag}>
+                <Link href={`/tags/${tag}`} className="text-blue-500 hover:text-blue-700">
+                  {tag}
+                </Link>
+                {index < post.tags!.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
-    </article>
+    </div>
   );
 } 

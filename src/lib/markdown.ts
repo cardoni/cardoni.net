@@ -18,7 +18,7 @@ export interface PostData {
   keywords?: string[];
   contentHtml: string;
   excerpt?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Helper function to normalize date format
@@ -36,7 +36,7 @@ const normalizeDate = (dateString: string | undefined): string => {
     
     // Return ISO string format
     return date.toISOString();
-  } catch (error) {
+  } catch (_) {
     // If there's an error, return current date
     return new Date().toISOString();
   }
@@ -122,4 +122,37 @@ export async function getPostData(id: string): Promise<PostData> {
     ...matterResult.data,
     date: normalizedDate,
   } as PostData;
+}
+
+/**
+ * Get all unique tags from all posts
+ */
+export function getAllTags(): string[] {
+  const allPosts = getSortedPostsData();
+  const allTags = new Set<string>();
+  
+  allPosts.forEach(post => {
+    if (post.tags && Array.isArray(post.tags)) {
+      post.tags.forEach(tag => {
+        allTags.add(tag);
+      });
+    }
+  });
+  
+  return Array.from(allTags);
+}
+
+/**
+ * Get all posts that have a specific tag
+ */
+export async function getPostsByTag(tag: string): Promise<PostData[]> {
+  const allPosts = getSortedPostsData();
+  const decodedTag = decodeURIComponent(tag);
+  
+  // Filter posts by tag
+  return allPosts.filter(post => 
+    post.tags && post.tags.some(postTag => 
+      postTag.toLowerCase() === decodedTag.toLowerCase()
+    )
+  );
 } 

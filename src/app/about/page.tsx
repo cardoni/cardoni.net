@@ -10,19 +10,19 @@ export default function About() {
       
       <div className="prose prose-lg">
         <p>
-          Hi there! I'm Greg Cardoni, a software engineer passionate about web development, 
+          Hi there! I&apos;m Greg Cardoni, a software engineer passionate about web development, 
           technology, and sharing knowledge through my blog.
         </p>
         
         <p>
-          I've been working in the tech industry for several years, focusing on building 
+          I&apos;ve been working in the tech industry for several years, focusing on building 
           scalable web applications and solving complex problems. My expertise includes 
           JavaScript, TypeScript, React, Node.js, and various other web technologies.
         </p>
         
         <p>
           This website serves as a platform for me to share my thoughts, experiences, 
-          and tutorials on topics I'm passionate about. I hope you find the content 
+          and tutorials on topics I&apos;m passionate about. I hope you find the content 
           helpful and informative.
         </p>
         

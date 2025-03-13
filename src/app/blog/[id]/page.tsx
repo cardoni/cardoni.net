@@ -4,9 +4,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 interface BlogPostParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Helper function to safely format dates
@@ -14,11 +14,11 @@ const formatDate = (dateString: string) => {
   try {
     // Try to parse as ISO date first
     return format(parseISO(dateString), 'MMMM d, yyyy');
-  } catch (error) {
+  } catch (_) {
     try {
       // If that fails, try with regular Date constructor
       return format(new Date(dateString), 'MMMM d, yyyy');
-    } catch (error) {
+    } catch (_) {
       // If all parsing fails, return the original string
       return dateString;
     }

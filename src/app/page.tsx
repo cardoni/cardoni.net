@@ -12,7 +12,7 @@ export default function Home() {
         <h2 className="title">Welcome to Cardoni.net</h2>
         <div className="entry">
           <p>
-            Hi there, I'm Greg. This is my personal site where I share my thoughts, 
+            Hi there, I&apos;m Greg. This is my personal site where I share my thoughts, 
             projects, and experiences. Check out some of my recent posts below.
           </p>
         </div>

@@ -29,3 +29,4 @@ Thumbs.db
 public/
 .deploy/
 _config.yml
+.vercel
