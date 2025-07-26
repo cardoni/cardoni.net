@@ -1,4 +1,5 @@
-# Cardoni.net
+## [Cardoni.net](http://cardoni.net)
+Hi there, I'm Greg. This my personal site, created using [Ghost](https://ghost.org/)—a nice javascript/node static site generator. Enjoy!
 
 This is the source code for [Cardoni.net](https://cardoni.net), a personal website and blog built with Next.js and hosted on Vercel.
 
