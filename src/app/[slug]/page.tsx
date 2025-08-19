@@ -5,6 +5,7 @@ import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
 import PageTransition from '@/components/PageTransition';
 import AnimatedHeader from '@/components/AnimatedHeader';
 import BlogSidebar from '@/components/BlogSidebar';
+import { stringToSlug } from '@/lib/url-utils';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -87,7 +88,7 @@ export default async function PostPage({ params }: Props) {
                       {post.categories.map((category) => (
                         <Link
                           key={category}
-                          href={`/categories/${encodeURIComponent(category)}`}
+                          href={`/categories/${stringToSlug(category)}`}
                           className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
                         >
                           {category}

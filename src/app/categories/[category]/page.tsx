@@ -1,8 +1,9 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getPostsByCategory, getAllCategories } from '@/lib/mdx';
 import AnimatedCard from '@/components/AnimatedCard';
 import PageTransition from '@/components/PageTransition';
 import AnimatedHeader from '@/components/AnimatedHeader';
+import { needsRedirect, getCanonicalParam, slugToString } from '@/lib/url-utils';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -14,13 +15,12 @@ export async function generateStaticParams() {
   const params: { category: string }[] = [];
   
   categories.forEach((category) => {
-    // Always generate the URL encoded version
-    params.push({ category: encodeURIComponent(category) });
+    // Generate the canonical dash version
+    const dashVersion = category.replace(/\s+/g, '-').toLowerCase();
+    params.push({ category: dashVersion });
     
-    // Also generate the dash version for categories with spaces
-    if (category.includes(' ')) {
-      params.push({ category: category.replace(/\s+/g, '-') });
-    }
+    // Also generate the URL encoded version for backward compatibility
+    params.push({ category: encodeURIComponent(category) });
   });
   
   return params;
@@ -28,13 +28,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  let decodedCategory = decodeURIComponent(category);
   
-  // Handle both URL formats: "personal-pivot" and "personal%20pivot"
-  // Convert dashes to spaces to match the actual category names
-  if (decodedCategory.includes('-')) {
-    decodedCategory = decodedCategory.replace(/-/g, ' ');
-  }
+  // If this URL needs redirect, we'll handle it in the component
+  // For metadata generation, use the canonical form
+  const decodedCategory = slugToString(getCanonicalParam(category));
   
   return {
     title: `${decodedCategory} - Cardoni.net`,
@@ -44,14 +41,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  let decodedCategory = decodeURIComponent(category);
   
-  // Handle both URL formats: "personal-pivot" and "personal%20pivot"
-  // Convert dashes to spaces to match the actual category names
-  if (decodedCategory.includes('-')) {
-    decodedCategory = decodedCategory.replace(/-/g, ' ');
+  // Check if this URL needs to be redirected to the canonical dash format
+  if (needsRedirect(category)) {
+    const canonicalParam = getCanonicalParam(category);
+    redirect(`/categories/${canonicalParam}`);
   }
   
+  // Convert dash format to spaces for category lookup
+  const decodedCategory = slugToString(category);
   const posts = await getPostsByCategory(decodedCategory);
 
   if (posts.length === 0) {

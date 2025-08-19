@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
+import { stringToSlug } from '@/lib/url-utils';
 
 interface AnimatedCardProps {
   post: BlogPost;
@@ -18,7 +19,7 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="group"
     >
-      <Link href={`/posts/${post.id}`}>
+      <Link href={`/${post.id}`}>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl border border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden h-full">
           {/* Category Badges */}
           <div className="p-6 pb-4">
@@ -27,7 +28,7 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
                 {post.categories.map((category) => (
                   <Link 
                     key={category}
-                    href={`/categories/${encodeURIComponent(category)}`}
+                    href={`/categories/${stringToSlug(category)}`}
                     className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
                     onClick={(e) => e.stopPropagation()}
                   >

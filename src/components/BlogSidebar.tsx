@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
+import { stringToSlug } from '@/lib/url-utils';
 
 interface BlogSidebarProps {
   currentPostId: string;
@@ -49,7 +50,7 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
               transition={{ duration: 0.3, delay: 0.1 * index }}
             >
               <Link 
-                href={`/posts/${post.id}`}
+                href={`/${post.id}`}
                 className="block group"
               >
                 <div className="space-y-2">
@@ -100,7 +101,7 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
           {topCategories.map(([categoryName, count]) => (
             <Link 
               key={categoryName}
-              href={`/categories/${categoryName.includes(' ') ? categoryName.replace(/\s+/g, '-') : encodeURIComponent(categoryName)}`}
+              href={`/categories/${stringToSlug(categoryName)}`}
               className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 group"
             >
               <span>{categoryName}</span>

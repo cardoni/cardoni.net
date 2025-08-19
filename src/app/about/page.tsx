@@ -44,13 +44,13 @@ export default function AboutPage() {
                       Professional Overview
                     </h2>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                      I'm an experienced software engineer with a passion for building innovative technology solutions. 
-                      Throughout my career, I've had the privilege of working across diverse startup environments, 
+                      I&apos;m an experienced software engineer with a passion for building innovative technology solutions. 
+                      Throughout my career, I&apos;ve had the privilege of working across diverse startup environments, 
                       from early-stage companies to established tech firms, gaining invaluable experience in rapid 
                       development, scaling systems, and adapting to evolving technology landscapes.
                     </p>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      Currently, I'm applying my startup-honed skills in a larger enterprise environment at U.S. Bank, 
+                      Currently, I&apos;m applying my startup-honed skills in a larger enterprise environment at U.S. Bank, 
                       where I contribute to building robust financial technology solutions that serve millions of customers.
                     </p>
                   </section>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                         <strong>Bachelor of Arts in Philosophy (Honors Program)</strong>
                       </p>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Graduated Cum Laude • 3.5+ GPA • University Dean's List
+                        Graduated Cum Laude • 3.5+ GPA • University Dean&apos;s List
                       </p>
                     </div>
                   </section>
@@ -138,7 +138,7 @@ export default function AboutPage() {
                     </h2>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                       This personal blog serves as a platform where I share insights from my journey through 
-                      the technology industry. Here you'll find thoughts on software engineering, reflections 
+                      the technology industry. Here you&apos;ll find thoughts on software engineering, reflections 
                       on startup culture, and explorations of how philosophy intersects with modern technology.
                     </p>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -149,10 +149,10 @@ export default function AboutPage() {
 
                   <section className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
                     <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-                      Let's Connect
+                      Let&apos;s Connect
                     </h2>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                      I'm always interested in connecting with fellow technologists, entrepreneurs, and anyone 
+                      I&apos;m always interested in connecting with fellow technologists, entrepreneurs, and anyone 
                       passionate about the intersection of philosophy and technology.
                     </p>
                     <div className="flex space-x-4">
