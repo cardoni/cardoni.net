@@ -4,12 +4,18 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function Navigation() {
-  const pathname = usePathname();
+interface NavItem {
+  href: string;
+  label: string;
+  count?: number;
+}
 
-  const navItems = [
-    { href: '/', label: 'Posts' },
-  ];
+interface ClientNavigationProps {
+  navItems: NavItem[];
+}
+
+export default function ClientNavigation({ navItems }: ClientNavigationProps) {
+  const pathname = usePathname();
 
   return (
     <motion.header 

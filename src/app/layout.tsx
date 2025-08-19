@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import Navigation from '@/components/Navigation';
+import DynamicNavigation from '@/components/DynamicNavigation';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased">
-        <Navigation />
+        <DynamicNavigation />
         <main>{children}</main>
         <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
           <div className="max-w-7xl mx-auto px-4 py-16">
