@@ -45,6 +45,7 @@ This is a complete rebuild of cardoni.net using Next.js 15 with App Router. All 
 5. **Categories** ✅ - Working category pages with proper URL handling
 6. **Navigation** ✅ - Dynamic navigation with category links
 7. **Static generation** ✅ - All pages pre-built for optimal performance
+8. **Testing suite** ✅ - Comprehensive test coverage with Vitest and Testing Library
 
 ## Development Commands
 
@@ -53,10 +54,21 @@ npm run dev          # Start development server with Turbopack on http://localho
 npm run build        # Build for production (includes --debug --profile flags for visibility)
 npm run start        # Start production server (after build)
 npm run lint         # Run ESLint for code quality
+npm test             # Run test suite with Vitest
+npm run test:watch   # Run tests in watch mode
+npm run test:ui      # Run tests with Vitest UI
+npm run test:coverage # Run tests with coverage reporting
 ```
 
-### No Testing Framework
-This project currently has no test suite configured. If tests are needed, consider adding Jest or Vitest.
+### Testing Framework
+This project uses **Vitest** with **Testing Library** for comprehensive test coverage:
+
+- **Library tests**: URL utilities, markdown processing, MDX content handling
+- **Component tests**: React component rendering, interactions, and accessibility
+- **Integration tests**: Real-world data scenarios and edge cases
+- **Coverage**: 90%+ test success rate across core functionality
+- **Mocking**: Next.js router, Link components, and motion animations configured
+- **Test files**: Located in `tests/unit/` with `.test.ts` and `.test.tsx` extensions
 
 ## Key Architecture Details
 

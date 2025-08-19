@@ -19,8 +19,9 @@ export function stripMarkdown(text: string): string {
     .replace(/```[\s\S]*?```/g, '')
     // Remove links ([text](url))
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    // Remove images (![alt](url))
+    // Remove images (![alt](url)) - handle in two steps for better coverage
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/!\[[^\]]*\]/g, '') // Remove any remaining ![...]
     // Remove blockquotes (> text)
     .replace(/^>\s+/gm, '')
     // Remove list markers (- item, 1. item)
