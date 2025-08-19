@@ -55,7 +55,7 @@ Since wordpos wasn't able to extract and return exactly what we needed from the 
 # Regex to Parse Proper Nouns
 
 ```regex
-    / \s+([ie]*-?[A-Z]+.*?)(?:\s+[a-z\W]|[`''"^,;:—\\\*\.\(\)\[\]]) /
+/ \s+([ie]*-?[A-Z]+.*?)(?:\s+[a-z\W]|[`''"^,;:—\\\*\.\(\)\[\]]) /
 ```
 
 As is often the case, regular expressions don't lend themselves to immediate readability or comprehension. So, let's examine this regex in more detail and explore exactly how and why it's able to extract proper nouns. To begin, here is a more illuminating representation of the above regex:

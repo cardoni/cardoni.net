@@ -55,10 +55,10 @@ Want a text link that ends up sending sending a `:POST` to one of your routes? S
     ```
 If you wanted a button to perform the same action, you wouldn't need to specify the method, as the default method is already `:POST`:
 
-    ``` rails
+    ```rails
     button_to "Submit Post",
               posts_url,
-              disable_with: "Submitting Post...
+              disable_with: "Submitting Post..."
     ```
 ## Example — Specifying the **`:DELETE`** method:
 Just as you need to pass in the proper HTTP method into your `button_to` and `link_to` helpers if you'd like to use them for the opposite of their default method, so too must you specify the `:DELETE` method when you'd like to use that instead:

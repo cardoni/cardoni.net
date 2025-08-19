@@ -67,24 +67,24 @@ In your `database.yml` file, you'll see a few environments and their respective 
 
 For now, we'll just change the `development:` environment. If you haven't changed anything, you'll see the following as the default config for `development:`:
 
-    ```yaml
-    development:
-    # adapter: sqlite3
-    # database: db/development.sqlite3
-    # pool: 5
-    # timeout: 5000
-    ```
+```yaml
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+```
 
 In order for your app to use your new PostgreSQL server, you'll want to change the above to this:
 
-    ```yaml
-    development:
-    # adapter: postgresql
-    # database: name_of_your_app_development
-    # encoding: utf8
-    # template: template0
-    # host: localhost
-    ```
+```yaml
+development:
+  adapter: postgresql
+  database: name_of_your_app_development
+  encoding: utf8
+  template: template0
+  host: localhost
+```
 
 ### Super-awesome Protip
 You'll want to replace `name_of_your_app` with the name of _your_ app.
@@ -92,9 +92,10 @@ You'll want to replace `name_of_your_app` with the name of _your_ app.
 ## Editing Your Gemfile
 Hold on there partner, don't forget to tweak your `Gemfile`!  Make sure the you've got the `pg` gem in your gemfile:
 
-    ```rails Example line entry in your Rail's `Gemfile`, if you want to use the `pg` gem:
-    gem 'pg'
-    ```
+```ruby
+# Example line entry in your Rail's Gemfile, if you want to use the pg gem:
+gem 'pg'
+```
 
 #### Want To Run PostgreSQL in Production?
 If you want to run Postgres in your production environment as well as your development environment, make sure to add the `gem 'pg'` line somewhere within the `:production` block—and not _only_ within your `group :development, :test do` block.

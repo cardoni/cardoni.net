@@ -207,18 +207,18 @@ In this example, we'll name our folder `static_clients`:
 
 Make sure to uncomment and edit this line in `server.conf`:
 
-    ```vim
-    client-config-dir /etc/openvpn/static_clients
-    ```
+```config
+client-config-dir /etc/openvpn/static_clients
+```
 
 Previously, when you generated a cert and key for your new VPN client, recall the `common_name` that you chose.
 Create a file—naming it whatever you chose for the `common_name`— in `/etc/openvpn/static_clients/` with the following content:
 
 (Note that in this example, we'd like this VPN client's `tun0` interface to be assigned the IP `10.8.0.4`)
 
-    ```vim
-    ifconfig-push 10.8.0.4 10.8.0.5
-    ```
+```config
+ifconfig-push 10.8.0.4 10.8.0.5
+```
 
 OpenVPN will need to read these files after it drops privileges. You can do that do that with the following:
 
@@ -236,7 +236,7 @@ For example, if you're routing traffic through a load balancer, you may want to 
 
 Here's an example `iptables` config that would restrict traffic in the way I mention above:
 
-    ```apacheconf
+```iptables
     *filter
     :INPUT ACCEPT [0:0]
     :FORWARD ACCEPT [0:0]
