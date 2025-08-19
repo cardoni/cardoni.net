@@ -68,8 +68,7 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
                     >
                       <span className="hidden sm:inline">{item.label}</span>
                       <span className="sm:hidden">
-                        {item.label === 'Posts' ? 'Posts' : 
-                         item.label === 'Philosophy' ? 'Phil' : 'Tech'}
+                        {item.label === 'Posts' ? 'Posts' : 'About'}
                       </span>
                       {isActive && (
                         <motion.div
