@@ -8,19 +8,19 @@ import BlogSidebar from '@/components/BlogSidebar';
 import type { Metadata } from 'next';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
   return posts.map((post) => ({
-    id: post.id,
+    slug: post.id,
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPostById(id);
+  const { slug } = await params;
+  const post = await getPostById(slug);
   
   if (!post) {
     return {
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
-  const { id } = await params;
-  const post = await getPostById(id);
+  const { slug } = await params;
+  const post = await getPostById(slug);
   const allPosts = await getAllPosts();
 
   if (!post) {
