@@ -34,7 +34,7 @@ export default function AboutPage() {
                     Software Engineer | Technology Professional
                   </p>
                   <p className="text-lg text-gray-500 dark:text-gray-400">
-                    39 years old | Los Angeles Metropolitan Area
+                    Los Angeles Metropolitan Area
                   </p>
                 </div>
 
