@@ -49,14 +49,37 @@ This is a complete rebuild of cardoni.net using Next.js 15 with App Router. All 
 ## Development Commands
 
 ```bash
-npm run dev          # Start development server with Turbopack
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
+npm run dev          # Start development server with Turbopack on http://localhost:3000
+npm run build        # Build for production (static export ready)
+npm run start        # Start production server (after build)
+npm run lint         # Run ESLint for code quality
 ```
+
+### No Testing Framework
+This project currently has no test suite configured. If tests are needed, consider adding Jest or Vitest.
+
+## Key Architecture Details
+
+### Content Processing System
+- **Entry point**: `src/lib/mdx.ts` - Core MDX processing and post fetching
+- **Types**: `src/types/blog.ts` - BlogPost interface definition
+- **URL handling**: `src/lib/url-utils.ts` - Category URL normalization (spaces ↔ dashes)
+- **Category utilities**: `src/lib/categories.ts` - Category-related functions
+
+### Routing Structure
+- **Dynamic post pages**: `src/app/[slug]/page.tsx` - Individual blog posts
+- **Category pages**: `src/app/categories/[category]/page.tsx` - Posts by category
+- **Static pages**: `src/app/about/page.tsx` and root `src/app/page.tsx`
+
+### Component Architecture
+- **Markdown rendering**: `EnhancedMarkdownRenderer.tsx` - MDX content display
+- **Navigation**: `DynamicNavigation.tsx` + `ClientNavigation.tsx` - Category navigation
+- **Animations**: `AnimatedCard.tsx`, `AnimatedHeader.tsx`, `PageTransition.tsx` - Motion components
+- **Layout**: `BlogSidebar.tsx` - Sidebar with category links
 
 ## Key Principles
 - `content/` directory is the single source of truth for all blog content
-- MDX processing handles legacy frontmatter format automatically
-- Category URLs support both `/categories/personal-pivot` and `/categories/personal%20pivot` formats
-- All content metadata and structure preserved during migration
+- MDX processing handles legacy frontmatter format automatically (missing opening `---` handled)
+- Category URLs support both `/categories/personal-pivot` and `/categories/personal%20pivot` formats with automatic redirects
+- All content metadata and structure preserved during migration from Hexo
+- TypeScript aliases use `@/*` for `src/*` paths
