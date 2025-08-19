@@ -28,14 +28,14 @@ Using Git, multiple people can easily work on the same project, at the same time
 
 After creating your project, `cd` into your project's working directory via terminal and initialize Git with the following command:
 
-```sh
+```bash
 # Initialize a new git repository within the present directory
 git init
 ```
 
 Git is now good to go and is ready to keep track of the files in that directory. Make changes to some code, return to terminal, and type the following:
 
-```sh
+```bash
 # Add all files in the present directory (not including those that have been deleted) to Git staging
 git add .
 ```
@@ -45,7 +45,7 @@ Notice the `.` (period) at the end? That tells Git to add all of the new and mod
 ### Note:
 If you ever delete a file from your project—and you want to track that deletion in your Git repository—you should type the following command in terminal:
 
-```sh
+```bash
 # Add all files in the present directory (including those that have been deleted) to Git staging
 git add -A .
 ```
@@ -58,7 +58,7 @@ So far, Git has been initialized and is also tracking all of the files in your p
 
 To commit your changes—and thus make your first/initial commit for this project—type the following command in terminal:
 
-```sh
+```bash
 # Your initial commit message probably shouldn't have the message of 'initial commit'
 git commit -m 'initial commit'
 ```

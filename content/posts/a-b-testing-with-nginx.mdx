@@ -21,21 +21,21 @@ Using our Nginx load-balancer, we decided to split incoming traffic in half: 50%
 ## Simple A/B Testing Nginx Config (50%/50%)
 
 ```nginx
-    split_clients "abtest${remote_addr}${http_user_agent}${date_gmt}" $variant {
-        50%                 "abtest.your_domain.com/a_test.html";
-          *                 "abtest.your_domain.com/b_test.html";
-    }
+split_clients "abtest${remote_addr}${http_user_agent}${date_gmt}" $variant {
+    50%                 "abtest.your_domain.com/a_test.html";
+        *                 "abtest.your_domain.com/b_test.html";
+}
 
-    server {
-        listen              80;
-        server_name         abtest.your_domain.com;
-        root                /var/www/your_abtests_folder;
-        # access_log          off;                # enable if you'd like logging
+server {
+    listen              80;
+    server_name         abtest.your_domain.com;
+    root                /var/www/your_abtests_folder;
+    # access_log          off;                # enable if you'd like logging
 
-        location / {
-            rewrite ^\/$ "${scheme}://${variant}" redirect;
-        }
+    location / {
+        rewrite ^\/$ "${scheme}://${variant}" redirect;
     }
+}
 ```
 
 The http server config above utilizes Nginx's [*ngx_http_split_clients_module*](//nginx.org/en/docs/http/ngx_http_split_clients_module.html) functionality to assign all incoming requests into one of *n*-buckets — and then redirects them to the corresponding test page.
