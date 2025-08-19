@@ -1,0 +1,255 @@
+[
+  {
+    "id": "parsing-proper-nouns-with-regex",
+    "title": "Parsing Proper Nouns",
+    "tags": [
+      "regex",
+      "regular expression",
+      "parsing",
+      "proper nouns",
+      "noun parsing",
+      "word extraction",
+      "wordpos module",
+      "wordpos"
+    ],
+    "categories": [
+      "regex"
+    ],
+    "keywords": [
+      "regex",
+      "parsing",
+      "proper nouns",
+      "word extraction",
+      "regular expression",
+      "wordpos"
+    ],
+    "date": "2015-02-28T14:10:05.000Z",
+    "content": "\nRecently, I was working on a feature at [Hone](//gohone.com) that required—in part—parsing the *proper nouns* from the text within any given website. Here's an overview of how we accomplished this.\n\n## First Attempt\n\nAt first, we thought it best to use something like the [*natural* module](//github.com/NaturalNode/natural) (or the part-of-speech utilities within—as found in the [*wordpos* module](//github.com/moos/wordpos)). And as it turns out, wordpos provides an easy, straight-forward API to parse text and returns an object with the sentence's parts-of-speech:\n\n```javascript\n    wordpos.getPOS( 'The angry bear chased the frightened little squirrel.', console.log );\n\n    // Output:\n    {\n      nouns:        [ 'bear', 'squirrel', 'little', 'chased' ],\n      verbs:        [ 'bear' ],\n      adjectives:   [ 'little', 'angry', 'frightened' ],\n      adverbs:      [ 'little' ],\n      rest:         [ 'the' ]\n    }\n```\n\nWordpos also includes a handy *getNouns* method:\n\n```javascript\n    wordpos.getNouns( 'The angry bear chased the frightened little squirrel.', console.log );\n\n    // Output:\n    [ 'bear', 'squirrel', 'little', 'chased' ]\n```\n\nWhile it was clear that wordpos made it easy to extract *all* nouns, we desired something slightly different: **We wanted to capture *proper nouns* / *names***. In other words, the names of products, companies, people, devices, and so forth.\n\n## So, we needed to:\n1. Capture **all and only** *proper nouns*;\n2. Capture **groups** of nouns which—together—form proper names;\n3. Group these nouns into an array, **sorted by word-usage-frequency**.\n\nSince wordpos wasn't able to extract and return exactly what we needed from the text of a website, we wondered if some regular expression could offer us a better and more efficient solution instead. Voila!\n\n# Regex to Parse Proper Nouns\n\n```regex\n    / \\s+([ie]*-?[A-Z]+.*?)(?:\\s+[a-z\\W]|[`'’\"^,;:—\\\\\\*\\.\\(\\)\\[\\]]) /\n```\n\nAs is often the case, regular expressions don't lend themselves to immediate readability or comprehension. So, let's examine this regex in more detail and explore exactly how and why it's able to extract proper nouns. To begin, here is a more illuminating representation of the above regex:\n\n![Visual Representation of Proper-Noun-Parsing Regex](/media/noun_parsing_regex_visualized.png \"Visual Representation of Proper-Noun-Parsing Regex\")\n\nAs you can see, there is one capture group—denoted by *Group 1*. This capture group represents the text that we are actually interested in: a noun (\"Microsoft\") or nouns (\"iPad Air 2\") which—together—form a proper name/noun. The stuff to the left and right of Group 1 ensure that we're capturing groupings of proper-nouns.\n\n### Here is what this regular expression does in plain English:\n\n1. Find one or more whitespace characters (spaces, tabs, and line breaks)\n2. Capture one or more words which:\n - *Optionally* begin with the letters \"i\" or \"e\"\n - *Optionally* have a dash *after* one of those letters\n - *Must* begin with one or more capital letters\n - Optionally contains additional characters (except line breaks)\n3. Finally, this capture group *must* be followed by one of the two below:\n - one or more whitespace characters **and** either a lowercase letter between a–z **or** any character that is not a word character\n - any one of the following characters: `` ' ’ \" ^ , ; : — \\ * . ( ) [ ]`\n\n# Conclusion\nArmed with this regex, we had everything we needed to parse proper nouns from any given website. Here's how it all works from soup-to-nuts: First we actually [request the URL](//www.npmjs.com/package/request) and [extract the text](//www.npmjs.com/package/unfluff) from the response body. Then, we split this large chunk of text on each new sentence and end up with an array of sentences.\n\nWe then iterate through this array—running the regex against each individual sentence—and end up creating another new array containing all and only the proper nouns that we're after. From there, we remove duplicates and re-sort the array in order of noun-frequency, as I mentioned above.\n\nAnd what do we have left? Why, An array of proper nouns, sorted by frequency. It's beautiful!\n\n# Sound Interesting?\nAre you an experienced software engineer and find things like this interesting? Check out [Hone's Career](//gohone.com/jobs) page and shoot us an email!",
+    "excerpt": "Recently, I was working on a feature at  that required—in part—parsing the  from the text within any given website. Here's an overview of how we accom...",
+    "readTime": "4 min read"
+  },
+  {
+    "id": "a-b-testing-with-nginx",
+    "title": "A/B Testing With Nginx",
+    "tags": [
+      "nginx",
+      "a/b testing",
+      "testing",
+      "product validation"
+    ],
+    "categories": [
+      "nginx"
+    ],
+    "keywords": [
+      "nginx",
+      "a/b testing",
+      "product validation"
+    ],
+    "date": "2015-01-30T16:12:36.000Z",
+    "content": "\n[Hone](//gohone.com) is an incredibly data-driven company. Whenever possible, we use analytics data (combined with customer feedback) to drive decision making about which features to add, modify, and remove — among other things.\n\n### An Example\nWe recently wanted to know how some proposed styling changes would affect user interaction rates of a widget in our web client. To accomplish this, we needed to run a few A/B tests.\n\nUsing our Nginx load-balancer, we decided to split incoming traffic in half: 50% of our visitors would be served the existing widget and the remaining 50% would be served the new widget (with the new styling/layout changes).\n\n## Simple A/B Testing Nginx Config (50%/50%)\n```config\n    split_clients \"abtest${remote_addr}${http_user_agent}${date_gmt}\" $variant {\n        50%                 \"abtest.your_domain.com/a_test.html\";\n          *                 \"abtest.your_domain.com/b_test.html\";\n    }\n\n    server {\n        listen              80;\n        server_name         abtest.your_domain.com;\n        root                /var/www/your_abtests_folder;\n        # access_log          off;                # enable if you'd like logging\n\n        location / {\n            rewrite ^\\/$ \"${scheme}://${variant}\" redirect;\n        }\n    }\n```\n\nThe http server config above utilizes Nginx’s [*ngx_http_split_clients_module*](//nginx.org/en/docs/http/ngx_http_split_clients_module.html) functionality to assign all incoming requests into one of *n*-buckets — and then redirects them to the corresponding test page.\n\n## Results\nWe run A/B tests until a [statistically-significant](//en.wikipedia.org/wiki/Statistical_significance) number of visitors have passed through them. For this particular widget being tested, we needed 10k visitors: ~5k going to each of our *A*- and *B*-test widgets.\n\nWhat did we learn? After examining our analytics data, it was immediately clear: A much higher percentage of users interacted in the ways we wanted with the new, redesigned widget compared to the old widget. And — importantly — the higher-than-previous engagement remained steady during the following weeks and months — meaning it wasn’t merely a temporary lift.\n\n## More Advanced A/B Testing\nIf you’re interested in learning more, check out [this article by Lawson Kurtz](//viget.com/extend/split-test-traffic-distribution-with-nginx) that details some more advanced configs and methods of A/B testing using Nginx.\n\n## Work At [Hone](//gohone.com)\nInterested in working at a small, ambitious startup? [Check us out](//gohone.com)!",
+    "excerpt": "is an incredibly data-driven company. Whenever possible, we use analytics data (combined with customer feedback) to drive decision making about which ...",
+    "readTime": "2 min read"
+  },
+  {
+    "id": "how-to-install-and-configure-openvpn",
+    "title": "Making DigitalOcean's Private Networking Secure",
+    "tags": [
+      "openvpn",
+      "vpn",
+      "digital ocean",
+      "security"
+    ],
+    "categories": [
+      "security"
+    ],
+    "keywords": [
+      "vpn",
+      "openvpn",
+      "open vpn",
+      "digital ocean",
+      "private networking",
+      "nginx",
+      "ifconfig"
+    ],
+    "date": "2014-11-13T10:00:00.000Z",
+    "content": "\nA few weeks ago here at [Hone](http://gohone.com/ \"Hone\"), we decided to spin a new server cluster in DigitalOcean's NYC3 data center. [DigitalOcean introduced 'private' networking](https://www.digitalocean.com/company/blog/introducing-private-networking/ \"DigitalOcean: Introducing Private Networking\") just over a year ago. However, it turns out that DigitalOcean actually refers to this as _Shared Private Networking_—and many of the comments under their announcement point out that their private networking [isn't](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1160313645) [really](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1067364221) [too](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1038459686) [private](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1037153678).\n\nWe decided to use [OpenVPN](http://openvpn.net/ \"OpenVPN: An open source VPN daemon\") to layer a secure network on top of DigitalOcean's shared private networking.\n\n### What we wanted to accomplish:\n1. Install an OpenVPN _server_ on our load balancer\n2. Install an OpenVPN _client_ on all of our other machines\n3. Drop any traffic other than OpenVPN on `eth1` (DO's shared private network)\n4. Allow all traffic over `tun0` (our secured private network)\n\nWith traffic passing through the `tun0` interface between machines, we gain the ability to more quickly and easily spin up new machines and add them to our infrastructure.\n\nHere's how to setup a virtual private network on DigitalOcean (or whichever provider you might be using):\n\n## Setup / Configure Your OpenVPN _Server_\nUpdate your packages and install _OpenVPN_ and _Easy RSA_:\n    ```bash\n    apt-get update && apt-get install openvpn easy-rsa\n    ```\n\nCopy some Easy RSA files over to a more permanent location so that you can upgrade OpenVPN in the future without losing your configuration settings:\n    ```bash\n    mkdir /etc/openvpn/easy-rsa/\n    cp -r /usr/share/easy-rsa/* /etc/openvpn/easy-rsa/\n    ```\n\nEdit `/etc/openvpn/easy-rsa/vars` and change the various exports for default certificate values.\nAt the very least, you'll want to change the following keys in the `vars` file to suit your needs:\n    ```bash\n    export KEY_COUNTRY=\"US\"\n    export KEY_PROVINCE=\"IL\"\n    export KEY_CITY=\"Chicago\"\n    export KEY_ORG=\"Your Company, Inc.\"\n    export KEY_EMAIL=\"email@address-here.com\"\n    export KEY_OU=\"http://address-here.com\"\n    ```\n\nWith your `vars` configured, you can now generate a master Certificate Authority (CA) Certificate and Key for your server:\n    ```bash\n    cd /etc/openvpn/easy-rsa/\n    source vars\n    ./clean-all\n    ./build-ca\n    ```\n\nGenerate a certificate and private key for the server:\n    ```bash\n    ./build-key-server <vpn_server_name>\n    ```\n\nGenerate some [Diffie–Hellman–Merkle parameters](http://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange \"Diffie–Hellman–Merkle Parameters [Wikipedia]\") for the OpenVPN server (**This will take a minute or two**):\n    ```bash\n    ./build-dh\n    ```\n\nCopy the keys, certs, and the Diffie–Hellman–Merkle params that you generated from `/etc/openvpn/easy-rsa/keys` into your OpenVPN directory, `/etc/openvpn/`:\n    ```bash\n    cd /etc/openvpn/easy-rsa/keys/\n    cp <vpn_server_name>.crt <vpn_server_name>.key ca.crt ca.key dh2048.pem /etc/openvpn/\n    ```\n\n### Generate Certificates For VPN Client(s)\nYou'll need to generate a certificate and key for each VPN client:\n    ```bash\n    cd /etc/openvpn/easy-rsa/\n    source vars\n    ./build-key <vpn_client_name>\n    ```\n\n_Securely_ copy these the following files to the client machine (via `rsync`, `scp`, etc.):\n  1. `/etc/openvpn/ca.crt`\n  2. `/etc/openvpn/easy-rsa/keys/<vpn_client_name>.crt`\n  3. `/etc/openvpn/easy-rsa/keys/<vpn_client_name>.key`\n\nAfter you've copied these keys and certs to your client machine(s), delete them from the VPN server. They're no longer needed on that machine and keeping them there poses a security risk if unauthorized access is gained.\n\n## Edit Your OpenVPN Server Config\nCopy over and unpack the provided example server config—`server.conf.gz`—to `/etc/openvpn/server.conf`\n    ```bash\n    cp /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz /etc/openvpn/\n    gzip -d /etc/openvpn/server.conf.gz\n    ```\n\nEdit `/etc/openvpn/server.conf` to ensure it contains the settings that make sense for your intended setup.\n\nYou'll want to make sure it points to the correct location of your certs, keys, and `dh2048.pem` file (Diffie–Hellman–Merkle parameters) that you generated earlier.\n\nHere's an example of some lines you should configure (or uncomment) in `server.conf`\n    ```bash\n    ca ca.crt\n    cert <vpn_server_name>.crt\n    key <vpn_server_name>.key                       # This file should be kept secret\n    dh dh2048.pem\n    client-config-dir /etc/openvpn/static_clients   # Specify where your static client info is stored\n    client-to-client\n    ```\n**Note:** Uncommenting `client-to-client` will enable your VPN clients to communicate with one another directly. By default, VPN clients will only see the VPN server.\n\nStart OpenVPN on your server\n    ```bash\n    service openvpn start\n    ```\n\n### Check That it Works\nAfter you start your openvpn service, you should see `tun0` interface details when you run:\n    ```bash\n    ifconfig tun0\n    ```\n\nIf you've set up your server correctly, you should see some output like this:\n    ```bash\n    tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00\n              inet addr:10.8.0.1  P-t-P:10.8.0.2  Mask:255.255.255.255\n              UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1\n              RX packets:0 errors:0 dropped:0 overruns:0 frame:0\n              TX packets:0 errors:0 dropped:0 overruns:0 carrier:0\n              collisions:0 txqueuelen:100\n              RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)\n    ```\n\nIf you run the `ifconfig tun0` command above and see the error `ifconfig: interface tun0 does not exist`, then you'll need to check your OpenVPN server.conf again and make sure to reconfigure it.\n\n## Setup / Configure Your OpenVPN _Client(s)_\n\nUpdate your packages and install _OpenVPN_:\n    ```bash\n    apt-get update && apt-get install openvpn\n    ```\n\nCopy the example `client.conf` file over to `/etc/openvpn/client.conf`:\n    ```bash\n    cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/\n    ```\n\n**If you haven't already done so**: Make sure that you've generated and then securely transferred (or manually copied over) `ca.crt`, `<vpn_client_name>.crt`, and `<vpn_client_name>.key` to your new VPN client.\n(For the purposes of this tutorial, I've copied them into `/etc/openvpn/`.)\n\nEdit `/etc/openvpn/client.conf` and make sure everything points to correct certs and keys. You should also make sure to specify the IP address corresponding to your OpenVPN server's `eth1` interface (DO's shared private network):\n    ```bash\n    remote 10.0.0.1 1194     # This points to the private IP of your OpenVPN server (and the OpenVPN port)\n    ca ca.crt\n    cert <vpn_client_name>.crt\n    key <vpn_client_name>.key\n    ```\n\nHaving finished editing `client.conf`, you can restart the OpenVPN service on your VPN client machine:\n    ```bash\n    service openvpn restart\n    ```\n\nCheck to see that you've got a `tun0` interface (and that it has the correct IP):\n    ```bash\n    ifconfig tun0\n    ```\n### Ping Your VPN Server (From Client Machine)\nIf you'd like to sanity-check your connection to your VPN server, try pinging the OpenVPN server directly:\n    ```Bash\n    ping 10.8.0.1\n    ```\nIn this example, I'm pinging `10.8.0.1`, which is set by OpenVPN default server config. You may have selected something different, in which case you should find the IP corresponding to your OpenVPN server's `tun0` interface.\nYou can grab this IP quickly by running (on the OpenVPN server itself): `ifconfig tun0`.\n\nIf you can't ping the OpenVPN server, then something is wrong with your config. Consider re-reading all of the above.\n\n## Assign Static IPs to VPN Clients\nYou may desire to assign static IP addresses to some or all of your client machines. ([Hat-tip to Michael Albert](http://michlstechblog.info/blog/openvpn-set-a-static-ip-address-for-a-client/ \"Michael Albert: 'OpenVPN: Set a static IP Address for a client'\") for a great post which helped here.)\n\nOn your OpenVPN server, create a folder in which to save the information of your static clients.\nIn this example, we'll name our folder `static_clients`:\n    ```bash\n    mkdir /etc/openvpn/static_clients\n    ```\n\nMake sure to uncomment and edit this line in `server.conf`:\n    ```vim\n    client-config-dir /etc/openvpn/static_clients\n    ```\n\nPreviously, when you generated a cert and key for your new VPN client, recall the `common_name` that you chose.\nCreate a file—naming it whatever you chose for the `common_name`— in `/etc/openvpn/static_clients/` with the following content:\n\n(Note that in this example, we'd like this VPN client's `tun0` interface to be assigned the IP `10.8.0.4`)\n    ```vim\n    ifconfig-push 10.8.0.4 10.8.0.5\n    ```\n\nOpenVPN will need to read these files after it drops privileges. You can do that do that with the following:\n    ```bash\n    sudo chown -R nobody:nogroup /etc/openvpn/static_clients\n    ```\n\n## Configure Your `iptables`\nIf you want to further secure your VPN, you should edit your VPN client machine's `iptables`. With your OpenVPN server and clients set up correctly and pingable (in both directions) via their `tun0` interfaces, you can begin restricting traffic over your `eth1` (DO's shared private network interface) to accept only traffic over port `1194` (OpenVPN's default port) on that interface.\n\nFor example, if you're routing traffic through a load balancer, you may want to lock down VPN client boxes as such:\n* Restrict access on `eth0` interface (public) to port 22 only\n* Restrict access on `eth1` interface (DO's shared private network) to udp/tcp traffic over port 1194 only\n* Unrestricted access on `tun0` interface (OpenVPN tunnel interface).\n\nHere's an example `iptables` config that would restrict traffic in the way I mention above:\n    ```apacheconf\n    *filter\n    :INPUT ACCEPT [0:0]\n    :FORWARD ACCEPT [0:0]\n    :OUTPUT ACCEPT [0:0]\n    -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n    -A INPUT -i lo -j ACCEPT\n    -A INPUT -i tun0 -j ACCEPT\n    -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT\n    -A INPUT -i eth1 -p udp -m udp --dport 1194 -j ACCEPT\n    -A INPUT -i eth1 -p tcp -m tcp --dport 1194 -j ACCEPT\n    -A INPUT -j DROP\n    COMMIT\n    ```\n\n## [Hone](http://gohone.com/ \"Hone\") is Hiring!\n[Check out all of the positions for which we're currently hiring](http://gohone.com/jobs/ \"Hone, Inc. Job Listings\").\n\n## Credit Where Credit Is Due\nWhile figuring out how to do everything above—and while I was writing this tutorial—I was reading and consulting with the following sources:\n1. https://openvpn.net/index.php/open-source/documentation/howto.html\n2. http://grantcurell.com/2014/07/22/setting-up-a-vpn-server-on-ubuntu-14-04/\n3. https://help.ubuntu.com/14.04/serverguide/openvpn.html\n4. http://www.slsmk.com/getting-started-with-openvpn/installing-openvpn-on-ubuntu-server-12-04-or-14-04-using-tap/\n5. https://www.digitalocean.com/community/tutorials/how-to-setup-and-configure-an-openvpn-server-on-debian-6\n6. https://www.digitalocean.com/community/tutorials/how-to-setup-and-configure-an-openvpn-server-on-centos-6\n7. https://www.digitalocean.com/community/tutorials/openvpn-access-server-centos\n8. https://gist.github.com/padde/5689930\n9. https://github.com/tinfoil/openvpn_autoconfig/blob/master/bin/openvpn.sh",
+    "excerpt": "A few weeks ago here at , we decided to spin a new server cluster in DigitalOcean's NYC3 data center.  just over a year ago. However, it turns out tha...",
+    "readTime": "8 min read"
+  },
+  {
+    "id": "install-mysql-on-mac-os-x-10-7",
+    "title": "Install MySQL on Mac OS X 10.7+",
+    "tags": [
+      "basics",
+      "database",
+      "homebrew",
+      "mysql",
+      "postgres",
+      "coding"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [
+      "mysql",
+      "mac os",
+      "homebrew",
+      "brew",
+      "postgres",
+      "postgresql"
+    ],
+    "date": "2012-05-02T00:06:37.000Z",
+    "content": "\nThe no fuss, no muss guide to installing the latest stable version of MySQL DB locally on your Mac running OS X 10.7 or later.  (Hat tip to [Trey Piepmeier](http://solutions.trey.cc/2010/02/28/installing-mysql-on-snow-leopard-using-homebrew/ \"Trey Piepmeier\") for his excellent tutorial, upon which I improved a few things.)\n\n## Install MySQL (using Homebrew)\n\nI'll assume you've already [installed Homebrew](/install-homebrew-on-mac-os-x-10-7 \"Install Homebrew on Mac OS X 10.7+\").\n\nAssuming you have your `brew` command ready to rock, make sure to run a quick `brew update`, telling brew to fetch the latest packages:\n```bash Update brew to ensure you have the latest library of packages (install scripts):\nbrew update\n```\n\nOK? Good. Now you need to tell _brew_ to install [MySQL](http://www.mysql.com/ \"MySQL\") by entering this command:\n\n    ```bash\n    brew install mysql\n    ```\n\nEnter the following two commands, one after the other (the second one starts up your new, local MySQL server and creates an initial database):\n\n    ```bash\n    unset TMPDIR\n    mysql_install_db --verbose --user=$(whoami) --basedir=$(brew --prefix mysql) --datadir=/usr/local/var/mysql --tmpdir=/tmp\n    ```\n\n## Launch MySQL Automatically\n\nThe output from that last command should instruct you to enter three additional commands. (The ones below might not be exactly what you see in your terminal. Of course, make sure you follow those instructions and not these below, unless they're identical.):\n\n    ```bash\n    mkdir -p ~/Library/LaunchAgents\n    cp $(brew --prefix mysql)/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/\n    launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist\n    ```\n\nThe three commands above do the following, respectively: create a _LaunchAgents_ folder for you if you don't already have one, copy the _mysql.plist_ file into that launch folder, and then loads that file into a system file so that Mac OS X starts MySQL for you each time you restart your machine.  Perfect!\n\n## Start Configuring MySQL\n\nOne final (optional) step is to run the included MySQL root/user config script. It'll step you through various default username/password/etc options that you might want to configure now that you've got MySQL up and running on your machine. To run this automated post-MySQL-install wizard, enter:\n\n    ```bash\n    $(brew --prefix mysql)/bin/mysql_secure_installation\n    ```\n\nOr, perhaps you're interested in [Installing and Setting up PostgreSQL on Mac OS X](/how-to-install-postgresql-os-x-mac-rails-3-heroku \"Installing and Setting up PostgreSQL on Mac OS X\")?",
+    "excerpt": "The no fuss, no muss guide to installing the latest stable version of MySQL DB locally on your Mac running OS X 10.7 or later.  (Hat tip to  for his e...",
+    "readTime": "2 min read"
+  },
+  {
+    "id": "install-homebrew-on-mac-os-x-10-7",
+    "title": "Install Homebrew on Mac OS X 10.7+",
+    "tags": [
+      "basics",
+      "homebrew",
+      "tools",
+      "coding"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [
+      "homebrew",
+      "brew",
+      "mac os",
+      "brew update"
+    ],
+    "date": "2012-05-01T23:34:00.000Z",
+    "content": "\n#### How to Install Homebrew on Mac OS X (10.7 or later)\n\nThis one's super-quick and easy! If you want to easily install other tools and add-ons in the future, you need [Homebrew](http://brew.sh/ \"Homebrew\").\n\nOpen a new shell and run the following:\n\n    ```bash\n    ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\"\n    ```\n\nIt's that simple. Really.\n\n## Homebrew Future Tip\nOnce Homebrew has finished installing, you'll want to make sure to always run the following before trying to install anything using the `brew` command:\n\n    ```bash\n    brew update\n    ```\n\nRunning Brew's `update` command instructs it to fetch the latest install recipes from its remote repository. Remember: Before you use Brew to install something, you definitely want to run the `brew update` command _Every single time_! That way, you'll always ensure you're installing only the latest, stable packages.\n\n### That's it! You're done.\n\nWant to learn more about Brew on your own?  Check out: http://brew.sh/",
+    "excerpt": "How to Install Homebrew on Mac OS X (10.7 or later)",
+    "readTime": "1 min read"
+  },
+  {
+    "id": "how-to-change-archive-utility-mac-os-x-default-preferences",
+    "title": "Change OS X's Archive Utility Preferences",
+    "tags": [
+      "archive utility",
+      "mac",
+      "minitip",
+      "os x"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [],
+    "date": "2012-03-19T23:22:30.000Z",
+    "content": "\nSo you're sick of the lame, default settings that OS X's _Archive Utility_ comes with and you want to change 'em? Yeah—I did too. So, here's three ways to change that little tool's settings to whatever your heart desires _once and for all_! (...or temporarily if you'd like; I don't much mind either way to be honest with you.)\n\nUnless you're as fast as Superman and can open _Archive Utility's_ preferences pane during the ~~roughly 0.0006~~ few seconds that it's displayed on the screen during its unarchiving process, it seems the only way to change the default preferences are:\n\n## How to Change Archive Utility Preferences\nLaunch Archive Utility manually and change the preferences as you would in any other app:\nOpen up _Terminal_ and type: `open -a Archive Utility`\n\nIf you're the type that doesn't want anything to do with opening _Terminal_ ([not that there's anything wrong with that](http://www.youtube.com/watch?v=GZPcGapl2dM \"Origin of the phrase, &quot;Not that there\")) or one that prefers clicking the mouse a few more times, just for sport:\n\nClick on OS X's _Finder_ (usually in the lower-left of your dock), then go to the very top OS X menu bar and select \"Go\" and then \"Go to Folder...\" Then, just enter the following—`/System/Library/CoreServices`—and smack the enter key on your keyboard (or gingerly click the \"Go\" button with your mouse—again, totally up to you. I prefer smacking the enter-key, myself.)\n\nAt this point, you need only find the _Archive Utility_ App within the Finder window and give her the ol' double-click to launch.\n\n## Let's Get All Fancy-like\nWant to add a new icon to OS X's _System Preferences_ app, enabling all users to set their own _Archive Utility_ preferences? Do the following:\n\nOpen up _Terminal_ and enter this beautiful one-liner:\n    ```bash\n    open /System/Library/CoreServices/Archive Utility.app/Contents/Resources/\n    ```\n\nIn the Finder window that opens as a result, locate and double-click on the `Archives.prefPane` file.\n\nIf you're asked to enter your Admin password, _DO IT IMMEDIATELY WITHOUT HESITATION_. This isn't a drill and your life could depend on it. Of course, that's simply false. But the truth is that at this point, OS X wants to add a dedicated preference icon for _Archive Utility_ to its _System Preferences_ App and wants you to confirm this action by entering your password. Honest!\n\nEnjoy the following panel that you now have access to and configure the settings until you're blue in the face!\n\n![OS X Archives Settings Panel](/media/os_x_archive_utility_preferences_panel.png \"OS X Archives Settings Panel\")\n\n## Hat Tippity Tip / Source:\nThis \"how to\" article was adopted from one I originally read on TAUW [right here](http://www.tuaw.com/2010/10/21/mac-101-use-archive-utility-preferences-for-control-over-archiv/ \"Mac 101: Use Archive Utility preferences for control over archives (by  TJ Luoma)\"), which itself was apparently adopted from an even earlier article, currently located on Macworld.com [right here](http://hints.macworld.com/article.php?story=20071028161249238 \"http://hints.macworld.com/article.php?story=20071028161249238 (by JoolsG4)\"). Enjoy!",
+    "excerpt": "So you're sick of the lame, default settings that OS X's _Archive Utility_ comes with and you want to change 'em? Yeah—I did too. So, here's three way...",
+    "readTime": "3 min read"
+  },
+  {
+    "id": "how-to-install-postgresql-os-x-mac-rails-3-heroku",
+    "title": "Setting up PostgreSQL on Mac OS X",
+    "tags": [
+      "brew",
+      "databases",
+      "homebrew",
+      "postgresql",
+      "rails",
+      "sql",
+      "sqlite"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [
+      "postgres",
+      "postgresql",
+      "mac os"
+    ],
+    "date": "2012-03-08T16:04:47.000Z",
+    "content": "\nWhat's that? You're making a Rails app, planning on eventually pushing it to Heroku, and you're still running SQLite locally on your machine? Like a chump!? Come on now!\n\nYou've got to install Postgres locally! The good news is: It's super easy.\n\n## First Things First\nYou'll first need to install PostgreSQL.  For this tutorial, we'll use  _[Homebrew](http://brew.sh/ \"Homebrew\")_ to help us do that quickly.\n\nOpen _terminal_ and type: `brew -v`\nThis will return the current version of brew (if you have it installed).\nIf you do have it installed, update it with the following command: `brew update`\n\n### That was pretty simple\n\nIf you saw a `command not found: brew` (or similar) error after you ran `brew -v`, then you likely need to install _Homebrew_. If you would like to do that now, type the following into your terminal:\n    ```bash\n    ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\"\n    ```\n\n#### Pro Tip\nIf at this point you're thinking of installing Homebrew, consider first reading more about installing Homebrew in this article I wrote on [How To Install Homebrew on Mac OS X 10.7+](/install-homebrew-on-mac-os-x-10-7 \"How to Install Homebrew on Mac OS X 10.7+\").\n\nWith _brew_ installed, you're golden. Time to install PostgreSQL!\n\n## Install PostgreSQL and Configure\n\nWith Brew, you can install _[PostgreSQL](http://www.postgresql.org/ \"PostgreSQL\")_ with the following command in _Terminal_:\n    ```bash\n    brew install postgresql\n    ```\n\nYou can now start your PostgreSQL server and create a database:\n    ```bash\n    initdb /usr/local/var/postgres\n    ```\n\n**Optional**\nYou'll need to have PostgreSQL running locally in order for your app (running in development mode, of course) to read and write to your Postgres database(s). If you want to have PostgreSQL start automatically each time you start your computer, enter the following three lines into Terminal one after another:\n    ``` bash\n    mkdir -p ~/Library/LaunchAgents\n    cp /usr/local/Cellar/postgresql/9.1.3/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents/\n    launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist\n    ```\n\nDone and done. PostgreSQL is up and running and now all you need to do is tweak a few setting in your Rails App's `database.yml` file (in the `config/` folder).\n\nIn your `database.yml` file, you'll see a few environments and their respective configs beneath. Most likely you'll see three environments: `development:`, `test:`, and `production:`.\n\nFor now, we'll just change the `development:` environment. If you haven't changed anything, you'll see the following as the default config for `development:`:\n    ```rails\n    development:\n    # adapter: sqlite3\n    # database: db/development.sqlite3\n    # pool: 5\n    # timeout: 5000\n    ```\n\nIn order for your app to use your new PostgreSQL server, you'll want to change the above to this:\n    ```rails\n    development:\n    # adapter: postgresql\n    # database: name_of_your_app_development\n    # encoding: utf8\n    # template: template0\n    # host: localhost\n    ```\n\n### Super-awesome Protip\nYou'll want to replace `name_of_your_app` with the name of _your_ app.\n\n## Editing Your Gemfile\nHold on there partner, don't forget to tweak your `Gemfile`!  Make sure the you've got the `pg` gem in your gemfile:\n    ```rails Example line entry in your Rail's `Gemfile`, if you want to use the `pg` gem:\n    gem 'pg'\n    ```\n\n#### Want To Run PostgreSQL in Production?\nIf you want to run Postgres in your production environment as well as your development environment, make sure to add the `gem 'pg'` line somewhere within the `:production` block—and not _only_ within your `group :development, :test do` block.\n\nFinally, you'll want to create a new database: `rake db:create` and you'll probably want to run the following command to delete your tables, recreate them, and seed them with any data you may have in your `seeds.db` file with the following command: `rake db:reset`\n\n## Trying to install PostgreSQL on your Linux machine instead?\nMy buddy—[Eric MacAdie](http://www.macadie.net/ \"Eric MacAdie, Software Developer\")—offers these helpful [instructions for setting up a Postgres server for Rails on a Linux machine](http://www.macadie.net/2012/03/12/connecting-rails-and-postgres/ \"How to set up PostgreSQL on Linux for your Rails app during development\") instead of OS X.\n\n## Credit Where Credit Is Due:\n[Dan Manges](https://twitter.com/#!/dan_manges \"Dan Manges\") is crazy-smart, the CTO of [Braintree](http://www.braintreepayments.com/ \"Braintree Payments\"), and happens to be my mentor while at ~~[Code Academy](http://codeacademy.org/ \"Code Academy in Chicago, IL\")~~ [The Starter League](http://www.starterleague.com/ \"The Starter League in Chicago, IL\"). He saved me about three hours of chin-scratching, by teaching me everything below today (in about 15 minutes). Thanks man!\n(Probably worth noting that any errors below are courtesy of yours truly—and not Dan :)",
+    "excerpt": "What's that? You're making a Rails app, planning on eventually pushing it to Heroku, and you're still running SQLite locally on your machine? Like a c...",
+    "readTime": "4 min read"
+  },
+  {
+    "id": "rake-after-deploying-to-heroku",
+    "title": "Don't forget to rake after deploying to heroku",
+    "tags": [
+      "ruby",
+      "rails",
+      "heroku"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [],
+    "date": "2012-03-06T16:55:35.000Z",
+    "content": "\nDeploying your Rails 3 app to [heroku](http://www.heroku.com/ \"Heroku\") (on their _[Cedar](http://devcenter.heroku.com/articles/cedar \"Heroku Cedar Stack for Rails 3 Apps\")_ stack)?\n\n### Protip\nDon't forget to run this command—ya know, just as you would when first running the app locally on your own machine.\n(Might save you 20 minutes of chin-scratching!)\n  ```bash Run a `rake` task on Heroku:\n  heroku run rake db:migrate\n  ```\n\n#### Good times!",
+    "excerpt": "Deploying your Rails 3 app to  (on their __ stack)?",
+    "readTime": "1 min read"
+  },
+  {
+    "id": "rails-button-to-vs-link-to-url-helpers",
+    "title": "Rails' default HTTP methods for button_to and link_to helpers",
+    "tags": [
+      "button_to",
+      "link_to",
+      "rails",
+      "url helpers"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [
+      "rails",
+      "button_to",
+      "link_to",
+      "ruby"
+    ],
+    "date": "2012-03-05T15:28:33.000Z",
+    "content": "\nHere's a tip when using Rails' `button_to` and `link_to` URL helpers!\nNever ever forget these two things:\n\n#### **`button_to`** uses the **`:POST`** method by default\n#### **`link_to`** uses the **`:GET`** method by default\n\nBelieve me: Memorizing these two simple Rails defaults will save you routing headaches down the road.\n\n## Example — Specifying the **`:GET`** method:\n\nLet's say that you'd like to provide your user with a \"Cancel\" _button_ on a form that redirects her back to the previous page after it's clicked. (Because you're nice, you'll also throw up a warning modal...):\n    ```rails\n    button_to \"Cancel / Delete\",\n              :back,\n              confirm: 'Are you sure you would like to cancel and delete this post?',\n              disable_with: 'Deleting...'\n    ```\n\n**Guess what? That's not right!** When clicked, that button will either throw a routing error or unintentionally make a post request to one of your routes. Instead, you need to specify that you'd like the button to use the `:GET` method, instead of its default `:POST` method. (refer to rule _1_ above.)\n\nHere's the correct code for such a button:\n    ```rails\n    button_to \"Cancel / Delete\",\n              :back,\n              method: :get,\n              confirm: 'Are you sure you would like to cancel and delete this post?',\n              disable_with: 'Deleting...'\n    ```\n\nSee how we specify the method in there with _`method: :get`_?\n\n## Example — Specifying the **`:POST`** method:\n\nWant a text link that ends up sending sending a `:POST` to one of your routes? Simple. Just remember to pass the correct method:\n    ```rails\n    link_to \"Click here to submit post.\",\n            posts_url,\n            method: :post\n    ```\nIf you wanted a button to perform the same action, you wouldn't need to specify the method, as the default method is already `:POST`:\n    ``` rails\n    button_to \"Submit Post\",\n              posts_url,\n              disable_with: \"Submitting Post...\n    ```\n## Example — Specifying the **`:DELETE`** method:\nJust as you need to pass in the proper HTTP method into your `button_to` and `link_to` helpers if you'd like to use them for the opposite of their default method, so too must you specify the `:DELETE` method when you'd like to use that instead:\n    ```rails\n    button_to \"Cancel / Delete\",\n              :back,\n              method: :delete,\n              confirm: \"Are you sure you'd like to cancel and delete this post?\",\n              disable_with: \"Deleting...\"\n    ```",
+    "excerpt": "Here's a tip when using Rails'  and  URL helpers!\nNever ever forget these two things:",
+    "readTime": "2 min read"
+  },
+  {
+    "id": "how-to-use-git-with-personal-projects",
+    "title": "So you wanna use Git, huh?",
+    "tags": [
+      "git",
+      "reverting",
+      "revision control system",
+      "saving",
+      "version control"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [
+      "git",
+      "version control",
+      "revision control system"
+    ],
+    "date": "2012-02-29T03:54:37.000Z",
+    "content": "\nOver the past few weeks, I've been working on an app with three other people. The four us divided up the necessary work that needed to be done, chose parts to work on that we found interesting, and then got to work.\n\n> How do multiple people add to, modify, and delete the project's codebase (and other files)—all while keeping track of everything along the way?\n\nAs soon as we asked this question, the answer was simple: use **Git**!\n\n## What is Git?\n\n _Git_ is a Distributed, Revision Control System\n\nUsing Git, multiple people can easily work on the same project, at the same time, and keep track of all changes. In addition to providing a detailed history of who did what and when, Git empowers collaborators to revert back to a previous version of a project's codebase (or a previous version of, say, a single file), should broken code or otherwise undesirable changes occur at some point.\n\n## Using Git in _Your_ Own Projects\n\nAfter creating your project, `cd` into your project's working directory via terminal and initialize Git with the following command:\n    ```bash Initialize a new git repository within the present directory\n    git init\n    ```\n\nGit is now good to go and is ready to keep track of the files in that directory. Make changes to some code, return to terminal, and type the following:\n    ```bash Add all files in the present directory (**not** including those that have been deleted) to Git staging\n    git add .\n    ```\n\nNotice the `.` (period) at the end? That tells Git to add all of the new and modified files to it's index. In other words, Git is now tracking _every_ file in that directory and will know when changes are made to existing files or when new files are _added_.\n\n### Note:\nIf you ever delete a file from your project—and you want to track that deletion in your Git repository—you should type the following command in terminal:\n    ```bash Add all files in the present directory (including those that have been deleted) to Git staging\n    git add -A .\n    ```\n\nIt's similar to the previous command, but passing in the `-A` option will tell Git to \"add\" the files that you removed from your project. (You can think of this as Git keeping track of the fact that you just _deleted_ a file.)\n\n## Committing Files\n\nSo far, Git has been initialized and is also tracking all of the files in your project (including any changes you've made so far). But, you've yet to _commit_ these changes. These _commits_ are the snapshots of your project that Git will keep a history of, enabling you to rollback or revert to at some point in the future should you so desire.\n\nTo commit your changes—and thus make your first/initial commit for this project—type the following command in terminal:\n    ```bash Your initial commit message probably shouldn't have the message of 'initial commit'\n    git commit -m 'initial commit'\n    ```\n\nThis _commits_ your changes. Note the `-m` option that we've passed in as well as the `'initial commit'` message following it. As you might guess, the `-m` stands for \"message\" and the text in single (or double) quotes following it contains a message that will be saved along with the commit. (You should always pass in a descriptive note that will enable you (and/or other developers reading it later on) to quickly decipher what changes you made for _that_ particular commit.\n\n## Part Two: Coming Soon\nThis post covers the basics of using Git for your personal projects. In the next post, I'll detail how using the above-listed commands—as well as a few other commands—will enable you to use Git for a single project with multiple collaborators as I described in the opening paragraph.",
+    "excerpt": "Over the past few weeks, I've been working on an app with three other people. The four us divided up the necessary work that needed to be done, chose ...",
+    "readTime": "4 min read"
+  },
+  {
+    "id": "code-academy-has-begun",
+    "title": "Code Academy Has Begun!",
+    "tags": [
+      "mahalo",
+      "jason calacanis",
+      "next level",
+      "ruby",
+      "rails",
+      "popcorn"
+    ],
+    "categories": [
+      "personal pivot"
+    ],
+    "keywords": [],
+    "date": "2012-01-10T20:25:28.000Z",
+    "content": "\nRemember that one time when I moved to Chicago to start ~~[Code Academy](http://codeacademy.org/ \"Code Academy in Chicago, IL\")~~ [The Starter League](http://www.starterleague.com/ \"The Starter League in Chicago, IL\")? Oh wait, that just happened!\n\n# Back Story\n\nAfter graduating from college, I wisely decided to pursue my interests in technology and got a job working at [Mahalo](http://www.mahalo.com/ \"Mahalo\") in Santa Monica, CA. (Many fun stories on this experience, of course. I'll save them for future posts—including, \"Greg's guide to getting a job at a startup\". Good times.) After [Mahalo was slapped by Google](http://searchenginewatch.com/article/2049954/Mahalo-Business.com-Article-Aggregators-Hardest-Hit-By-Google-Update \"Mahalo slapped by Google\") (note to self: avoid building a business _entirely_ reliant on another company for both traffic <span style=\"text-decoration: underline;\">and</span> revenue) I parted ways and joined the team at [Border Stylo](http://www.borderstylo.com/ \"Border Stylo\").\n\nI absolutely fell in love with startups. I soon realized that I wanted to become more technical myself so that I could start actualizing my own ideas and start a company of my own. _Enter Code Academy_.\n\n# Why ~~[Code Academy](http://codeacademy.org/ \"Code Academy in Chicago, IL\")~~ [The Starter League](http://www.starterleague.com/ \"The Starter League in Chicago, IL\")?\n\nOf course, there are [many](http://www.codecademy.com/ \"Codecademy\") [nice](http://codeyear.org/ \"Code Year (Codecademy)\"), [free](http://www.trybloc.com/ \"Bloc\"), [online](http://teamtreehouse.com/ \"treehouse\") and interactive \"teach yourself how to program\" resources these days that enable an aspiring developer to teach herself various languages at her own pace, on her own time (not to mention all of the free and paid video courses that have been available for years).\n\nBut, I was looking for something that met the following criteria:\n\n1.  I wanted to do this full-time and completely immerse myself without any distractions;\n2.  I wanted an environment where I could work alongside others that were equally as dedicated and passionate about becoming developers;\n3.  And, I wanted an adventure—I wanted to travel and live somewhere new for a while.\nCode Academy offered my all of these things and more so I jumped on the opportunity, applied for a spot, was accepted (duh), and made it happen. In talking with some of the then-current (now former) students before and while I applying, I was left without any doubt: this was the program for me and would be awesome.\n\n# The Focus\n\nThe focus over the next 12 weeks (the duration of Code Academy) will be _Ruby on Rails_, and a healthy dose of HTML, CSS, and Javascript to be dangerous. In talking with folks, it's clear that many are looking to land a gig at a startup or dev shop once things are done, others are focusing on an existing idea for a web app that they came into the program with already and will pour everything they learn into that one idea, while many others are somewhere in between.\n\nCode Academy offered a design class this quarter and so we'll also be working closely with them throughout on the various projects we create throughout, hackathons, demo-day projects, etc.\n\n# The Beginning\n\nThings have only just begun and so there's not too much to share yet. But count on the fact that I'll be posting regular updates on my progress, funny anecdotes, and everything in between in the coming weeks and months while I'm in Chicago.",
+    "excerpt": "Remember that one time when I moved to Chicago to start ~~~~ ? Oh wait, that just happened!",
+    "readTime": "3 min read"
+  }
+]
