@@ -50,7 +50,7 @@ This is a complete rebuild of cardoni.net using Next.js 15 with App Router. All 
 
 ```bash
 npm run dev          # Start development server with Turbopack on http://localhost:3000
-npm run build        # Build for production (static export ready)
+npm run build        # Build for production (includes --debug --profile flags for visibility)
 npm run start        # Start production server (after build)
 npm run lint         # Run ESLint for code quality
 ```
@@ -65,6 +65,7 @@ This project currently has no test suite configured. If tests are needed, consid
 - **Types**: `src/types/blog.ts` - BlogPost interface definition
 - **URL handling**: `src/lib/url-utils.ts` - Category URL normalization (spaces ↔ dashes)
 - **Category utilities**: `src/lib/categories.ts` - Category-related functions
+- **Markdown utilities**: `src/lib/markdown-utils.ts` - Clean excerpt generation with markdown stripping
 
 ### Routing Structure
 - **Dynamic post pages**: `src/app/[slug]/page.tsx` - Individual blog posts
@@ -81,5 +82,7 @@ This project currently has no test suite configured. If tests are needed, consid
 - `content/` directory is the single source of truth for all blog content
 - MDX processing handles legacy frontmatter format automatically (missing opening `---` handled)
 - Category URLs support both `/categories/personal-pivot` and `/categories/personal%20pivot` formats with automatic redirects
+- Post excerpts are automatically generated with markdown formatting stripped for clean previews
 - All content metadata and structure preserved during migration from Hexo
 - TypeScript aliases use `@/*` for `src/*` paths
+- Code blocks use flush-left formatting (no indentation on ``` markers or content)
