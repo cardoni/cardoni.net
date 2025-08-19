@@ -28,7 +28,8 @@ If you do have it installed, update it with the following command: `brew update`
 ### That was pretty simple
 
 If you saw a `command not found: brew` (or similar) error after you ran `brew -v`, then you likely need to install _Homebrew_. If you would like to do that now, type the following into your terminal:
-    ```bash
+
+    ```sh
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     ```
 
@@ -40,18 +41,21 @@ With _brew_ installed, you're golden. Time to install PostgreSQL!
 ## Install PostgreSQL and Configure
 
 With Brew, you can install _[PostgreSQL](http://www.postgresql.org/ "PostgreSQL")_ with the following command in _Terminal_:
-    ```bash
+
+    ```sh
     brew install postgresql
     ```
 
 You can now start your PostgreSQL server and create a database:
-    ```bash
+
+    ```sh
     initdb /usr/local/var/postgres
     ```
 
 **Optional**
 You'll need to have PostgreSQL running locally in order for your app (running in development mode, of course) to read and write to your Postgres database(s). If you want to have PostgreSQL start automatically each time you start your computer, enter the following three lines into Terminal one after another:
-    ``` bash
+
+    ```sh
     mkdir -p ~/Library/LaunchAgents
     cp /usr/local/Cellar/postgresql/9.1.3/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents/
     launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
@@ -62,7 +66,8 @@ Done and done. PostgreSQL is up and running and now all you need to do is tweak 
 In your `database.yml` file, you'll see a few environments and their respective configs beneath. Most likely you'll see three environments: `development:`, `test:`, and `production:`.
 
 For now, we'll just change the `development:` environment. If you haven't changed anything, you'll see the following as the default config for `development:`:
-    ```rails
+
+    ```yaml
     development:
     # adapter: sqlite3
     # database: db/development.sqlite3
@@ -71,7 +76,8 @@ For now, we'll just change the `development:` environment. If you haven't change
     ```
 
 In order for your app to use your new PostgreSQL server, you'll want to change the above to this:
-    ```rails
+
+    ```yaml
     development:
     # adapter: postgresql
     # database: name_of_your_app_development
@@ -85,6 +91,7 @@ You'll want to replace `name_of_your_app` with the name of _your_ app.
 
 ## Editing Your Gemfile
 Hold on there partner, don't forget to tweak your `Gemfile`!  Make sure the you've got the `pg` gem in your gemfile:
+
     ```rails Example line entry in your Rail's `Gemfile`, if you want to use the `pg` gem:
     gem 'pg'
     ```

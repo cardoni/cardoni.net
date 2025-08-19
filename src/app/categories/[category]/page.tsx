@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { getPostsByCategory, getAllCategories } from '@/lib/mdx';
+import { getPostsByCategory } from '@/lib/mdx';
 import AnimatedCard from '@/components/AnimatedCard';
 import PageTransition from '@/components/PageTransition';
 import AnimatedHeader from '@/components/AnimatedHeader';
@@ -11,11 +11,12 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  // Use hardcoded categories to avoid dynamic generation issues
+  // Static list of categories to avoid build hanging issues
   return [
     { category: 'regex' },
     { category: 'personal-pivot' },
-    { category: 'nginx' }
+    { category: 'nginx' },
+    { category: 'security' }
   ];
 }
 

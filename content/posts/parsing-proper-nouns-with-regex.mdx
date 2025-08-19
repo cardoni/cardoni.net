@@ -55,7 +55,7 @@ Since wordpos wasn't able to extract and return exactly what we needed from the 
 # Regex to Parse Proper Nouns
 
 ```regex
-    / \s+([ie]*-?[A-Z]+.*?)(?:\s+[a-z\W]|[`'’"^,;:—\\\*\.\(\)\[\]]) /
+    / \s+([ie]*-?[A-Z]+.*?)(?:\s+[a-z\W]|[`''"^,;:—\\\*\.\(\)\[\]]) /
 ```
 
 As is often the case, regular expressions don't lend themselves to immediate readability or comprehension. So, let's examine this regex in more detail and explore exactly how and why it's able to extract proper nouns. To begin, here is a more illuminating representation of the above regex:
@@ -74,7 +74,7 @@ As you can see, there is one capture group—denoted by *Group 1*. This capture 
  - Optionally contains additional characters (except line breaks)
 3. Finally, this capture group *must* be followed by one of the two below:
  - one or more whitespace characters **and** either a lowercase letter between a–z **or** any character that is not a word character
- - any one of the following characters: `` ' ’ " ^ , ; : — \ * . ( ) [ ]`
+ - any one of the following characters: `` ' ' " ^ , ; : — \ * . ( ) [ ]`
 
 # Conclusion
 Armed with this regex, we had everything we needed to parse proper nouns from any given website. Here's how it all works from soup-to-nuts: First we actually [request the URL](//www.npmjs.com/package/request) and [extract the text](//www.npmjs.com/package/unfluff) from the response body. Then, we split this large chunk of text on each new sentence and end up with an array of sentences.

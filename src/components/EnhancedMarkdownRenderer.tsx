@@ -85,6 +85,36 @@ export default function EnhancedMarkdownRenderer({ content }: EnhancedMarkdownRe
         continue;
       }
 
+      if (line.startsWith('#### ')) {
+        elements.push(
+          <h4 key={elements.length} className="text-lg md:text-xl font-semibold mb-3 mt-6 text-gray-900 dark:text-white">
+            {line.slice(5).trim()}
+          </h4>
+        );
+        i++;
+        continue;
+      }
+
+      if (line.startsWith('##### ')) {
+        elements.push(
+          <h5 key={elements.length} className="text-base md:text-lg font-semibold mb-3 mt-6 text-gray-900 dark:text-white">
+            {line.slice(6).trim()}
+          </h5>
+        );
+        i++;
+        continue;
+      }
+
+      if (line.startsWith('###### ')) {
+        elements.push(
+          <h6 key={elements.length} className="text-base font-semibold mb-2 mt-4 text-gray-900 dark:text-white">
+            {line.slice(7).trim()}
+          </h6>
+        );
+        i++;
+        continue;
+      }
+
       // Lists
       if (line.match(/^\d+\.\s/)) {
         const listItems: string[] = [];
@@ -178,7 +208,12 @@ export default function EnhancedMarkdownRenderer({ content }: EnhancedMarkdownRe
 
 function isSpecialLine(line: string): boolean {
   return (
-    line.startsWith('#') ||
+    line.startsWith('# ') ||      // h1
+    line.startsWith('## ') ||     // h2
+    line.startsWith('### ') ||    // h3
+    line.startsWith('#### ') ||   // h4
+    line.startsWith('##### ') ||  // h5
+    line.startsWith('###### ') || // h6
     line.startsWith('```') ||
     line.startsWith('- ') ||
     line.match(/^\d+\.\s/) !== null ||

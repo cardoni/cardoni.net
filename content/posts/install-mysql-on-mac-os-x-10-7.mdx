@@ -20,19 +20,22 @@ The no fuss, no muss guide to installing the latest stable version of MySQL DB l
 I'll assume you've already [installed Homebrew](/install-homebrew-on-mac-os-x-10-7 "Install Homebrew on Mac OS X 10.7+").
 
 Assuming you have your `brew` command ready to rock, make sure to run a quick `brew update`, telling brew to fetch the latest packages:
-```bash Update brew to ensure you have the latest library of packages (install scripts):
-brew update
-```
+
+Update brew to ensure you have the latest library of packages (install scripts):
+
+    ```sh
+    brew update
+    ```
 
 OK? Good. Now you need to tell _brew_ to install [MySQL](http://www.mysql.com/ "MySQL") by entering this command:
 
-    ```bash
+    ```sh
     brew install mysql
     ```
 
 Enter the following two commands, one after the other (the second one starts up your new, local MySQL server and creates an initial database):
 
-    ```bash
+    ```sh
     unset TMPDIR
     mysql_install_db --verbose --user=$(whoami) --basedir=$(brew --prefix mysql) --datadir=/usr/local/var/mysql --tmpdir=/tmp
     ```
@@ -41,7 +44,7 @@ Enter the following two commands, one after the other (the second one starts up 
 
 The output from that last command should instruct you to enter three additional commands. (The ones below might not be exactly what you see in your terminal. Of course, make sure you follow those instructions and not these below, unless they're identical.):
 
-    ```bash
+    ```sh
     mkdir -p ~/Library/LaunchAgents
     cp $(brew --prefix mysql)/homebrew.mxcl.mysql.plist ~/Library/LaunchAgents/
     launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
@@ -53,7 +56,7 @@ The three commands above do the following, respectively: create a _LaunchAgents_
 
 One final (optional) step is to run the included MySQL root/user config script. It'll step you through various default username/password/etc options that you might want to configure now that you've got MySQL up and running on your machine. To run this automated post-MySQL-install wizard, enter:
 
-    ```bash
+    ```sh
     $(brew --prefix mysql)/bin/mysql_secure_installation
     ```
 

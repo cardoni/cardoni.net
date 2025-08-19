@@ -27,12 +27,14 @@ Using Git, multiple people can easily work on the same project, at the same time
 ## Using Git in _Your_ Own Projects
 
 After creating your project, `cd` into your project's working directory via terminal and initialize Git with the following command:
-    ```bash Initialize a new git repository within the present directory
+
+    ```sh Initialize a new git repository within the present directory
     git init
     ```
 
 Git is now good to go and is ready to keep track of the files in that directory. Make changes to some code, return to terminal, and type the following:
-    ```bash Add all files in the present directory (**not** including those that have been deleted) to Git staging
+
+    ```sh Add all files in the present directory (**not** including those that have been deleted) to Git staging
     git add .
     ```
 
@@ -40,7 +42,8 @@ Notice the `.` (period) at the end? That tells Git to add all of the new and mod
 
 ### Note:
 If you ever delete a file from your project—and you want to track that deletion in your Git repository—you should type the following command in terminal:
-    ```bash Add all files in the present directory (including those that have been deleted) to Git staging
+
+    ```sh Add all files in the present directory (including those that have been deleted) to Git staging
     git add -A .
     ```
 
@@ -51,7 +54,8 @@ It's similar to the previous command, but passing in the `-A` option will tell G
 So far, Git has been initialized and is also tracking all of the files in your project (including any changes you've made so far). But, you've yet to _commit_ these changes. These _commits_ are the snapshots of your project that Git will keep a history of, enabling you to rollback or revert to at some point in the future should you so desire.
 
 To commit your changes—and thus make your first/initial commit for this project—type the following command in terminal:
-    ```bash Your initial commit message probably shouldn't have the message of 'initial commit'
+
+    ```sh Your initial commit message probably shouldn't have the message of 'initial commit'
     git commit -m 'initial commit'
     ```
 
