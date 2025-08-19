@@ -12,18 +12,11 @@ interface Props {
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
-  const params: { category: string }[] = [];
   
-  categories.forEach((category) => {
-    // Generate the canonical dash version
-    const dashVersion = category.replace(/\s+/g, '-').toLowerCase();
-    params.push({ category: dashVersion });
-    
-    // Also generate the URL encoded version for backward compatibility
-    params.push({ category: encodeURIComponent(category) });
-  });
-  
-  return params;
+  // Only generate canonical dash versions to avoid conflicts
+  return categories.map((category) => ({
+    category: category.replace(/\s+/g, '-').toLowerCase()
+  }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
