@@ -49,7 +49,7 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
               transition={{ duration: 0.3, delay: 0.1 * index }}
             >
               <Link 
-                href={`/${post.id}`}
+                href={`/posts/${post.id}`}
                 className="block group"
               >
                 <div className="space-y-2">

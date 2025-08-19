@@ -18,7 +18,7 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="group"
     >
-      <Link href={`/${post.id}`}>
+      <Link href={`/posts/${post.id}`}>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl border border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden h-full">
           {/* Category Badges */}
           <div className="p-6 pb-4">
