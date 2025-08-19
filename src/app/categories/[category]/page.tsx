@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   return {
     title: `${decodedCategory} - Cardoni.net`,
-    description: `Blog posts about ${decodedCategory}`,
+    description: `Posts about ${decodedCategory}`,
   };
 }
 
@@ -62,7 +62,7 @@ export default async function CategoryPage({ params }: Props) {
         <div className="max-w-6xl mx-auto px-4 py-16">
           <AnimatedHeader
             title={decodedCategory}
-            subtitle={`Blog posts about ${decodedCategory}`}
+            subtitle={`Posts about ${decodedCategory}`}
             showBackButton={true}
           />
           
