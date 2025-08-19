@@ -13,7 +13,7 @@ keywords: [ 'mysql', 'mac os', 'homebrew', 'brew', 'postgres', 'postgresql' ]
 date: 2012-05-02 00:06:37
 ---
 
-The no fuss, no muss guide to installing the latest stable version of MySQL DB locally on your Mac running OS X 10.7 or later.  (Hat tip to [Trey Piepmeier](http://solutions.trey.cc/2010/02/28/installing-mysql-on-snow-leopard-using-homebrew/ "Trey Piepmeier") for his excellent tutorial, upon which I improved a few things.)
+The no fuss, no muss guide to installing the latest stable version of MySQL DB locally on your Mac running OS X 10.7 or later.  (Hat tip to [Trey Piepmeier](http://solutions.trey.cc/2010/02/28/installing-mysql-on-snow-leopard-using-homebrew/ "Trey Piepmeier") for his excellent tutorial, upon which I improved a few things.)
 
 ## Install MySQL (using Homebrew)
 
@@ -24,7 +24,7 @@ Assuming you have your `brew` command ready to rock, make sure to run a quick `b
 brew update
 ```
 
-OK? Good. Now you need to tell _brew_ to install [MySQL](http://www.mysql.com/ "MySQL") by entering this command:
+OK? Good. Now you need to tell _brew_ to install [MySQL](http://www.mysql.com/ "MySQL") by entering this command:
 
     ```bash
     brew install mysql
@@ -39,7 +39,7 @@ Enter the following two commands, one after the other (the second one starts up 
 
 ## Launch MySQL Automatically
 
-The output from that last command should instruct you to enter three additional commands. (The ones below might not be exactly what you see in your terminal. Of course, make sure you follow those instructions and not these below, unless they're identical.):
+The output from that last command should instruct you to enter three additional commands. (The ones below might not be exactly what you see in your terminal. Of course, make sure you follow those instructions and not these below, unless they're identical.):
 
     ```bash
     mkdir -p ~/Library/LaunchAgents
@@ -47,7 +47,7 @@ The output from that last command should instruct you to enter three additional 
     launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
     ```
 
-The three commands above do the following, respectively: create a _LaunchAgents_ folder for you if you don't already have one, copy the _mysql.plist_ file into that launch folder, and then loads that file into a system file so that Mac OS X starts MySQL for you each time you restart your machine.  Perfect!
+The three commands above do the following, respectively: create a _LaunchAgents_ folder for you if you don't already have one, copy the _mysql.plist_ file into that launch folder, and then loads that file into a system file so that Mac OS X starts MySQL for you each time you restart your machine.  Perfect!
 
 ## Start Configuring MySQL
 

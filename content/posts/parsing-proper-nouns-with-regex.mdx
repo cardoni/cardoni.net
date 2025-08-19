@@ -10,7 +10,7 @@ tags:
     - wordpos module
     - wordpos
 categories:
- - regex
+  - regex
 keywords: [ 'regex', 'parsing', 'proper nouns', 'word extraction', 'regular expression', 'wordpos' ]
 date: 2015-02-28 14:10:05
 ---
@@ -60,7 +60,7 @@ Since wordpos wasn't able to extract and return exactly what we needed from the 
 
 As is often the case, regular expressions don't lend themselves to immediate readability or comprehension. So, let's examine this regex in more detail and explore exactly how and why it's able to extract proper nouns. To begin, here is a more illuminating representation of the above regex:
 
-![Visual Representation of Proper-Noun-Parsing Regex](//cardoni.net/media/noun_parsing_regex_visualized.png "Visual Representation of Proper-Noun-Parsing Regex")
+![Visual Representation of Proper-Noun-Parsing Regex](/media/noun_parsing_regex_visualized.png "Visual Representation of Proper-Noun-Parsing Regex")
 
 As you can see, there is one capture group—denoted by *Group 1*. This capture group represents the text that we are actually interested in: a noun ("Microsoft") or nouns ("iPad Air 2") which—together—form a proper name/noun. The stuff to the left and right of Group 1 ensure that we're capturing groupings of proper-nouns.
 
