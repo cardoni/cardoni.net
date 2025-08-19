@@ -1,59 +1,26 @@
 ## [Cardoni.net](http://cardoni.net)
-Hi there, I'm Greg. This my personal site, created using [Ghost](https://ghost.org/)—a nice javascript/node static site generator. Enjoy!
+Hi there, I'm Greg. This is my personal site and blog.
 
-This is the source code for [Cardoni.net](https://cardoni.net), a personal website and blog built with Next.js and hosted on Vercel.
+**Project Status: In Development (next-gen branch)**
 
-## Features
+This repository is currently being rebuilt from scratch with a new Next.js architecture. The previous implementation has been removed, and content has been preserved during the migration.
 
-- Built with Next.js 14 (App Router)
-- Markdown content with frontmatter
-- Responsive design with Tailwind CSS
-- TypeScript for type safety
-- Static site generation for fast performance
-- Automatic deployment with Vercel
+## Current State
 
-## Getting Started
+This project is in transition:
+- **Content preserved**: All blog posts and media are available in `content/`
+- **Framework**: Preparing for new Next.js implementation
+- **Branch**: Development happening on `next-gen` branch
 
-### Prerequisites
+## Content Structure
 
-- Node.js 18.17.0 or later
+- `content/posts/` - Markdown blog posts with frontmatter
+- `content/media/` - Images and media files for posts
+- Blog posts migrated from previous Hexo-based implementation
 
-### Installation
+## Development Status
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/cardoni/cardoni.net.git
-   cd cardoni.net
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Import existing posts (if available):
-   ```bash
-   npm run import-posts
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
-
-## Project Structure
-
-- `src/app/` - Next.js app router pages
-- `src/components/` - React components
-- `src/content/posts/` - Markdown blog posts
-- `src/lib/` - Utility functions
-- `public/` - Static assets
-
-## Deployment
-
-This site is deployed on Vercel. Any push to the main branch will trigger a new deployment.
+Currently awaiting integration of new Next.js theme and markdown processing system. The content directory serves as the source of truth for all blog posts and will be integrated with the new static site generator.
 
 ## License
 

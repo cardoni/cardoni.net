@@ -2,54 +2,39 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Development Commands
+## Project Status
 
-- `npm run dev` - Start development server on localhost:3000
-- `npm run build` - Build the application for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint (Note: ESLint errors are ignored during builds per next.config.ts)
-- `npm run import-posts` - Import blog posts from old_stuff/source/_posts to src/content/posts
+**Currently in development on `next-gen` branch**
 
-## Project Architecture
+This is a complete rebuild of cardoni.net. The previous Next.js implementation has been removed and we're starting fresh with new Next.js architecture while preserving all existing content.
 
-This is a **Next.js 15.2.2** personal blog and website using the App Router architecture. Key architectural decisions:
+## Content Structure
 
-### Content Management
-- **Markdown-based blog posts** stored in `src/content/posts/` with frontmatter metadata
-- **Static site generation** for optimal performance
-- Content processed using `gray-matter` for frontmatter parsing and `remark`/`rehype` for HTML conversion
-- Post data interface defined in `src/lib/markdown.ts` with normalized date handling
+### Source of Truth
+- **Blog posts**: `content/posts/` - Markdown files with frontmatter metadata
+- **Media files**: `content/media/` - Images and assets referenced by posts
+- All content has been migrated from the previous Hexo-based implementation
 
-### Routing Structure
-- `/` - Homepage
-- `/blog` - Blog listing page
-- `/blog/[id]` - Individual blog posts (dynamic routes)
-- `/categories/[category]` - Posts filtered by category
-- `/tags/[tag]` - Posts filtered by tag
-- `/about` - About page
+### Content Format
+- Posts use standard markdown with YAML frontmatter
+- Media assets are preserved in their original structure
+- Posts contain historical content dating back to early blog entries
 
-### Data Flow
-- `src/lib/markdown.ts` contains all post data fetching logic:
-  - `getSortedPostsData()` - Returns all posts sorted by date
-  - `getPostData(id)` - Returns single post with HTML content
-  - `getAllTags()` - Extracts unique tags from all posts
-  - `getPostsByTag(tag)` - Filters posts by tag
+## Development Approach
 
-### Layout Architecture
-- `src/app/layout.tsx` - Root layout with metadata
-- `src/components/Layout.tsx` - Main layout with Header/Footer and sidebar
-- Sidebar dynamically generates categories, tags, and recent posts from all available content
-- Uses float-based layout (3/4 main content, 1/4 sidebar)
+### Current Phase
+1. **Content preserved** ✅ - All posts and media migrated to `content/` directory
+2. **Clean slate** ✅ - Previous implementation removed
+3. **New architecture** 🔄 - Awaiting new Next.js theme/template integration
+4. **Integration** ⏳ - Will integrate content with new markdown processing system
 
-### Styling
-- **Tailwind CSS v4** with `@tailwindcss/typography` plugin for markdown content
-- Global styles in `src/app/globals.css`
-- TypeScript path alias `@/*` maps to `src/*`
+### Next Steps
+- Integrate new Next.js source code (to be placed in `src/`)
+- Build markdown processing system to work with `content/` directory
+- Implement static site generation for blog posts
+- Configure deployment pipeline
 
-## Content Migration
-The `scripts/import-posts.js` script migrates content from the old Hexo-based blog (`old_stuff/source/_posts`) to the new Next.js structure. This is a one-time migration utility.
-
-## Deployment
-- Configured for **Vercel** deployment with `vercel.json`
-- Static site generation enables optimal performance
-- ESLint errors are ignored during production builds
+## Key Principles
+- `content/` directory is the single source of truth for all blog content
+- New implementation should read from this directory structure
+- Preserve all existing post metadata and content during integration
