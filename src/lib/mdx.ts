@@ -2,6 +2,7 @@ import { BlogPost } from '@/types/blog';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { generateExcerpt } from './markdown-utils';
 
 const contentDirectory = path.join(process.cwd(), 'content', 'posts');
 
@@ -23,7 +24,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
         keywords: data.keywords || [],
         date: data.date,
         content,
-        excerpt: content.substring(0, 150).replace(/\n/g, ' ').trim() + '...',
+        excerpt: generateExcerpt(content, 150),
         readTime: `${Math.ceil(content.split(' ').length / 200)} min read`
       } as BlogPost;
     });
