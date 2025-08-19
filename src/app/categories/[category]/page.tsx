@@ -11,7 +11,7 @@ interface Props {
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
-  const params = [];
+  const params: { category: string }[] = [];
   
   categories.forEach((category) => {
     // Always generate the URL encoded version

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import Link from 'next/link';
 import './globals.css';
 import DynamicNavigation from '@/components/DynamicNavigation';
 
@@ -53,24 +54,24 @@ export default function RootLayout({
                 </h3>
                 <ul className="space-y-2">
                   <li>
-                    <a href="/categories/personal%20pivot" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
+                    <Link href="/categories/personal%20pivot" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
                       Personal Pivot
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="/categories/nginx" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
+                    <Link href="/categories/nginx" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
                       Nginx
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="/categories/regex" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
+                    <Link href="/categories/regex" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
                       Regex
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="/categories/security" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
+                    <Link href="/categories/security" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors duration-200">
                       Security
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

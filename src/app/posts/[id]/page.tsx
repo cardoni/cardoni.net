@@ -30,10 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${post.title} - Cardoni.net`,
-    description: post.excerpt,
+    description: post.excerpt || '',
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description: post.excerpt || '',
       type: 'article',
       publishedTime: post.date,
     },
@@ -55,7 +55,7 @@ export default async function PostPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <AnimatedHeader
             title={post.title}
-            subtitle={post.excerpt}
+            subtitle={post.excerpt || ''}
             showBackButton={true}
           />
           

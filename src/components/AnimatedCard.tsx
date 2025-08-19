@@ -24,7 +24,7 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
           <div className="p-6 pb-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex flex-wrap gap-2">
-                {post.categories.map((category, index) => (
+                {post.categories.map((category) => (
                   <Link 
                     key={category}
                     href={`/categories/${encodeURIComponent(category)}`}
