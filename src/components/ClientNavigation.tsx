@@ -93,7 +93,9 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
             >
               {/* X (Twitter) Link */}
               <motion.a
-                href="#"
+                href="//x.com/cardoni"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -106,7 +108,9 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
 
               {/* GitHub Link */}
               <motion.a
-                href="#"
+                href="//github.com/cardoni"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -126,7 +130,9 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
               transition={{ duration: 0.4, delay: 0.3 }}
             >
               <motion.a
-                href="#"
+                href="//x.com/cardoni"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -137,7 +143,9 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
                 </svg>
               </motion.a>
               <motion.a
-                href="#"
+                href="//github.com/cardoni"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}

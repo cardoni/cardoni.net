@@ -82,7 +82,9 @@ export default function RootLayout({
                 </h3>
                 <div className="flex space-x-4">
                   <a 
-                    href="#" 
+                    href="//x.com/cardoni" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                     aria-label="Follow on X"
                   >
@@ -91,7 +93,9 @@ export default function RootLayout({
                     </svg>
                   </a>
                   <a 
-                    href="#" 
+                    href="//github.com/cardoni" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
                     aria-label="Follow on GitHub"
                   >

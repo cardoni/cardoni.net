@@ -123,14 +123,18 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
         </p>
         <div className="flex space-x-3">
           <a 
-            href="#" 
+            href="//x.com/cardoni" 
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 text-center px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
             aria-label="Follow on X"
           >
             X
           </a>
           <a 
-            href="#" 
+            href="//github.com/cardoni" 
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 text-center px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
             aria-label="Follow on GitHub"
           >
