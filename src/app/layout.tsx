@@ -44,7 +44,7 @@ export default function RootLayout({
                   About
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                  Exploring the intersection of philosophy and technology, where ancient wisdom meets modern engineering.
+                  Software engineer and startup veteran exploring technology through a philosophical lens.
                 </p>
               </div>
               
