@@ -15,8 +15,18 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
     .filter(post => post.id !== currentPostId)
     .slice(0, 5);
 
-  const philosophyPosts = otherPosts.filter(post => post.category === 'philosophy');
-  const techPosts = otherPosts.filter(post => post.category === 'tech');
+  // Get all categories and their counts
+  const categoryCount = new Map<string, number>();
+  allPosts.forEach(post => {
+    post.categories.forEach(category => {
+      categoryCount.set(category, (categoryCount.get(category) || 0) + 1);
+    });
+  });
+
+  // Sort categories by count (descending) and limit to top 5
+  const topCategories = Array.from(categoryCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
   return (
     <motion.aside 
@@ -44,9 +54,13 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
               >
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                      {post.category}
-                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {post.categories.map((category) => (
+                        <span key={category} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                          {category}
+                        </span>
+                      ))}
+                    </div>
                     <span className="text-xs text-gray-500 dark:text-gray-500">
                       {post.readTime}
                     </span>
@@ -83,24 +97,18 @@ export default function BlogSidebar({ currentPostId, allPosts }: BlogSidebarProp
           Categories
         </h3>
         <div className="space-y-3">
-          <Link 
-            href="/philosophy"
-            className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 group"
-          >
-            <span>Philosophy</span>
-            <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
-              {philosophyPosts.length + (allPosts.find(p => p.id === currentPostId)?.category === 'philosophy' ? 1 : 0)}
-            </span>
-          </Link>
-          <Link 
-            href="/tech"
-            className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 group"
-          >
-            <span>Technology</span>
-            <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
-              {techPosts.length + (allPosts.find(p => p.id === currentPostId)?.category === 'tech' ? 1 : 0)}
-            </span>
-          </Link>
+          {topCategories.map(([categoryName, count]) => (
+            <Link 
+              key={categoryName}
+              href={`/categories/${categoryName.includes(' ') ? categoryName.replace(/\s+/g, '-') : encodeURIComponent(categoryName)}`}
+              className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 group"
+            >
+              <span>{categoryName}</span>
+              <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
+                {count}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 
