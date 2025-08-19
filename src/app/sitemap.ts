@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
-import { posts } from '@/data/posts';
+import { getAllPosts } from '@/lib/mdx';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://cardoni.net';
   
   const staticRoutes = [
@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const posts = await getAllPosts();
   const postRoutes = posts.map((post) => ({
     url: `${baseUrl}/${post.id}`,
     lastModified: new Date(post.date),

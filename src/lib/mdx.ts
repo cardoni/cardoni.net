@@ -1,9 +1,34 @@
 import { BlogPost } from '@/types/blog';
-import postsData from './posts.json';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
+const contentDirectory = path.join(process.cwd(), 'content', 'posts');
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  // Use pre-generated posts data to avoid build issues
-  return postsData as BlogPost[];
+  const fileNames = fs.readdirSync(contentDirectory);
+  const posts = fileNames
+    .filter(fileName => fileName.endsWith('.mdx'))
+    .map((fileName) => {
+      const id = fileName.replace(/\.mdx$/, '');
+      const fullPath = path.join(contentDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const { data, content } = matter(fileContents);
+      
+      return {
+        id,
+        title: data.title,
+        tags: data.tags || [],
+        categories: data.categories || [],
+        keywords: data.keywords || [],
+        date: data.date,
+        content,
+        excerpt: content.substring(0, 150).replace(/\n/g, ' ').trim() + '...',
+        readTime: `${Math.ceil(content.split(' ').length / 200)} min read`
+      } as BlogPost;
+    });
+
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export async function getPostById(id: string): Promise<BlogPost | null> {
