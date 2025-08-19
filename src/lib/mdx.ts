@@ -40,7 +40,12 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   const posts = await Promise.all(mdxFiles.map(async fileName => {
     const id = fileName.replace(/\.mdx$/, '');
     const fullPath = path.join(contentDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    let fileContents = fs.readFileSync(fullPath, 'utf8');
+    
+    // Fix frontmatter format - add missing opening --- if needed
+    if (!fileContents.startsWith('---')) {
+      fileContents = '---\n' + fileContents;
+    }
     
     // Parse frontmatter and content
     const { data, content } = matter(fileContents);

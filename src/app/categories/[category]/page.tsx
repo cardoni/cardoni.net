@@ -11,14 +11,30 @@ interface Props {
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
-  return categories.map((category) => ({
-    category: encodeURIComponent(category),
-  }));
+  const params = [];
+  
+  categories.forEach((category) => {
+    // Always generate the URL encoded version
+    params.push({ category: encodeURIComponent(category) });
+    
+    // Also generate the dash version for categories with spaces
+    if (category.includes(' ')) {
+      params.push({ category: category.replace(/\s+/g, '-') });
+    }
+  });
+  
+  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const decodedCategory = decodeURIComponent(category);
+  let decodedCategory = decodeURIComponent(category);
+  
+  // Handle both URL formats: "personal-pivot" and "personal%20pivot"
+  // Convert dashes to spaces to match the actual category names
+  if (decodedCategory.includes('-')) {
+    decodedCategory = decodedCategory.replace(/-/g, ' ');
+  }
   
   return {
     title: `${decodedCategory} - Cardoni.net`,
@@ -28,7 +44,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  const decodedCategory = decodeURIComponent(category);
+  let decodedCategory = decodeURIComponent(category);
+  
+  // Handle both URL formats: "personal-pivot" and "personal%20pivot"
+  // Convert dashes to spaces to match the actual category names
+  if (decodedCategory.includes('-')) {
+    decodedCategory = decodedCategory.replace(/-/g, ' ');
+  }
+  
   const posts = await getPostsByCategory(decodedCategory);
 
   if (posts.length === 0) {

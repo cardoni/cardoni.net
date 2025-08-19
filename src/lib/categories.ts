@@ -22,7 +22,7 @@ export async function getTopCategories(limit: number = 5): Promise<CategoryWithC
     .map(([name, count]) => ({
       name,
       count,
-      href: `/categories/${encodeURIComponent(name)}`
+      href: `/categories/${name.includes(' ') ? name.replace(/\s+/g, '-') : encodeURIComponent(name)}`
     }))
     .sort((a, b) => b.count - a.count)
     .slice(0, limit);
