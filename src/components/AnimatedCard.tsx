@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
 import { stringToSlug } from '@/lib/url-utils';
+import CategoryBadge from './CategoryBadge';
 
 interface AnimatedCardProps {
   post: BlogPost;
@@ -26,17 +27,7 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex flex-wrap gap-2">
                 {post.categories.map((category) => (
-                  <span
-                    key={category}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      window.location.href = `/categories/${stringToSlug(category)}`;
-                    }}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 cursor-pointer z-10 relative"
-                  >
-                    {category}
-                  </span>
+                  <CategoryBadge key={category} category={category} clickable={false} />
                 ))}
               </div>
               <time className="text-sm text-gray-500 dark:text-gray-400" dateTime={post.date}>
@@ -47,25 +38,25 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
                 })}
               </time>
             </div>
-            
+
             {/* Title */}
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-200 line-clamp-2">
               {post.title}
             </h2>
-            
+
             {/* Excerpt */}
             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
               {post.excerpt}
             </p>
           </div>
-          
+
           {/* Footer */}
           <div className="px-6 pb-6">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {post.readTime}
               </span>
-              <motion.span 
+              <motion.span
                 className="text-gray-900 dark:text-white text-sm font-medium inline-flex items-center"
                 whileHover={{ x: 4 }}
                 transition={{ duration: 0.2 }}
@@ -81,4 +72,4 @@ export default function AnimatedCard({ post, delay = 0 }: AnimatedCardProps) {
       </Link>
     </motion.article>
   );
-} 
+}

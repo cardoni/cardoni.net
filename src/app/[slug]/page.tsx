@@ -5,6 +5,7 @@ import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
 import PageTransition from '@/components/PageTransition';
 import AnimatedHeader from '@/components/AnimatedHeader';
 import BlogSidebar from '@/components/BlogSidebar';
+import CategoryBadge from '@/components/CategoryBadge';
 import { stringToSlug } from '@/lib/url-utils';
 import type { Metadata } from 'next';
 
@@ -22,7 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostById(slug);
-  
+
   if (!post) {
     return {
       title: 'Post Not Found - Cardoni.net',
@@ -59,7 +60,7 @@ export default async function PostPage({ params }: Props) {
             subtitle={post.excerpt || ''}
             showBackButton={true}
           />
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-3">
@@ -86,32 +87,26 @@ export default async function PostPage({ params }: Props) {
                     <span>•</span>
                     <div className="flex flex-wrap gap-2">
                       {post.categories.map((category) => (
-                        <Link
-                          key={category}
-                          href={`/categories/${stringToSlug(category)}`}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
-                        >
-                          {category}
-                        </Link>
+                        <CategoryBadge key={category} category={category} />
                       ))}
                     </div>
                   </div>
                 </header>
-                
+
                 <div className="p-8 md:p-12">
                   <EnhancedMarkdownRenderer content={post.content} />
                 </div>
               </article>
-              
+
               <footer className="mt-12 text-center">
-                <Link 
+                <Link
                   href="/"
                   className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200 group"
                 >
-                  <svg 
+                  <svg
                     className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200"
-                    fill="none" 
-                    stroke="currentColor" 
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
@@ -130,4 +125,4 @@ export default async function PostPage({ params }: Props) {
       </div>
     </PageTransition>
   );
-} 
+}
