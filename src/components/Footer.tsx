@@ -3,6 +3,7 @@ export default function Footer() {
     <footer id="footer" className="inner">
       <div className="alignleft">
         <p>&copy; {new Date().getFullYear()} Greg Cardoni. All rights reserved.</p>
+        <p className="text-sm text-gray-500">hello from Craig</p>
       </div>
       <div className="alignright">
         <div className="flex space-x-4">
