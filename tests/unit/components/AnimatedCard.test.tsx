@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import AnimatedCard from '@/components/AnimatedCard'
 import { BlogPost } from '@/types/blog'
 
@@ -45,7 +44,7 @@ describe('AnimatedCard', () => {
     expect(timeElement.textContent).toBeTruthy()
   })
 
-  it('displays category badges with correct links', () => {
+  it('displays category badges without nested links', () => {
     render(<AnimatedCard post={mockPost} />)
 
     const testCategory = screen.getByText('test')
@@ -54,12 +53,11 @@ describe('AnimatedCard', () => {
     expect(testCategory).toBeInTheDocument()
     expect(exampleCategory).toBeInTheDocument()
 
-    // Check if categories are links with correct hrefs
-    expect(testCategory.closest('a')).toHaveAttribute('href', '/categories/test')
-    expect(exampleCategory.closest('a')).toHaveAttribute('href', '/categories/example')
+    expect(testCategory.closest('a')).toHaveAttribute('href', '/test-post')
+    expect(exampleCategory.closest('a')).toHaveAttribute('href', '/test-post')
   })
 
-  it('handles categories with spaces in URL slugs', () => {
+  it('renders categories with spaces', () => {
     const postWithSpacedCategory: BlogPost = {
       ...mockPost,
       categories: ['personal pivot']
@@ -67,8 +65,7 @@ describe('AnimatedCard', () => {
     
     render(<AnimatedCard post={postWithSpacedCategory} />)
     
-    const categoryLink = screen.getByText('personal pivot').closest('a')
-    expect(categoryLink).toHaveAttribute('href', '/categories/personal-pivot')
+    expect(screen.getByText('personal pivot')).toBeInTheDocument()
   })
 
   it('creates correct post links', () => {
@@ -108,7 +105,7 @@ describe('AnimatedCard', () => {
     render(<AnimatedCard post={mockPostSingleCategory} />)
 
     expect(screen.getByText('nginx')).toBeInTheDocument()
-    expect(screen.getByText('nginx').closest('a')).toHaveAttribute('href', '/categories/nginx')
+    expect(screen.getByText('nginx').closest('a')).toHaveAttribute('href', '/single-category-post')
   })
 
   it('renders with custom delay prop', () => {

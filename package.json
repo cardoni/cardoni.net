@@ -2,51 +2,45 @@
   "name": "cardoni.net",
   "version": "2.0.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --debug --profile",
+    "dev": "next dev",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "@mdx-js/loader": "^3.1.0",
-    "@mdx-js/mdx": "^3.1.0",
-    "@mdx-js/react": "^3.1.0",
-    "@next/mdx": "^15.4.7",
-    "@types/mdx": "^2.0.13",
     "gray-matter": "^4.0.3",
     "motion": "^12.23.24",
-    "next": "^15.4.7",
-    "next-mdx-remote": "^5.0.0",
+    "next": "16.3.0",
     "next-themes": "^0.4.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "reading-time": "^1.5.0",
-    "rehype-raw": "^7.0.0",
-    "rehype-stringify": "^10.0.1",
-    "remark": "^15.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-rehype": "^11.1.2"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.3.0",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "^4.7.0",
-    "eslint": "^9",
-    "eslint-config-next": "^15.4.7",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.3.0",
     "jsdom": "^26.1.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4"
   }
 }

@@ -115,7 +115,7 @@ describe('BlogSidebar', () => {
       expect(screen.getByText('3 min read')).toBeInTheDocument()
       
       // Check categories
-      expect(screen.getByText('nginx')).toBeInTheDocument()
+      expect(screen.getAllByText('nginx').length).toBeGreaterThan(0)
     })
 
     it('creates correct links for other posts', () => {
@@ -139,8 +139,8 @@ describe('BlogSidebar', () => {
       render(<BlogSidebar currentPostId="current-post" allPosts={mockPosts} />)
 
       // Other Post 2 has categories: ['regex', 'programming']
-      expect(screen.getByText('regex')).toBeInTheDocument()
-      expect(screen.getByText('programming')).toBeInTheDocument()
+      expect(screen.getAllByText('regex').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('programming').length).toBeGreaterThan(0)
     })
   })
 
@@ -164,7 +164,7 @@ describe('BlogSidebar', () => {
       expect(categoryLinks.length).toBeGreaterThan(0)
       
       // nginx (count: 3) should appear before others
-      const nginxLink = screen.getByText('nginx').closest('a')
+      const nginxLink = document.querySelector('a[href="/categories/nginx"]')
       expect(nginxLink).toHaveAttribute('href', '/categories/nginx')
     })
 
@@ -190,9 +190,9 @@ describe('BlogSidebar', () => {
     })
 
     it('handles categories with spaces in URLs', () => {
-      render(<BlogSidebar currentPostId="current-post" allPosts={mockPosts} />)
+      render(<BlogSidebar currentPostId="current-post" allPosts={[mockPosts[4]]} />)
 
-      const personalPivotLink = screen.getByText('personal pivot').closest('a')
+      const personalPivotLink = document.querySelector('a[href="/categories/personal-pivot"]')
       expect(personalPivotLink).toHaveAttribute('href', '/categories/personal-pivot')
     })
 

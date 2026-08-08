@@ -9,19 +9,19 @@ export function stripMarkdown(text: string): string {
   return text
     // Remove frontmatter
     .replace(/^---[\s\S]*?---\n?/g, '')
+    // Remove fenced code blocks before processing inline code
+    .replace(/```[\s\S]*?```/g, '')
     // Remove headers (# ## ### etc)
     .replace(/^#{1,6}\s+/gm, '')
     // Remove bold/italic (**text** *text*)
     .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1')
     // Remove inline code (`code`)
     .replace(/`([^`]+)`/g, '$1')
-    // Remove code blocks (```code```)
-    .replace(/```[\s\S]*?```/g, '')
-    // Remove links ([text](url))
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    // Remove images (![alt](url)) - handle in two steps for better coverage
+    // Remove images before links so the leading ! is not left behind
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
     .replace(/!\[[^\]]*\]/g, '') // Remove any remaining ![...]
+    // Remove links ([text](url))
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
     // Remove blockquotes (> text)
     .replace(/^>\s+/gm, '')
     // Remove list markers (- item, 1. item)
@@ -50,7 +50,7 @@ export function generateExcerpt(content: string, maxLength: number = 150): strin
   const lastSpace = truncated.lastIndexOf(' ');
   
   if (lastSpace > maxLength * 0.8) {
-    return truncated.substring(0, lastSpace) + '...';
+    return `${truncated.substring(0, lastSpace).trimEnd()} ...`;
   }
   
   return truncated + '...';

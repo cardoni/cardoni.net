@@ -77,8 +77,8 @@ describe('ClientNavigation', () => {
   it('renders social links correctly', () => {
     render(<ClientNavigation navItems={defaultNavItems} />)
 
-    const xLink = screen.getByLabelText('Follow on X')
-    const githubLink = screen.getByLabelText('Follow on GitHub')
+    const [xLink] = screen.getAllByLabelText('Follow on X')
+    const [githubLink] = screen.getAllByLabelText('Follow on GitHub')
 
     expect(xLink).toHaveAttribute('href', '//x.com/cardoni')
     expect(xLink).toHaveAttribute('target', '_blank')

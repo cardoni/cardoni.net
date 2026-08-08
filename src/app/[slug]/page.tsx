@@ -6,7 +6,6 @@ import PageTransition from '@/components/PageTransition';
 import AnimatedHeader from '@/components/AnimatedHeader';
 import BlogSidebar from '@/components/BlogSidebar';
 import CategoryBadge from '@/components/CategoryBadge';
-import { stringToSlug } from '@/lib/url-utils';
 import type { Metadata } from 'next';
 
 interface Props {

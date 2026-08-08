@@ -15,6 +15,9 @@ export async function getAllPosts(): Promise<BlogPost[]> {
       const fullPath = path.join(contentDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const { data, content } = matter(fileContents);
+      const date = data.date instanceof Date
+        ? data.date.toISOString().replace(/T00:00:00\.000Z$/, '')
+        : String(data.date || '');
       
       return {
         id,
@@ -22,7 +25,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
         tags: data.tags || [],
         categories: data.categories || [],
         keywords: data.keywords || [],
-        date: data.date,
+        date,
         content,
         excerpt: generateExcerpt(content, 150),
         readTime: `${Math.ceil(content.split(' ').length / 200)} min read`
@@ -49,4 +52,4 @@ export async function getAllCategories(): Promise<string[]> {
     post.categories.forEach(category => categories.add(category));
   });
   return Array.from(categories).sort();
-} 
+}

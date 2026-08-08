@@ -61,6 +61,9 @@ npm run test:watch
 
 # Run tests with UI
 npm run test:ui
+
+# Run tests with coverage
+npm run test:coverage
 ```
 
 The site will be available at `http://localhost:3000` (or next available port).

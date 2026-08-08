@@ -3,7 +3,6 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
-import { stringToSlug } from '@/lib/url-utils';
 import CategoryBadge from './CategoryBadge';
 
 interface AnimatedCardProps {

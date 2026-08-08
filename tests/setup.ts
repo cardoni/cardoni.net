@@ -15,23 +15,46 @@ vi.mock('next/navigation', () => ({
 }))
 
 // Mock Next.js Link component
-vi.mock('next/link', () => {
+vi.mock('next/link', async () => {
+  const React = await import('react')
+
   return {
     default: ({ children, href, ...props }: any) => {
-      const React = require('react')
       return React.createElement('a', { href, ...props }, children)
     },
   }
 })
 
 // Mock motion components
-vi.mock('motion/react', () => {
-  const React = require('react')
+vi.mock('motion/react', async () => {
+  const React = await import('react')
+  const motionComponent = (tag: string) => {
+    const MotionComponent = (props: any) => {
+      const domProps = { ...props }
+      const children = domProps.children
+
+      for (const prop of ['children', 'initial', 'animate', 'transition', 'whileHover', 'whileTap', 'layoutId']) {
+        delete domProps[prop]
+      }
+
+      return React.createElement(tag, domProps, children)
+    }
+
+    MotionComponent.displayName = `Motion(${tag})`
+    return MotionComponent
+  }
+
   return {
     motion: {
-      div: ({ children, ...props }: any) => React.createElement('div', props, children),
-      article: ({ children, ...props }: any) => React.createElement('article', props, children),
-      span: ({ children, ...props }: any) => React.createElement('span', props, children),
+      a: motionComponent('a'),
+      article: motionComponent('article'),
+      aside: motionComponent('aside'),
+      button: motionComponent('button'),
+      div: motionComponent('div'),
+      header: motionComponent('header'),
+      p: motionComponent('p'),
+      span: motionComponent('span'),
+      svg: motionComponent('svg'),
     },
   }
 })

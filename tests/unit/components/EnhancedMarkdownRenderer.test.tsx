@@ -65,10 +65,10 @@ console.log('hello world');
 const x = 42;
 \`\`\``
       
-      render(<EnhancedMarkdownRenderer content={content} />)
+      const { container } = render(<EnhancedMarkdownRenderer content={content} />)
       
-      const codeElement = screen.getByText("console.log('hello world');\nconst x = 42;")
-      expect(codeElement).toBeInTheDocument()
+      const codeElement = container.querySelector('code')
+      expect(codeElement).toHaveTextContent("console.log('hello world'); const x = 42;")
       expect(codeElement.closest('pre')).toHaveClass('bg-gray-900', 'dark:bg-gray-950', 'rounded-lg')
     })
 
@@ -87,10 +87,10 @@ console.log('hello world');
       const content = `\`\`\`bash
 \`\`\``
       
-      render(<EnhancedMarkdownRenderer content={content} />)
+      const { container } = render(<EnhancedMarkdownRenderer content={content} />)
       
       expect(screen.getByText('bash')).toBeInTheDocument()
-      const codeElement = screen.getByRole('group', { hidden: true }).querySelector('code')
+      const codeElement = container.querySelector('code')
       expect(codeElement).toHaveTextContent('')
     })
   })
