@@ -1,23 +1,17 @@
 import { notFound, redirect } from 'next/navigation';
-import { getPostsByCategory } from '@/lib/mdx';
+import { getAllCategories, getPostsByCategory } from '@/lib/mdx';
 import AnimatedCard from '@/components/AnimatedCard';
-import PageTransition from '@/components/PageTransition';
-import AnimatedHeader from '@/components/AnimatedHeader';
 import { needsRedirect, getCanonicalParam, slugToString } from '@/lib/url-utils';
 import type { Metadata } from 'next';
+import { siteConfig } from '@/lib/site';
 
 interface Props {
   params: Promise<{ category: string }>;
 }
 
 export async function generateStaticParams() {
-  // Static list of categories to avoid build hanging issues
-  return [
-    { category: 'regex' },
-    { category: 'personal-pivot' },
-    { category: 'nginx' },
-    { category: 'security' }
-  ];
+  const categories = await getAllCategories();
+  return categories.map((category) => ({ category: getCanonicalParam(category) }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -28,8 +22,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const decodedCategory = slugToString(getCanonicalParam(category));
   
   return {
-    title: `${decodedCategory} - Cardoni.net`,
-    description: `Posts about ${decodedCategory}`,
+    title: decodedCategory,
+    description: `Essays and technical notes by Greg Cardoni about ${decodedCategory}.`,
+    authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
+    alternates: {
+      canonical: `/categories/${getCanonicalParam(category)}`,
+      types: { 'application/atom+xml': siteConfig.feed.url },
+    },
+    openGraph: {
+      title: `${decodedCategory} writing by Greg Cardoni`,
+      description: `Essays and technical notes about ${decodedCategory}.`,
+      type: 'website',
+      url: `/categories/${getCanonicalParam(category)}`,
+      images: [siteConfig.socialImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${decodedCategory} writing by Greg Cardoni`,
+      description: `Essays and technical notes about ${decodedCategory}.`,
+      creator: siteConfig.author.handle,
+      images: [{ url: siteConfig.socialImage.url, alt: siteConfig.socialImage.alt }],
+    },
   };
 }
 
@@ -51,22 +64,18 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   return (
-    <PageTransition>
-      <div className="bg-white dark:bg-gray-900 min-h-screen">
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <AnimatedHeader
-            title={decodedCategory}
-            subtitle={`Posts about ${decodedCategory}`}
-            showBackButton={true}
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post, index) => (
-              <AnimatedCard key={post.id} post={post} delay={index * 0.1} />
-            ))}
-          </div>
-        </div>
+    <div className="category-page site-shell">
+      <header className="category-header">
+        <p className="eyebrow">Subject archive / {posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
+        <h1 className="font-reading">{decodedCategory}</h1>
+        <p>Technical notes and essays filed under {decodedCategory}.</p>
+      </header>
+
+      <div className="post-list">
+        {posts.map((post, index) => (
+          <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
+        ))}
       </div>
-    </PageTransition>
+    </div>
   );
 }

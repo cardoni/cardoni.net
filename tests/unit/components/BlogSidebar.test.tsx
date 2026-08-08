@@ -216,13 +216,13 @@ describe('BlogSidebar', () => {
       const xLink = screen.getByRole('link', { name: 'Follow on X' })
       const githubLink = screen.getByRole('link', { name: 'Follow on GitHub' })
 
-      expect(xLink).toHaveAttribute('href', '//x.com/cardoni')
+      expect(xLink).toHaveAttribute('href', 'https://x.com/cardoni')
       expect(xLink).toHaveAttribute('target', '_blank')
-      expect(xLink).toHaveAttribute('rel', 'noopener noreferrer')
+      expect(xLink).toHaveAttribute('rel', 'me noopener noreferrer')
 
-      expect(githubLink).toHaveAttribute('href', '//github.com/cardoni')
+      expect(githubLink).toHaveAttribute('href', 'https://github.com/cardoni')
       expect(githubLink).toHaveAttribute('target', '_blank')
-      expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')
+      expect(githubLink).toHaveAttribute('rel', 'me noopener noreferrer')
     })
 
     it('displays connect message', () => {

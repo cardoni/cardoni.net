@@ -11,14 +11,19 @@ export interface SocialLink {
 
 export const SOCIAL_LINKS = {
   x: {
-    url: '//x.com/cardoni',
+    url: 'https://x.com/cardoni',
     label: 'X',
     ariaLabel: 'Follow on X',
   },
   github: {
-    url: '//github.com/cardoni',
+    url: 'https://github.com/cardoni',
     label: 'GitHub',
     ariaLabel: 'Follow on GitHub',
+  },
+  linkedin: {
+    url: 'https://www.linkedin.com/in/cardoni',
+    label: 'LinkedIn',
+    ariaLabel: 'Connect on LinkedIn',
   },
 } as const satisfies Record<string, SocialLink>;
 

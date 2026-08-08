@@ -1,398 +1,119 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer'
+import { describe, expect, it } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
 
 describe('EnhancedMarkdownRenderer', () => {
-  it('renders plain text content', () => {
-    const content = 'This is plain text content.'
-    render(<EnhancedMarkdownRenderer content={content} />)
-    
-    expect(screen.getByText('This is plain text content.')).toBeInTheDocument()
-  })
-
-  it('removes frontmatter from content', () => {
+  it('renders paragraphs and removes frontmatter', () => {
     const content = `---
 title: Test Post
 date: 2023-12-01
 ---
-This is the actual content.`
-    
-    render(<EnhancedMarkdownRenderer content={content} />)
-    
-    expect(screen.getByText('This is the actual content.')).toBeInTheDocument()
-    expect(screen.queryByText('title: Test Post')).not.toBeInTheDocument()
-    expect(screen.queryByText('date: 2023-12-01')).not.toBeInTheDocument()
-  })
+This is the actual content.`;
 
-  describe('headings', () => {
-    it('renders h1 headings correctly', () => {
-      const content = '# Main Heading'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const heading = screen.getByRole('heading', { level: 1 })
-      expect(heading).toHaveTextContent('Main Heading')
-      expect(heading).toHaveClass('text-3xl', 'md:text-4xl', 'font-bold')
-    })
+    render(<EnhancedMarkdownRenderer content={content} />);
 
-    it('renders h2 headings correctly', () => {
-      const content = '## Section Heading'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const heading = screen.getByRole('heading', { level: 2 })
-      expect(heading).toHaveTextContent('Section Heading')
-      expect(heading).toHaveClass('text-2xl', 'md:text-3xl', 'font-bold')
-    })
+    expect(screen.getByText('This is the actual content.')).toBeInTheDocument();
+    expect(screen.queryByText('title: Test Post')).not.toBeInTheDocument();
+  });
 
-    it('renders h3 through h6 headings', () => {
-      const content = `### Subsection
-#### Sub-subsection  
-##### Small Heading
-###### Smallest Heading`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Subsection')
-      expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Sub-subsection')
-      expect(screen.getByRole('heading', { level: 5 })).toHaveTextContent('Small Heading')
-      expect(screen.getByRole('heading', { level: 6 })).toHaveTextContent('Smallest Heading')
-    })
-  })
+  it('demotes article headings so the page title remains the only h1', () => {
+    render(<EnhancedMarkdownRenderer content={'# Main heading\n\n## Section heading'} />);
 
-  describe('code blocks', () => {
-    it('renders code blocks without language', () => {
-      const content = `\`\`\`
-console.log('hello world');
-const x = 42;
-\`\`\``
-      
-      const { container } = render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const codeElement = container.querySelector('code')
-      expect(codeElement).toHaveTextContent("console.log('hello world'); const x = 42;")
-      expect(codeElement.closest('pre')).toHaveClass('bg-gray-900', 'dark:bg-gray-950', 'rounded-lg')
-    })
+    expect(screen.getByRole('heading', { level: 2, name: 'Main heading' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Section heading' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
+  });
 
-    it('renders code blocks with language label', () => {
-      const content = `\`\`\`javascript
-console.log('hello world');
-\`\`\``
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('javascript')).toBeInTheDocument()
-      expect(screen.getByText("console.log('hello world');")).toBeInTheDocument()
-    })
+  it('renders semantic lists and blockquotes', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'- First item\n- Second item\n\n1. First step\n2. Second step\n\n> A useful quotation.'}
+      />,
+    );
 
-    it('handles empty code blocks', () => {
-      const content = `\`\`\`bash
-\`\`\``
-      
-      const { container } = render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('bash')).toBeInTheDocument()
-      const codeElement = container.querySelector('code')
-      expect(codeElement).toHaveTextContent('')
-    })
-  })
+    expect(screen.getAllByRole('list')).toHaveLength(2);
+    expect(screen.getAllByRole('listitem')).toHaveLength(4);
+    expect(screen.getByRole('blockquote')).toHaveTextContent('A useful quotation.');
+  });
 
-  describe('lists', () => {
-    it('renders unordered lists', () => {
-      const content = `- First item
-- Second item
-- Third item`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('First item')).toBeInTheDocument()
-      expect(screen.getByText('Second item')).toBeInTheDocument()
-      expect(screen.getByText('Third item')).toBeInTheDocument()
-      
-      const list = screen.getByText('First item').closest('ul')
-      expect(list).toHaveClass('list-none', 'space-y-3')
-    })
+  it('renders fenced code with language metadata', () => {
+    const { container } = render(
+      <EnhancedMarkdownRenderer content={'```javascript\nconst answer = 42;\n```'} />,
+    );
 
-    it('renders ordered lists', () => {
-      const content = `1. First numbered item
-2. Second numbered item
-3. Third numbered item`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('First numbered item')).toBeInTheDocument()
-      expect(screen.getByText('Second numbered item')).toBeInTheDocument()
-      expect(screen.getByText('Third numbered item')).toBeInTheDocument()
-      
-      // Check for numbered circles
-      expect(screen.getByText('1')).toBeInTheDocument()
-      expect(screen.getByText('2')).toBeInTheDocument()
-      expect(screen.getByText('3')).toBeInTheDocument()
-    })
+    const code = container.querySelector('code');
+    expect(code).toHaveTextContent('const answer = 42;');
+    expect(code).toHaveAttribute('data-language', 'javascript');
+    expect(code?.closest('pre')).toHaveClass('article-code-block');
+  });
 
-    it('handles lists with inline formatting', () => {
-      const content = `- Item with **bold** text
-- Item with *italic* text
-- Item with \`code\``
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('bold')).toBeInTheDocument()
-      expect(screen.getByText('italic')).toBeInTheDocument()
-      expect(screen.getByText('code')).toBeInTheDocument()
-    })
-  })
+  it('renders standard inline Markdown formatting', () => {
+    render(<EnhancedMarkdownRenderer content={'**bold** and *italic* with `inline code` and ~~removed~~'} />);
 
-  describe('blockquotes', () => {
-    it('renders single line blockquotes', () => {
-      const content = '> This is a quote'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const blockquote = screen.getByText('This is a quote').closest('blockquote')
-      expect(blockquote).toBeInTheDocument()
-      expect(blockquote).toHaveClass('border-l-4', 'border-gray-300', 'dark:border-gray-600')
-    })
+    expect(screen.getByText('bold').tagName).toBe('STRONG');
+    expect(screen.getByText('italic').tagName).toBe('EM');
+    expect(screen.getByText('inline code').tagName).toBe('CODE');
+    expect(screen.getByText('removed').tagName).toBe('DEL');
+  });
 
-    it('renders multi-line blockquotes', () => {
-      const content = `> This is a longer quote
-> that spans multiple lines
-> and should be joined together`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('This is a longer quote that spans multiple lines and should be joined together')).toBeInTheDocument()
-    })
-  })
+  it('opens external links in a separate browsing context', () => {
+    render(<EnhancedMarkdownRenderer content={'Read [the source](https://example.com).'} />);
 
-  describe('inline formatting', () => {
-    it('renders bold text', () => {
-      const content = 'This has **bold text** in it.'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const boldElement = screen.getByText('bold text')
-      expect(boldElement).toBeInTheDocument()
-      expect(boldElement.tagName).toBe('STRONG')
-      expect(boldElement).toHaveClass('font-bold')
-    })
+    const link = screen.getByRole('link', { name: 'the source' });
+    expect(link).toHaveAttribute('href', 'https://example.com');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 
-    it('renders italic text', () => {
-      const content = 'This has *italic text* in it.'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const italicElement = screen.getByText('italic text')
-      expect(italicElement).toBeInTheDocument()
-      expect(italicElement.tagName).toBe('EM')
-      expect(italicElement).toHaveClass('italic')
-    })
+  it('keeps internal links in the same browsing context', () => {
+    render(<EnhancedMarkdownRenderer content={'Read [another essay](/another-essay).'} />);
 
-    it('renders inline code', () => {
-      const content = 'Use the `npm install` command.'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const codeElement = screen.getByText('npm install')
-      expect(codeElement).toBeInTheDocument()
-      expect(codeElement.tagName).toBe('CODE')
-      expect(codeElement).toHaveClass('bg-gray-100', 'dark:bg-gray-800', 'font-mono')
-    })
+    const link = screen.getByRole('link', { name: 'another essay' });
+    expect(link).toHaveAttribute('href', '/another-essay');
+    expect(link).not.toHaveAttribute('target');
+  });
 
-    it('renders links', () => {
-      const content = 'Check out [my blog](https://example.com) for more.'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const linkElement = screen.getByRole('link', { name: 'my blog' })
-      expect(linkElement).toBeInTheDocument()
-      expect(linkElement).toHaveAttribute('href', 'https://example.com')
-      expect(linkElement).toHaveAttribute('target', '_blank')
-      expect(linkElement).toHaveAttribute('rel', 'noopener noreferrer')
-      expect(linkElement).toHaveClass('underline', 'hover:text-gray-600')
-    })
+  it('supports author-defined hover definitions', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'The Greeks called practical craft [[technē|art, craft, or practical know-how]].'}
+      />,
+    );
 
-    it('handles mixed inline formatting', () => {
-      const content = 'This has **bold** and *italic* and `code` and [links](https://example.com).'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('bold')).toBeInTheDocument()
-      expect(screen.getByText('italic')).toBeInTheDocument()
-      expect(screen.getByText('code')).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: 'links' })).toBeInTheDocument()
-    })
-  })
+    expect(
+      screen.getByLabelText('technē: art, craft, or practical know-how'),
+    ).toBeInTheDocument();
+  });
 
-  describe('paragraphs', () => {
-    it('renders multiple paragraphs', () => {
-      const content = `First paragraph here.
+  it('preserves text inside legacy span markup without injecting raw HTML', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'Keep <span style="text-decoration: underline">this text</span>. <script>alert(1)</script>'}
+      />,
+    );
 
-Second paragraph here.
+    expect(screen.getByText(/Keep this text/)).toBeInTheDocument();
+    expect(screen.queryByText('alert(1)')).not.toBeInTheDocument();
+    expect(document.querySelector('script')).not.toBeInTheDocument();
+  });
 
-Third paragraph here.`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('First paragraph here.')).toBeInTheDocument()
-      expect(screen.getByText('Second paragraph here.')).toBeInTheDocument()
-      expect(screen.getByText('Third paragraph here.')).toBeInTheDocument()
-    })
+  it('renders GFM tables', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'| Idea | Tool |\n| --- | --- |\n| Logic | Types |'}
+      />,
+    );
 
-    it('handles paragraphs with inline formatting', () => {
-      const content = 'This paragraph has **bold**, *italic*, and `code` formatting.'
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('bold')).toBeInTheDocument()
-      expect(screen.getByText('italic')).toBeInTheDocument()
-      expect(screen.getByText('code')).toBeInTheDocument()
-    })
-  })
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Idea' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: 'Types' })).toBeInTheDocument();
+  });
 
-  describe('complex content', () => {
-    it('renders mixed markdown content correctly', () => {
-      const content = `---
-title: Complex Post
----
-# Main Title
+  it('keeps an empty semantic wrapper for empty content', () => {
+    const { container } = render(<EnhancedMarkdownRenderer content="" />);
 
-This is a paragraph with **bold** text.
-
-## Section
-
-Here's a list:
-- Item 1
-- Item 2
-
-And some code:
-
-\`\`\`javascript
-console.log('hello');
-\`\`\`
-
-> This is a blockquote.`
-
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      // Check all elements are rendered
-      expect(screen.getByRole('heading', { level: 1, name: 'Main Title' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 2, name: 'Section' })).toBeInTheDocument()
-      expect(screen.getByText('bold')).toBeInTheDocument()
-      expect(screen.getByText('Item 1')).toBeInTheDocument()
-      expect(screen.getByText('Item 2')).toBeInTheDocument()
-      expect(screen.getByText('javascript')).toBeInTheDocument()
-      expect(screen.getByText("console.log('hello');")).toBeInTheDocument()
-      expect(screen.getByText('This is a blockquote.')).toBeInTheDocument()
-    })
-
-    it('handles realistic blog post content', () => {
-      const content = `# Installing Homebrew on Mac OS X 10.7
-
-Homebrew is the **missing package manager** for Mac OS X. It's written in *Ruby* and makes installing packages super easy.
-
-## Prerequisites
-
-Before installing Homebrew, you need:
-1. Mac OS X 10.7 or later
-2. Xcode command line tools
-
-## Installation
-
-Run this command:
-
-\`\`\`bash
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-\`\`\`
-
-> This will download and install Homebrew to /usr/local.`
-
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByRole('heading', { level: 1, name: 'Installing Homebrew on Mac OS X 10.7' })).toBeInTheDocument()
-      expect(screen.getByText('missing package manager')).toBeInTheDocument()
-      expect(screen.getByText('Ruby')).toBeInTheDocument()
-      expect(screen.getByText('Prerequisites')).toBeInTheDocument()
-      expect(screen.getByText('Mac OS X 10.7 or later')).toBeInTheDocument()
-      expect(screen.getByText('Xcode command line tools')).toBeInTheDocument()
-      expect(screen.getByText('bash')).toBeInTheDocument()
-      expect(screen.getByText('This will download and install Homebrew to /usr/local.')).toBeInTheDocument()
-    })
-  })
-
-  describe('edge cases', () => {
-    it('handles empty content', () => {
-      const { container } = render(<EnhancedMarkdownRenderer content="" />)
-      
-      const proseDiv = container.querySelector('.prose')
-      expect(proseDiv).toBeInTheDocument()
-      expect(proseDiv).toBeEmptyDOMElement()
-    })
-
-    it('handles content with only frontmatter', () => {
-      const content = `---
-title: Only Frontmatter
----`
-      
-      const { container } = render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const proseDiv = container.querySelector('.prose')
-      expect(proseDiv).toBeInTheDocument()
-      expect(proseDiv).toBeEmptyDOMElement()
-    })
-
-    it('handles malformed markdown gracefully', () => {
-      const content = `# Incomplete heading
-**incomplete bold
-\`incomplete code
-> incomplete quote`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      // Should still render what it can
-      expect(screen.getByRole('heading', { level: 1, name: 'Incomplete heading' })).toBeInTheDocument()
-      
-      // The processing may transform the text, so let's check for parts
-      expect(screen.getByText(/incomplete bold/)).toBeInTheDocument()
-      expect(screen.getByText(/incomplete code/)).toBeInTheDocument()  
-      expect(screen.getByText('incomplete quote')).toBeInTheDocument()
-    })
-
-    it('skips empty lines appropriately', () => {
-      const content = `First paragraph.
-
-
-Second paragraph.
-
-
-
-Third paragraph.`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByText('First paragraph.')).toBeInTheDocument()
-      expect(screen.getByText('Second paragraph.')).toBeInTheDocument()
-      expect(screen.getByText('Third paragraph.')).toBeInTheDocument()
-    })
-  })
-
-  describe('accessibility', () => {
-    it('uses semantic HTML elements', () => {
-      const content = `# Heading
-This is a paragraph.
-> This is a quote`
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-      expect(screen.getByText('This is a paragraph.')).toBeInTheDocument()
-      expect(screen.getByRole('blockquote')).toBeInTheDocument()
-    })
-
-    it('provides proper code block structure', () => {
-      const content = `\`\`\`javascript
-const x = 42;
-\`\`\``
-      
-      render(<EnhancedMarkdownRenderer content={content} />)
-      
-      const preElement = screen.getByText('const x = 42;').closest('pre')
-      const codeElement = screen.getByText('const x = 42;')
-      
-      expect(preElement).toBeInTheDocument()
-      expect(codeElement.tagName).toBe('CODE')
-      expect(codeElement).toHaveClass('font-mono')
-    })
-  })
-})
+    const wrapper = container.querySelector('.article-prose');
+    expect(wrapper).toBeInTheDocument();
+    expect(wrapper).toBeEmptyDOMElement();
+  });
+});

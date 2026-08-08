@@ -30,6 +30,15 @@ Thumbs.db
 
 # Other
 public/
+!public/
+public/*
+!public/images/
+!public/media/
+public/images/*
+public/media/*
+!public/images/editorial-hero.jpg
+!public/images/editorial-hero.png
+!public/media/*.png
 .deploy/
 _config.yml
 .vercel

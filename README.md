@@ -4,7 +4,7 @@ Hi there, I'm Greg. This is my personal site and blog.
 
 **Project Status: Fully Operational (next-gen branch)**
 
-A complete rebuild of cardoni.net using Next.js 15 with App Router. All content has been migrated and the site is fully functional with categories, posts, navigation, and responsive design.
+A complete rebuild of cardoni.net using Next.js 16 with App Router. All content has been migrated and the site is fully functional with categories, posts, navigation, and responsive design.
 
 ## Features
 
@@ -13,12 +13,15 @@ A complete rebuild of cardoni.net using Next.js 15 with App Router. All content 
 - 📱 **Responsive design** with dark mode support
 - ⚡ **Static generation** for optimal performance
 - 🔍 **SEO-friendly** URLs and metadata
+- 🛰️ **Full-content Atom feed** at `/atom.xml`
+- 💬 **Historical Disqus threads** reconnected to their original article URLs
+- 📈 **GA4-ready analytics** configured through an environment variable
 - 🎨 **Modern UI** with Tailwind CSS and animations
 - 🧪 **Comprehensive testing** with 90%+ coverage
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router and Turbopack
+- **Framework**: Next.js 16 with App Router
 - **Styling**: Tailwind CSS v4
 - **Content**: MDX with gray-matter frontmatter parsing
 - **Language**: TypeScript
@@ -67,6 +70,13 @@ npm run test:coverage
 ```
 
 The site will be available at `http://localhost:3000` (or next available port).
+
+## Analytics
+
+Create a GA4 web data stream and set its `G-XXXXXXXXXX` Measurement ID as
+`NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`. Configure the variable in Vercel for Production and Preview,
+then redeploy so the public value is included in the client bundle. Copy `.env.example` to
+`.env.local` to enable analytics during local development.
 
 ## Content Management
 

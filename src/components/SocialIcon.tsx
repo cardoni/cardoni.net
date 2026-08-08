@@ -31,7 +31,7 @@ export default function SocialIcon({
   const sharedProps = {
     href: link.url,
     target: '_blank',
-    rel: 'noopener noreferrer',
+    rel: 'me noopener noreferrer',
     'aria-label': link.ariaLabel,
   };
 
