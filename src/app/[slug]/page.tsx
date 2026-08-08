@@ -1,0 +1,221 @@
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import CategoryBadge from '@/components/CategoryBadge';
+import DisqusComments from '@/components/DisqusComments';
+import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
+import { getAllPosts, getPostById } from '@/lib/mdx';
+import {
+  absoluteUrl,
+  serializeJsonLd,
+  siteConfig,
+  versionedSocialImageUrl,
+} from '@/lib/site';
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.id }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostById(slug);
+
+  if (!post) {
+    return {
+      title: 'Post not found',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const description = post.excerpt || siteConfig.description;
+  const image = versionedSocialImageUrl(post.image || `/${post.id}/opengraph-image`);
+  const imageAlt = post.imageAlt || `Editorial card for “${post.title}” by Greg Cardoni.`;
+
+  return {
+    title: post.title,
+    description,
+    authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
+    creator: siteConfig.author.name,
+    publisher: siteConfig.author.name,
+    keywords: Array.from(new Set([...post.keywords, ...post.tags, ...post.categories, 'Greg Cardoni'])),
+    alternates: {
+      canonical: `/${post.id}`,
+      types: { 'application/atom+xml': siteConfig.feed.url },
+    },
+    openGraph: {
+      title: post.title,
+      description,
+      type: 'article',
+      url: `/${post.id}`,
+      siteName: siteConfig.name,
+      locale: 'en_US',
+      publishedTime: post.date,
+      modifiedTime: post.updated || post.date,
+      authors: [siteConfig.author.url],
+      section: post.categories[0],
+      tags: post.tags,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: imageAlt,
+          type: 'image/png',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description,
+      creator: siteConfig.author.handle,
+      images: [{ url: image, alt: imageAlt }],
+    },
+  };
+}
+
+export default async function PostPage({ params }: Props) {
+  const { slug } = await params;
+  const [post, allPosts] = await Promise.all([getPostById(slug), getAllPosts()]);
+
+  if (!post) {
+    notFound();
+  }
+
+  const relatedPosts = allPosts
+    .filter((candidate) => candidate.id !== post.id)
+    .sort((a, b) => {
+      const aOverlap = a.categories.filter((category) => post.categories.includes(category)).length;
+      const bOverlap = b.categories.filter((category) => post.categories.includes(category)).length;
+      return bOverlap - aOverlap;
+    })
+    .slice(0, 3);
+  const headlineImage = post.image || `/${post.id}/opengraph-image`;
+  const headlineAlt = post.imageAlt || `Editorial illustration for ${post.title}.`;
+  const wordCount = post.content.trim().split(/\s+/).length;
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    '@id': `${absoluteUrl(`/${post.id}`)}#article`,
+    headline: post.title,
+    description: post.excerpt,
+    url: absoluteUrl(`/${post.id}`),
+    mainEntityOfPage: absoluteUrl(`/${post.id}`),
+    image: versionedSocialImageUrl(headlineImage),
+    datePublished: post.date,
+    dateModified: post.updated || post.date,
+    inLanguage: 'en-US',
+    wordCount,
+    articleSection: post.categories,
+    keywords: [...post.keywords, ...post.tags].join(', '),
+    author: {
+      '@type': 'Person',
+      '@id': siteConfig.author.id,
+      name: siteConfig.author.name,
+      url: siteConfig.author.url,
+      email: `mailto:${siteConfig.author.email}`,
+      sameAs: siteConfig.author.sameAs,
+    },
+    publisher: {
+      '@type': 'Person',
+      '@id': siteConfig.author.id,
+      name: siteConfig.author.name,
+      url: siteConfig.author.url,
+    },
+  };
+
+  return (
+    <div className="article-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
+      />
+      <div className="reading-shell">
+        <Link href="/#writing" className="article-back">
+          <span aria-hidden="true">←</span> All writing
+        </Link>
+
+        <article>
+          <header className="article-header">
+            <div className="article-categories">
+              {post.categories.map((category) => (
+                <CategoryBadge key={category} category={category} />
+              ))}
+            </div>
+            <h1 className="font-reading">{post.title}</h1>
+            {post.excerpt && <p className="article-deck font-reading">{post.excerpt}</p>}
+            <div className="article-byline">
+              <span>
+                By <Link href="/about" rel="author">{siteConfig.author.name}</Link>
+              </span>
+              <span aria-hidden="true">·</span>
+              <time dateTime={post.date}>
+                {new Date(post.date).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                  timeZone: 'UTC',
+                })}
+              </time>
+              <span aria-hidden="true">·</span>
+              <span>{post.readTime}</span>
+            </div>
+          </header>
+
+          <figure className="article-hero-image">
+            <Image
+              src={headlineImage}
+              alt={headlineAlt}
+              width={1200}
+              height={630}
+              sizes="(max-width: 860px) 100vw, 832px"
+              priority
+              unoptimized={!post.image}
+            />
+          </figure>
+
+          <EnhancedMarkdownRenderer content={post.content} />
+
+          <footer className="article-author-card">
+            <p className="eyebrow">About the author</p>
+            <h2 className="font-reading">Greg Cardoni writes at the seam between systems and ideas.</h2>
+            <p>
+              A software engineer with a philosophy degree, Greg writes about technology, craft, and consequences.
+            </p>
+            <div>
+              <Link href="/about">More about Greg</Link>
+              <a href={`mailto:${siteConfig.author.email}`}>{siteConfig.author.email}</a>
+            </div>
+          </footer>
+
+          <DisqusComments slug={post.id} title={post.title} />
+        </article>
+      </div>
+
+      {relatedPosts.length > 0 && (
+        <aside className="site-shell related-writing" aria-labelledby="related-title">
+          <div>
+            <p className="eyebrow">Keep reading</p>
+            <h2 id="related-title" className="font-reading">From the same notebook.</h2>
+          </div>
+          <div className="related-links">
+            {relatedPosts.map((related) => (
+              <Link key={related.id} href={`/${related.id}`}>
+                <span>{related.categories[0]}</span>
+                <strong className="font-reading">{related.title}</strong>
+                <small>{related.readTime}</small>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      )}
+    </div>
+  );
+}
