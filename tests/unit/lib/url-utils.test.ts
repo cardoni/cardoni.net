@@ -5,7 +5,8 @@ import {
   hasUrlEncodedSpaces,
   normalizeUrlParam,
   needsRedirect,
-  getCanonicalParam
+  getCanonicalParam,
+  findTermByParam
 } from '@/lib/url-utils'
 
 describe('url-utils', () => {
@@ -32,6 +33,10 @@ describe('url-utils', () => {
 
     it('handles empty strings', () => {
       expect(stringToSlug('')).toBe('')
+    })
+
+    it('keeps slash-containing terms in one URL segment', () => {
+      expect(stringToSlug('a/b testing')).toBe('a-b-testing')
     })
   })
 
@@ -148,6 +153,22 @@ describe('url-utils', () => {
 
     it('handles single words', () => {
       expect(getCanonicalParam('nginx')).toBe('nginx')
+    })
+  })
+
+  describe('findTermByParam', () => {
+    const terms = ['a/b testing', 'wordpos module', 'wordpos']
+
+    it('finds the original multi-word term from its canonical slug', () => {
+      expect(findTermByParam(terms, 'wordpos-module')).toBe('wordpos module')
+    })
+
+    it('finds punctuation-bearing terms without adding a path segment', () => {
+      expect(findTermByParam(terms, 'a-b-testing')).toBe('a/b testing')
+    })
+
+    it('returns undefined for an unknown term', () => {
+      expect(findTermByParam(terms, 'unknown')).toBeUndefined()
     })
   })
 

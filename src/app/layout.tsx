@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Newsreader } from 'next/font/google';
+import Link from 'next/link';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
@@ -24,23 +25,15 @@ export const metadata: Metadata = {
     template: `%s — ${siteConfig.author.name}`,
   },
   description: siteConfig.description,
-  keywords: [
-    'Greg Cardoni',
-    'technology essays',
-    'philosophy essays',
-    'software engineering',
-    'programming',
-    'technology ethics',
-    'personal blog',
-  ],
+  keywords: [...siteConfig.keywords],
   authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
   creator: siteConfig.author.name,
   publisher: siteConfig.author.name,
   category: 'Technology and philosophy',
   alternates: {
-    canonical: '/',
     types: { 'application/atom+xml': siteConfig.feed.url },
   },
+  archives: ['/categories', '/tags'],
   referrer: 'origin-when-cross-origin',
   formatDetection: {
     email: false,
@@ -53,11 +46,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
     siteName: siteConfig.name,
-    locale: 'en_US',
+    locale: siteConfig.openGraphLocale,
     images: [siteConfig.socialImage],
   },
   twitter: {
     card: 'summary_large_image',
+    site: siteConfig.author.handle,
     title: siteConfig.title,
     description: siteConfig.description,
     creator: siteConfig.author.handle,
@@ -103,7 +97,7 @@ const siteJsonLd = {
       url: SITE_URL,
       name: siteConfig.name,
       description: siteConfig.description,
-      inLanguage: 'en-US',
+      inLanguage: siteConfig.locale,
       author: { '@id': siteConfig.author.id },
       publisher: { '@id': siteConfig.author.id },
     },
@@ -119,7 +113,7 @@ export default function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang={siteConfig.locale}
       className={`${GeistSans.variable} ${GeistMono.variable} ${newsreader.variable}`}
       suppressHydrationWarning
     >
@@ -146,6 +140,10 @@ export default function RootLayout({
                 <div className="footer-contact">
                   <p>Written by {siteConfig.author.name}</p>
                   <a href={`mailto:${siteConfig.author.email}`}>{siteConfig.author.email}</a>
+                  <nav className="footer-archive-links" aria-label="Browse the archive">
+                    <Link href="/categories">Categories</Link>
+                    <Link href="/tags">Tags</Link>
+                  </nav>
                   <div className="footer-socials" aria-label="Social links">
                     <SocialIcon platform="x" variant="icon-only" size="md" />
                     <SocialIcon platform="github" variant="icon-only" size="md" />

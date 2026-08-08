@@ -6,7 +6,12 @@
  * Convert a string with spaces to a URL-friendly slug with dashes
  */
 export function stringToSlug(str: string): string {
-  return str.replace(/\s+/g, '-').toLowerCase();
+  return str
+    .trim()
+    .replace(/[\\/]+/g, '-')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .toLowerCase();
 }
 
 /**
@@ -54,4 +59,12 @@ export function needsRedirect(param: string): boolean {
 export function getCanonicalParam(param: string): string {
   const decoded = decodeURIComponent(param);
   return stringToSlug(decoded);
+}
+
+/**
+ * Find the original taxonomy term represented by a URL parameter.
+ */
+export function findTermByParam(terms: string[], param: string): string | undefined {
+  const canonicalParam = getCanonicalParam(param);
+  return terms.find((term) => stringToSlug(term) === canonicalParam);
 }

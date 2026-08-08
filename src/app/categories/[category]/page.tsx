@@ -1,9 +1,10 @@
-import { notFound, redirect } from 'next/navigation';
+import type { Metadata } from 'next';
+import { notFound, permanentRedirect } from 'next/navigation';
+import CollectionPageJsonLd from '@/components/CollectionPageJsonLd';
 import { getAllCategories, getPostsByCategory } from '@/lib/mdx';
 import AnimatedCard from '@/components/AnimatedCard';
-import { needsRedirect, getCanonicalParam, slugToString } from '@/lib/url-utils';
-import type { Metadata } from 'next';
-import { siteConfig } from '@/lib/site';
+import { findTermByParam, getCanonicalParam, needsRedirect, stringToSlug } from '@/lib/url-utils';
+import { buildPageMetadata } from '@/lib/site';
 
 interface Props {
   params: Promise<{ category: string }>;
@@ -16,66 +17,69 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  
-  // If this URL needs redirect, we'll handle it in the component
-  // For metadata generation, use the canonical form
-  const decodedCategory = slugToString(getCanonicalParam(category));
-  
-  return {
-    title: decodedCategory,
-    description: `Essays and technical notes by Greg Cardoni about ${decodedCategory}.`,
-    authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
-    alternates: {
-      canonical: `/categories/${getCanonicalParam(category)}`,
-      types: { 'application/atom+xml': siteConfig.feed.url },
-    },
-    openGraph: {
-      title: `${decodedCategory} writing by Greg Cardoni`,
-      description: `Essays and technical notes about ${decodedCategory}.`,
-      type: 'website',
-      url: `/categories/${getCanonicalParam(category)}`,
-      images: [siteConfig.socialImage],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${decodedCategory} writing by Greg Cardoni`,
-      description: `Essays and technical notes about ${decodedCategory}.`,
-      creator: siteConfig.author.handle,
-      images: [{ url: siteConfig.socialImage.url, alt: siteConfig.socialImage.alt }],
-    },
-  };
+  const categories = await getAllCategories();
+  const categoryName = findTermByParam(categories, category);
+
+  if (!categoryName) {
+    notFound();
+  }
+
+  return buildPageMetadata({
+    title: categoryName,
+    openGraphTitle: `${categoryName} writing by Greg Cardoni`,
+    description: `Essays and technical notes by Greg Cardoni about ${categoryName}.`,
+    pathname: `/categories/${stringToSlug(categoryName)}`,
+    keywords: [categoryName],
+  });
 }
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  
+
   // Check if this URL needs to be redirected to the canonical dash format
   if (needsRedirect(category)) {
     const canonicalParam = getCanonicalParam(category);
-    redirect(`/categories/${canonicalParam}`);
+    permanentRedirect(`/categories/${canonicalParam}`);
   }
-  
-  // Convert dash format to spaces for category lookup
-  const decodedCategory = slugToString(category);
-  const posts = await getPostsByCategory(decodedCategory);
 
-  if (posts.length === 0) {
+  const categories = await getAllCategories();
+  const categoryName = findTermByParam(categories, category);
+
+  if (!categoryName) {
     notFound();
   }
 
-  return (
-    <div className="category-page site-shell">
-      <header className="category-header">
-        <p className="eyebrow">Subject archive / {posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
-        <h1 className="font-reading">{decodedCategory}</h1>
-        <p>Technical notes and essays filed under {decodedCategory}.</p>
-      </header>
+  const posts = await getPostsByCategory(categoryName);
 
-      <div className="post-list">
-        {posts.map((post, index) => (
-          <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
-        ))}
+  const canonicalPath = `/categories/${stringToSlug(categoryName)}`;
+  const description = `Essays and technical notes by Greg Cardoni about ${categoryName}.`;
+
+  return (
+    <>
+      <CollectionPageJsonLd
+        name={`${categoryName} writing by Greg Cardoni`}
+        description={description}
+        pathname={canonicalPath}
+        items={posts.map((post) => ({ name: post.title, pathname: `/${post.id}` }))}
+        breadcrumbs={[
+          { name: 'Home', pathname: '/' },
+          { name: 'Categories', pathname: '/categories' },
+          { name: categoryName, pathname: canonicalPath },
+        ]}
+      />
+      <div className="category-page site-shell">
+        <header className="category-header">
+          <p className="eyebrow">Category archive / {posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
+          <h1 className="font-reading">{categoryName}</h1>
+          <p>Technical notes and essays filed under {categoryName}.</p>
+        </header>
+
+        <div className="post-list">
+          {posts.map((post, index) => (
+            <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -19,7 +19,14 @@ const mockFs = vi.mocked(fs)
 const mockPath = vi.mocked(path)
 
 // Import after mocking
-import { getAllPosts, getPostById, getPostsByCategory, getAllCategories } from '@/lib/mdx'
+import {
+  getAllCategories,
+  getAllPosts,
+  getAllTags,
+  getPostById,
+  getPostsByCategory,
+  getPostsByTag,
+} from '@/lib/mdx'
 
 describe('mdx', () => {
   beforeEach(() => {
@@ -319,6 +326,59 @@ Content 2`
       const categories = await getAllCategories()
 
       expect(categories).toEqual([])
+    })
+  })
+
+  describe('tag helpers', () => {
+    it('returns unique sorted tags from all posts', async () => {
+      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
+
+      let callCount = 0
+      mockFs.readFileSync.mockImplementation(() => {
+        callCount++
+        return callCount === 1
+          ? `---
+title: Post 1
+date: 2023-12-01
+tags: [wordpos, wordpos module]
+---
+Content 1`
+          : `---
+title: Post 2
+date: 2023-11-01
+tags: [parsing, wordpos]
+---
+Content 2`
+      })
+
+      expect(await getAllTags()).toEqual(['parsing', 'wordpos', 'wordpos module'])
+    })
+
+    it('returns posts with the exact requested tag', async () => {
+      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
+
+      let callCount = 0
+      mockFs.readFileSync.mockImplementation(() => {
+        callCount++
+        return callCount === 1
+          ? `---
+title: Matching Post
+date: 2023-12-01
+tags: [wordpos module]
+---
+Content 1`
+          : `---
+title: Other Post
+date: 2023-11-01
+tags: [wordpos]
+---
+Content 2`
+      })
+
+      const posts = await getPostsByTag('wordpos module')
+
+      expect(posts).toHaveLength(1)
+      expect(posts[0].title).toBe('Matching Post')
     })
   })
 

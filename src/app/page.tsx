@@ -4,25 +4,14 @@ import { getAllPosts } from '@/lib/mdx';
 import AnimatedCard from '@/components/AnimatedCard';
 import ArchiveTimeline from '@/components/ArchiveTimeline';
 import DefinitionTerm from '@/components/DefinitionTerm';
-import { siteConfig } from '@/lib/site';
+import { buildPageMetadata, siteConfig } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: { absolute: siteConfig.title },
+  openGraphTitle: siteConfig.title,
   description: siteConfig.description,
-  alternates: {
-    canonical: '/',
-    types: { 'application/atom+xml': siteConfig.feed.url },
-  },
-  openGraph: {
-    title: siteConfig.title,
-    description: siteConfig.description,
-    type: 'website',
-    url: '/',
-    siteName: siteConfig.name,
-    locale: 'en_US',
-    images: [siteConfig.socialImage],
-  },
-};
+  pathname: '/',
+});
 
 export default async function HomePage() {
   const posts = await getAllPosts();

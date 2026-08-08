@@ -234,6 +234,12 @@ button:focus-visible,
   text-underline-offset: 0.2em;
 }
 
+.footer-archive-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.65rem;
+}
+
 .footer-socials {
   display: flex;
   gap: 1rem;
@@ -1145,6 +1151,80 @@ a.category-badge:hover {
   margin-top: 1.8rem;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.taxonomy-page {
+  padding-top: clamp(4rem, 10vw, 9rem);
+}
+
+.taxonomy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  background: var(--border);
+  list-style: none;
+}
+
+.taxonomy-grid a {
+  display: flex;
+  min-height: 8rem;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.4rem;
+  background: var(--surface);
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.taxonomy-grid a:hover {
+  background: var(--surface-raised);
+  color: var(--accent);
+}
+
+.taxonomy-grid span {
+  font-size: 1.55rem;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-transform: capitalize;
+}
+
+.taxonomy-grid small {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.article-tags {
+  margin-top: clamp(3rem, 7vw, 5rem);
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.article-tags > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.article-tags a {
+  border-bottom: 1px solid var(--border-strong);
+  color: var(--muted);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+.article-tags a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 @media (max-width: 640px) {

@@ -1,32 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { serializeJsonLd, siteConfig, SITE_URL } from '@/lib/site';
+import { buildPageMetadata, serializeJsonLd, siteConfig, SITE_URL } from '@/lib/site';
 
-export const metadata: Metadata = {
+const description = 'About Greg Cardoni, a software engineer and philosophy graduate writing about technology, systems, and ideas.';
+
+export const metadata: Metadata = buildPageMetadata({
   title: 'About',
-  description:
-    'About Greg Cardoni, a software engineer and philosophy graduate writing about technology, systems, and ideas.',
-  authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
-  alternates: {
-    canonical: '/about',
-    types: { 'application/atom+xml': siteConfig.feed.url },
-  },
-  openGraph: {
-    title: 'About Greg Cardoni',
-    description:
-      'Software engineer and philosophy graduate writing about technology, systems, and ideas.',
-    type: 'website',
-    url: '/about',
-    images: [siteConfig.socialImage],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About Greg Cardoni',
-    description: 'Software engineer and philosophy graduate writing about technology, systems, and ideas.',
-    creator: siteConfig.author.handle,
-    images: [{ url: siteConfig.socialImage.url, alt: siteConfig.socialImage.alt }],
-  },
-};
+  openGraphTitle: 'About Greg Cardoni',
+  description,
+  pathname: '/about',
+  keywords: ['Greg Cardoni biography', 'software engineer', 'philosophy graduate'],
+});
 
 const profileJsonLd = {
   '@context': 'https://schema.org',

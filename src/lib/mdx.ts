@@ -62,6 +62,11 @@ export async function getPostsByCategory(category: string): Promise<BlogPost[]> 
   return posts.filter(post => post.categories.includes(category));
 }
 
+export async function getPostsByTag(tag: string): Promise<BlogPost[]> {
+  const posts = await getAllPosts();
+  return posts.filter(post => post.tags.includes(tag));
+}
+
 export async function getAllCategories(): Promise<string[]> {
   const posts = await getAllPosts();
   const categories = new Set<string>();
@@ -69,4 +74,13 @@ export async function getAllCategories(): Promise<string[]> {
     post.categories.forEach(category => categories.add(category));
   });
   return Array.from(categories).sort();
+}
+
+export async function getAllTags(): Promise<string[]> {
+  const posts = await getAllPosts();
+  const tags = new Set<string>();
+  posts.forEach(post => {
+    post.tags.forEach(tag => tags.add(tag));
+  });
+  return Array.from(tags).sort();
 }

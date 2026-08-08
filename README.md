@@ -9,10 +9,11 @@ A complete rebuild of cardoni.net using Next.js 16 with App Router. All content 
 ## Features
 
 - 📝 **Blog posts** with categories and tags
-- 🏷️ **Category pages** with clean URLs and redirects
+- 🏷️ **Category and tag archives** with clean URLs and redirects
 - 📱 **Responsive design** with dark mode support
 - ⚡ **Static generation** for optimal performance
 - 🔍 **SEO-friendly** URLs and metadata
+- 🔗 **Canonical social metadata** shared across pages, with Open Graph, Twitter cards, and JSON-LD
 - 🛰️ **Full-content Atom feed** at `/atom.xml`
 - 💬 **Historical Disqus threads** reconnected to their original article URLs
 - 📈 **GA4-ready analytics** configured through an environment variable
@@ -82,10 +83,11 @@ then redeploy so the public value is included in the client bundle. Copy `.env.e
 
 All blog posts are stored as MDX files in `content/posts/`. The system automatically:
 - Parses YAML frontmatter for metadata
-- Generates category pages from post categories  
+- Generates category and tag pages from post metadata
 - Creates clean excerpts by stripping markdown formatting
-- Handles URL encoding for categories with spaces (e.g., `personal pivot` ↔ `personal-pivot`)
-- Supports automatic redirects from URL-encoded to canonical dash formats
+- Handles URL encoding for taxonomy terms with spaces (e.g., `personal pivot` ↔ `personal-pivot`)
+- Supports automatic redirects from URL-encoded category and tag URLs to canonical dash formats
+- Preserves canonical legacy tag URLs at `/tag/[tag]`, with `/tags/[tag]` permanently redirected
 
 ## Testing
 

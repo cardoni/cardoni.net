@@ -8,10 +8,13 @@ import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
 import { getAllPosts, getPostById } from '@/lib/mdx';
 import {
   absoluteUrl,
+  buildPageMetadata,
+  metadataImage,
   serializeJsonLd,
   siteConfig,
   versionedSocialImageUrl,
 } from '@/lib/site';
+import { stringToSlug } from '@/lib/url-utils';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -34,50 +37,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const description = post.excerpt || siteConfig.description;
-  const image = versionedSocialImageUrl(post.image || `/${post.id}/opengraph-image`);
   const imageAlt = post.imageAlt || `Editorial card for “${post.title}” by Greg Cardoni.`;
+  const image = metadataImage(post.image || `/${post.id}/opengraph-image`, imageAlt);
 
-  return {
+  return buildPageMetadata({
     title: post.title,
+    openGraphTitle: post.title,
     description,
-    authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
-    creator: siteConfig.author.name,
-    publisher: siteConfig.author.name,
+    pathname: `/${post.id}`,
     keywords: Array.from(new Set([...post.keywords, ...post.tags, ...post.categories, 'Greg Cardoni'])),
-    alternates: {
-      canonical: `/${post.id}`,
-      types: { 'application/atom+xml': siteConfig.feed.url },
-    },
-    openGraph: {
-      title: post.title,
-      description,
-      type: 'article',
-      url: `/${post.id}`,
-      siteName: siteConfig.name,
-      locale: 'en_US',
+    image,
+    article: {
       publishedTime: post.date,
       modifiedTime: post.updated || post.date,
       authors: [siteConfig.author.url],
       section: post.categories[0],
       tags: post.tags,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: imageAlt,
-          type: 'image/png',
-        },
-      ],
     },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description,
-      creator: siteConfig.author.handle,
-      images: [{ url: image, alt: imageAlt }],
-    },
-  };
+  });
 }
 
 export default async function PostPage({ params }: Props) {
@@ -182,6 +159,19 @@ export default async function PostPage({ params }: Props) {
           </figure>
 
           <EnhancedMarkdownRenderer content={post.content} />
+
+          {post.tags.length > 0 && (
+            <nav className="article-tags" aria-label="Post tags">
+              <p className="eyebrow">Tagged with</p>
+              <div>
+                {post.tags.map((tag) => (
+                  <Link key={tag} href={`/tag/${stringToSlug(tag)}`} rel="tag">
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          )}
 
           <footer className="article-author-card">
             <p className="eyebrow">About the author</p>
