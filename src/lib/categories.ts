@@ -1,4 +1,5 @@
 import { getAllPosts } from './mdx';
+import { getTaxonomyTerms } from './taxonomy';
 
 export interface CategoryWithCount {
   name: string;
@@ -8,24 +9,8 @@ export interface CategoryWithCount {
 
 export async function getTopCategories(limit: number = 5): Promise<CategoryWithCount[]> {
   const posts = await getAllPosts();
-  const categoryCounts = new Map<string, number>();
-  
-  // Count posts per category
-  posts.forEach(post => {
-    post.categories.forEach(category => {
-      categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1);
-    });
-  });
-  
-  // Convert to array and sort by count (descending)
-  const sortedCategories = Array.from(categoryCounts.entries())
-    .map(([name, count]) => ({
-      name,
-      count,
-      href: `/categories/${name.includes(' ') ? name.replace(/\s+/g, '-') : encodeURIComponent(name)}`
-    }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, limit);
-    
-  return sortedCategories;
+  return getTaxonomyTerms(posts, 'category')
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, limit)
+    .map(({ name, count, href }) => ({ name, count, href }));
 }

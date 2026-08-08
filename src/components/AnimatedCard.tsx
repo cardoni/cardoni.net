@@ -19,7 +19,7 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
       transition={{ duration: 0.45, delay }}
       className="post-row group"
     >
-      <Link href={`/${post.id}`} className="post-row-link">
+      <div className="post-row-link">
         <span className="post-index" aria-hidden="true">
           {String(index ?? 0).padStart(2, '0')}
         </span>
@@ -27,7 +27,7 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
           <div className="post-meta">
             <div className="flex flex-wrap gap-2">
               {post.categories.map((category) => (
-                <CategoryBadge key={category} category={category} variant="compact" clickable={false} />
+                <CategoryBadge key={category} category={category} variant="compact" />
               ))}
             </div>
             <time dateTime={post.date}>
@@ -39,10 +39,12 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
               })}
             </time>
           </div>
-          <h2 className="font-reading">{post.title}</h2>
-          <p>{post.excerpt}</p>
+          <Link href={`/${post.id}`} className="post-row-title-link">
+            <h2 className="font-reading">{post.title}</h2>
+            <p>{post.excerpt}</p>
+          </Link>
         </div>
-        <span className="post-read-more">
+        <Link href={`/${post.id}`} className="post-read-more">
           {post.readTime}
           <span className="read-more-label">
             Read more
@@ -50,8 +52,8 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </span>
-        </span>
-      </Link>
+        </Link>
+      </div>
     </motion.article>
   );
 }

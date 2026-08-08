@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import CategoryBadge from '@/components/CategoryBadge';
 import DisqusComments from '@/components/DisqusComments';
 import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
+import TaxonomyLinks from '@/components/TaxonomyLinks';
 import { getAllPosts, getPostById } from '@/lib/mdx';
 import {
   absoluteUrl,
@@ -14,7 +15,7 @@ import {
   siteConfig,
   versionedSocialImageUrl,
 } from '@/lib/site';
-import { stringToSlug } from '@/lib/url-utils';
+import { getTaxonomyHref, getTaxonomyTermByName, getTaxonomyTerms } from '@/lib/taxonomy';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -65,13 +66,28 @@ export default async function PostPage({ params }: Props) {
     notFound();
   }
 
+  const categoryTerms = getTaxonomyTerms(allPosts, 'category');
+  const tagTerms = getTaxonomyTerms(allPosts, 'tag');
+  const postCategories = post.categories.flatMap((category) => {
+    const term = getTaxonomyTermByName(categoryTerms, category);
+    return term ? [term] : [];
+  });
+  const postTags = post.tags.flatMap((tag) => {
+    const term = getTaxonomyTermByName(tagTerms, tag);
+    return term ? [term] : [];
+  });
   const relatedPosts = allPosts
     .filter((candidate) => candidate.id !== post.id)
-    .sort((a, b) => {
-      const aOverlap = a.categories.filter((category) => post.categories.includes(category)).length;
-      const bOverlap = b.categories.filter((category) => post.categories.includes(category)).length;
-      return bOverlap - aOverlap;
-    })
+    .map((candidate) => ({
+      post: candidate,
+      score: (
+        candidate.categories.filter((category) => post.categories.includes(category)).length * 3
+        + candidate.tags.filter((tag) => post.tags.includes(tag)).length * 2
+      ),
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || new Date(b.post.date).getTime() - new Date(a.post.date).getTime())
+    .map(({ post: candidate }) => candidate)
     .slice(0, 3);
   const headlineImage = post.image || `/${post.id}/opengraph-image`;
   const headlineAlt = post.imageAlt || `Editorial illustration for ${post.title}.`;
@@ -160,18 +176,12 @@ export default async function PostPage({ params }: Props) {
 
           <EnhancedMarkdownRenderer content={post.content} />
 
-          {post.tags.length > 0 && (
-            <nav className="article-tags" aria-label="Post tags">
-              <p className="eyebrow">Tagged with</p>
-              <div>
-                {post.tags.map((tag) => (
-                  <Link key={tag} href={`/tag/${stringToSlug(tag)}`} rel="tag">
-                    {tag}
-                  </Link>
-                ))}
-              </div>
-            </nav>
-          )}
+          <TaxonomyLinks
+            className="article-tags"
+            title="Explore this article"
+            categories={postCategories}
+            tags={postTags}
+          />
 
           <footer className="article-author-card">
             <p className="eyebrow">About the author</p>
@@ -197,11 +207,20 @@ export default async function PostPage({ params }: Props) {
           </div>
           <div className="related-links">
             {relatedPosts.map((related) => (
-              <Link key={related.id} href={`/${related.id}`}>
-                <span>{related.categories[0]}</span>
-                <strong className="font-reading">{related.title}</strong>
-                <small>{related.readTime}</small>
-              </Link>
+              <article key={related.id} className="related-link">
+                {related.categories[0] && (
+                  <Link
+                    href={getTaxonomyHref('category', related.categories[0])}
+                    className="related-category"
+                  >
+                    {related.categories[0]}
+                  </Link>
+                )}
+                <Link href={`/${related.id}`} className="related-post-link">
+                  <strong className="font-reading">{related.title}</strong>
+                  <small>{related.readTime}</small>
+                </Link>
+              </article>
             ))}
           </div>
         </aside>

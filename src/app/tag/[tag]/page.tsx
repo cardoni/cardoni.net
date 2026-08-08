@@ -2,37 +2,42 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import AnimatedCard from '@/components/AnimatedCard';
 import CollectionPageJsonLd from '@/components/CollectionPageJsonLd';
-import { getAllTags, getPostsByTag } from '@/lib/mdx';
+import TaxonomyLinks from '@/components/TaxonomyLinks';
+import { getAllPosts } from '@/lib/mdx';
 import { buildPageMetadata } from '@/lib/site';
-import { findTermByParam, getCanonicalParam, needsRedirect, stringToSlug } from '@/lib/url-utils';
+import { getCanonicalParam, needsRedirect } from '@/lib/url-utils';
+import {
+  getRelatedTaxonomyTerms,
+  getTaxonomyTermByParam,
+  getTaxonomyTerms,
+} from '@/lib/taxonomy';
 
 interface Props {
   params: Promise<{ tag: string }>;
 }
 
 export async function generateStaticParams() {
-  const tags = await getAllTags();
-  return tags.map((tag) => ({ tag: stringToSlug(tag) }));
+  const posts = await getAllPosts();
+  return getTaxonomyTerms(posts, 'tag').map((term) => ({ tag: term.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag } = await params;
-  const tags = await getAllTags();
-  const tagName = findTermByParam(tags, tag);
+  const posts = await getAllPosts();
+  const term = getTaxonomyTermByParam(getTaxonomyTerms(posts, 'tag'), tag);
 
-  if (!tagName) {
+  if (!term) {
     notFound();
   }
 
-  const canonicalPath = `/tag/${stringToSlug(tagName)}`;
-  const description = `Essays and technical notes by Greg Cardoni tagged ${tagName}.`;
+  const description = `Essays and technical notes by Greg Cardoni tagged ${term.name}.`;
 
   return buildPageMetadata({
-    title: tagName,
-    openGraphTitle: `${tagName} writing by Greg Cardoni`,
+    title: term.name,
+    openGraphTitle: `${term.name} writing by Greg Cardoni`,
     description,
-    pathname: canonicalPath,
-    keywords: [tagName],
+    pathname: term.href,
+    keywords: [term.name],
   });
 }
 
@@ -43,35 +48,46 @@ export default async function TagPage({ params }: Props) {
     permanentRedirect(`/tag/${getCanonicalParam(tag)}`);
   }
 
-  const tags = await getAllTags();
-  const tagName = findTermByParam(tags, tag);
+  const allPosts = await getAllPosts();
+  const term = getTaxonomyTermByParam(getTaxonomyTerms(allPosts, 'tag'), tag);
 
-  if (!tagName) {
+  if (!term) {
     notFound();
   }
 
-  const posts = await getPostsByTag(tagName);
-  const canonicalPath = `/tag/${stringToSlug(tagName)}`;
-  const description = `Essays and technical notes by Greg Cardoni tagged ${tagName}.`;
+  const posts = term.posts;
+  const description = `Essays and technical notes by Greg Cardoni tagged ${term.name}.`;
+  const relatedCategories = getRelatedTaxonomyTerms({
+    posts: allPosts,
+    sourceKind: 'tag',
+    sourceTerm: term.name,
+    targetKind: 'category',
+  });
+  const relatedTags = getRelatedTaxonomyTerms({
+    posts: allPosts,
+    sourceKind: 'tag',
+    sourceTerm: term.name,
+    targetKind: 'tag',
+  });
 
   return (
     <>
       <CollectionPageJsonLd
-        name={`${tagName} writing by Greg Cardoni`}
+        name={`${term.name} writing by Greg Cardoni`}
         description={description}
-        pathname={canonicalPath}
+        pathname={term.href}
         items={posts.map((post) => ({ name: post.title, pathname: `/${post.id}` }))}
         breadcrumbs={[
           { name: 'Home', pathname: '/' },
           { name: 'Tags', pathname: '/tags' },
-          { name: tagName, pathname: canonicalPath },
+          { name: term.name, pathname: term.href },
         ]}
       />
       <div className="category-page site-shell">
         <header className="category-header">
-          <p className="eyebrow">Tag archive / {posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
-          <h1 className="font-reading">{tagName}</h1>
-          <p>Technical notes and essays tagged {tagName}.</p>
+          <p className="eyebrow">Tag archive / {term.count} {term.count === 1 ? 'essay' : 'essays'}</p>
+          <h1 className="font-reading">{term.name}</h1>
+          <p>Technical notes and essays tagged {term.name}.</p>
         </header>
 
         <div className="post-list">
@@ -79,6 +95,12 @@ export default async function TagPage({ params }: Props) {
             <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
           ))}
         </div>
+        <TaxonomyLinks
+          className="taxonomy-related"
+          title="Related categories and topics"
+          categories={relatedCategories}
+          tags={relatedTags}
+        />
       </div>
     </>
   );

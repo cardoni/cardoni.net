@@ -1,16 +1,10 @@
 import Link from 'next/link';
-import { stringToSlug } from '@/lib/url-utils';
-
-interface TaxonomyTerm {
-  name: string;
-  count: number;
-}
+import type { TaxonomyTerm } from '@/lib/taxonomy';
 
 interface TaxonomyDirectoryProps {
   eyebrow: string;
   title: string;
   description: string;
-  basePath: '/categories' | '/tag';
   terms: TaxonomyTerm[];
 }
 
@@ -18,7 +12,6 @@ export default function TaxonomyDirectory({
   eyebrow,
   title,
   description,
-  basePath,
   terms,
 }: TaxonomyDirectoryProps) {
   return (
@@ -32,7 +25,7 @@ export default function TaxonomyDirectory({
       <ul className="taxonomy-grid">
         {terms.map((term) => (
           <li key={term.name}>
-            <Link href={`${basePath}/${stringToSlug(term.name)}`}>
+            <Link href={term.href}>
               <span className="font-reading">{term.name}</span>
               <small>{term.count} {term.count === 1 ? 'essay' : 'essays'}</small>
             </Link>

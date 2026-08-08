@@ -44,7 +44,7 @@ describe('AnimatedCard', () => {
     expect(timeElement.textContent).toBeTruthy()
   })
 
-  it('displays category badges without nested links', () => {
+  it('links category badges to their category archive without nesting links', () => {
     render(<AnimatedCard post={mockPost} />)
 
     const testCategory = screen.getByText('test')
@@ -53,8 +53,8 @@ describe('AnimatedCard', () => {
     expect(testCategory).toBeInTheDocument()
     expect(exampleCategory).toBeInTheDocument()
 
-    expect(testCategory.closest('a')).toHaveAttribute('href', '/test-post')
-    expect(exampleCategory.closest('a')).toHaveAttribute('href', '/test-post')
+    expect(testCategory.closest('a')).toHaveAttribute('href', '/categories/test')
+    expect(exampleCategory.closest('a')).toHaveAttribute('href', '/categories/example')
   })
 
   it('renders categories with spaces', () => {
@@ -105,7 +105,7 @@ describe('AnimatedCard', () => {
     render(<AnimatedCard post={mockPostSingleCategory} />)
 
     expect(screen.getByText('nginx')).toBeInTheDocument()
-    expect(screen.getByText('nginx').closest('a')).toHaveAttribute('href', '/single-category-post')
+    expect(screen.getByText('nginx').closest('a')).toHaveAttribute('href', '/categories/nginx')
   })
 
   it('renders with custom delay prop', () => {

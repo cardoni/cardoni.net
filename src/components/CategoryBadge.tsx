@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { stringToSlug } from '@/lib/url-utils';
+import { getTaxonomyHref } from '@/lib/taxonomy';
 
 interface CategoryBadgeProps {
   category: string;
@@ -30,7 +30,7 @@ export default function CategoryBadge({
 
   return (
     <Link
-      href={`/categories/${stringToSlug(category)}`}
+      href={getTaxonomyHref('category', category)}
       className={`${baseClasses} ${className}`}
     >
       {content}

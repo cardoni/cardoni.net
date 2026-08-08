@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
-import { getAllCategories, getAllPosts, getAllTags } from '@/lib/mdx';
-import { stringToSlug } from '@/lib/url-utils';
+import { getAllPosts } from '@/lib/mdx';
 import { SITE_LAST_MODIFIED, SITE_URL, versionedSocialImageUrl } from '@/lib/site';
+import { getTaxonomyTerms } from '@/lib/taxonomy';
 
 function latestArchiveDate(posts: Awaited<ReturnType<typeof getAllPosts>>): Date {
   return new Date(Math.max(
@@ -11,11 +11,9 @@ function latestArchiveDate(posts: Awaited<ReturnType<typeof getAllPosts>>): Date
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, categories, tags] = await Promise.all([
-    getAllPosts(),
-    getAllCategories(),
-    getAllTags(),
-  ]);
+  const posts = await getAllPosts();
+  const categories = getTaxonomyTerms(posts, 'category');
+  const tags = getTaxonomyTerms(posts, 'tag');
   const archiveLastModified = latestArchiveDate(posts);
 
   const staticRoutes = [
@@ -53,23 +51,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     images: [versionedSocialImageUrl(post.image || `/${post.id}/opengraph-image`)],
   }));
 
-  const categoryRoutes = categories.map((category) => {
-    const categoryPosts = posts.filter((post) => post.categories.includes(category));
-
+  const categoryRoutes = categories.map((term) => {
     return {
-      url: `${SITE_URL}/categories/${stringToSlug(category)}`,
-      lastModified: latestArchiveDate(categoryPosts),
+      url: `${SITE_URL}${term.href}`,
+      lastModified: latestArchiveDate(term.posts),
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     };
   });
 
-  const tagRoutes = tags.map((tag) => {
-    const tagPosts = posts.filter((post) => post.tags.includes(tag));
-
+  const tagRoutes = tags.map((term) => {
     return {
-      url: `${SITE_URL}/tag/${stringToSlug(tag)}`,
-      lastModified: latestArchiveDate(tagPosts),
+      url: `${SITE_URL}${term.href}`,
+      lastModified: latestArchiveDate(term.posts),
       changeFrequency: 'monthly' as const,
       priority: 0.4,
     };
