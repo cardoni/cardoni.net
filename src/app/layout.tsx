@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   alternates: {
     types: { 'application/atom+xml': siteConfig.feed.url },
   },
+  icons: {
+    icon: [{ url: '/favicon.ico', type: 'image/x-icon', sizes: 'any' }],
+  },
   archives: ['/categories', '/tags'],
   referrer: 'origin-when-cross-origin',
   formatDetection: {

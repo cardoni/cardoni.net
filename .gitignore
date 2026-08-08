@@ -32,6 +32,7 @@ Thumbs.db
 public/
 !public/
 public/*
+!public/favicon.ico
 !public/images/
 !public/media/
 public/images/*
