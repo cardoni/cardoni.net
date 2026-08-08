@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  SITE_URL,
   SOCIAL_IMAGE_ORIGIN,
   SOCIAL_IMAGE_VERSION,
   absoluteUrl,
@@ -12,7 +13,8 @@ describe('site URL helpers', () => {
     expect(absoluteUrl('/an-essay')).toBe('https://cardoni.net/an-essay');
   });
 
-  it('serves versioned social images from the stable Vercel hostname', () => {
+  it('serves versioned social images from the canonical domain', () => {
+    expect(SOCIAL_IMAGE_ORIGIN).toBe(SITE_URL);
     expect(versionedSocialImageUrl('/an-essay/opengraph-image')).toBe(
       `${SOCIAL_IMAGE_ORIGIN}/an-essay/opengraph-image?v=${SOCIAL_IMAGE_VERSION}`,
     );

@@ -1,6 +1,6 @@
 export const SITE_URL = 'https://cardoni.net';
-export const SOCIAL_IMAGE_ORIGIN = 'https://cardoninet.vercel.app';
-export const SOCIAL_IMAGE_VERSION = '2026-08-07.1';
+export const SOCIAL_IMAGE_ORIGIN = SITE_URL;
+export const SOCIAL_IMAGE_VERSION = '2026-08-08.1';
 export const DISQUS_SHORTNAME = 'cardoni';
 
 export function versionedSocialImageUrl(pathname: string) {
