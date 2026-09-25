@@ -12,7 +12,6 @@ export const metadata: Metadata = buildPageMetadata({
   openGraphTitle: 'Writing by tag',
   description,
   pathname: '/tags',
-  keywords: ['essay tags', 'software topics', 'technology topics'],
 });
 
 export default async function TagsPage() {

@@ -16,6 +16,32 @@ const nextConfig: NextConfig = {
         destination: '/tag/:tag',
         permanent: true,
       },
+      // Consolidated tag synonyms (permanent redirects to canonical tags)
+      {
+        source: '/tag/postgres',
+        destination: '/tag/postgresql',
+        permanent: true,
+      },
+      {
+        source: '/tag/databases',
+        destination: '/tag/database',
+        permanent: true,
+      },
+      {
+        source: '/tag/regular-expression',
+        destination: '/tag/regex',
+        permanent: true,
+      },
+      {
+        source: '/tag/brew',
+        destination: '/tag/homebrew',
+        permanent: true,
+      },
+      {
+        source: '/tag/wordpos-module',
+        destination: '/tag/wordpos',
+        permanent: true,
+      },
     ];
   },
 };

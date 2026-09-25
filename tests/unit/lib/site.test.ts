@@ -39,7 +39,7 @@ describe('site URL helpers', () => {
       openGraphTitle: 'Heroku writing by Greg Cardoni',
       description: 'Essays tagged Heroku.',
       pathname: '/tag/heroku',
-      keywords: ['heroku'],
+      robots: { index: false, follow: true },
     });
 
     expect(metadata.alternates?.canonical).toBe('https://cardoni.net/tag/heroku');
@@ -53,8 +53,9 @@ describe('site URL helpers', () => {
       site: siteConfig.author.handle,
       creator: siteConfig.author.handle,
     });
-    expect(metadata.keywords).toContain('heroku');
-    expect(metadata.keywords).toContain('Greg Cardoni');
+    // The obsolete meta keywords tag is no longer emitted.
+    expect(metadata.keywords).toBeUndefined();
+    expect(metadata.robots).toEqual({ index: false, follow: true });
   });
 
   it('includes article-specific Open Graph metadata', () => {
@@ -78,6 +79,27 @@ describe('site URL helpers', () => {
       modifiedTime: '2026-01-02T00:00:00.000Z',
       section: 'technology',
       tags: ['systems'],
+    });
+  });
+
+  it('emits og:type=profile for profile pages', () => {
+    const metadata = buildPageMetadata({
+      title: 'About',
+      openGraphTitle: 'About Greg Cardoni',
+      description: 'About Greg Cardoni.',
+      pathname: '/about',
+      profile: {
+        firstName: 'Greg',
+        lastName: 'Cardoni',
+        username: siteConfig.author.handle,
+      },
+    });
+
+    expect(metadata.openGraph).toMatchObject({
+      type: 'profile',
+      firstName: 'Greg',
+      lastName: 'Cardoni',
+      username: siteConfig.author.handle,
     });
   });
 

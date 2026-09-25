@@ -30,12 +30,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
+  const categoryTitle = term.name
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
   return buildPageMetadata({
-    title: term.name,
-    openGraphTitle: `${term.name} writing by Greg Cardoni`,
+    title: `${categoryTitle} Essays`,
+    openGraphTitle: `${categoryTitle} writing by Greg Cardoni`,
     description: `Essays and technical notes by Greg Cardoni about ${term.name}.`,
     pathname: term.href,
-    keywords: [term.name],
   });
 }
 

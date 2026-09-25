@@ -36,6 +36,7 @@ export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
       return {
         id,
         title: data.title,
+        description: data.description ? String(data.description) : undefined,
         tags: data.tags || [],
         categories: data.categories || [],
         keywords: data.keywords || [],

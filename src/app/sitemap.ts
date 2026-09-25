@@ -60,14 +60,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const tagRoutes = tags.map((term) => {
-    return {
-      url: `${SITE_URL}${term.href}`,
-      lastModified: latestArchiveDate(term.posts),
-      changeFrequency: 'monthly' as const,
-      priority: 0.4,
-    };
-  });
+  // Thin single-post tag archives are noindex'd, so keep them out of the sitemap.
+  const tagRoutes = tags
+    .filter((term) => term.count > 1)
+    .map((term) => {
+      return {
+        url: `${SITE_URL}${term.href}`,
+        lastModified: latestArchiveDate(term.posts),
+        changeFrequency: 'monthly' as const,
+        priority: 0.4,
+      };
+    });
 
   return [...staticRoutes, ...postRoutes, ...categoryRoutes, ...tagRoutes];
 }

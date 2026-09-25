@@ -22,16 +22,7 @@ export const siteConfig = {
   locale: 'en-US',
   openGraphLocale: 'en_US',
   description:
-    'Essays by Greg Cardoni on software, technology, philosophy, and the ideas that connect them.',
-  keywords: [
-    'Greg Cardoni',
-    'technology essays',
-    'philosophy essays',
-    'software engineering',
-    'programming',
-    'technology ethics',
-    'personal blog',
-  ],
+    'Essays by Greg Cardoni on software engineering, technology, philosophy, and the human questions behind the tools we build. New notes on craft and ideas.',
   feed: {
     title: 'Cardoni.net — Essays by Greg Cardoni',
     url: `${SITE_URL}/atom.xml`,
@@ -82,9 +73,16 @@ interface PageMetadataOptions {
   openGraphTitle: string;
   description: string;
   pathname: string;
-  keywords?: string[];
+  robots?: Metadata['robots'];
   image?: SocialImageMetadata;
   article?: ArticleMetadata;
+  profile?: ProfileMetadata;
+}
+
+interface ProfileMetadata {
+  firstName?: string;
+  lastName?: string;
+  username?: string;
 }
 
 const SOCIAL_IMAGE_MIME_TYPES: Record<string, string> = {
@@ -114,36 +112,37 @@ export function buildPageMetadata({
   openGraphTitle,
   description,
   pathname,
-  keywords,
+  robots,
   image = siteConfig.socialImage,
   article,
+  profile,
 }: PageMetadataOptions): Metadata {
   const canonicalUrl = absoluteUrl(pathname);
-  const pageKeywords = Array.from(new Set([...siteConfig.keywords, ...(keywords || [])]));
-  const openGraph: Metadata['openGraph'] = article
-    ? {
-        title: openGraphTitle,
-        description,
-        type: 'article',
-        url: canonicalUrl,
-        siteName: siteConfig.name,
-        locale: siteConfig.openGraphLocale,
-        publishedTime: article.publishedTime,
-        modifiedTime: article.modifiedTime,
-        authors: article.authors,
-        section: article.section,
-        tags: article.tags,
-        images: [image],
-      }
-    : {
-        title: openGraphTitle,
-        description,
-        type: 'website',
-        url: canonicalUrl,
-        siteName: siteConfig.name,
-        locale: siteConfig.openGraphLocale,
-        images: [image],
-      };
+  const openGraph: Metadata['openGraph'] = {
+    title: openGraphTitle,
+    description,
+    url: canonicalUrl,
+    siteName: siteConfig.name,
+    locale: siteConfig.openGraphLocale,
+    images: [image],
+    ...(article
+      ? {
+          type: 'article' as const,
+          publishedTime: article.publishedTime,
+          modifiedTime: article.modifiedTime,
+          authors: article.authors,
+          section: article.section,
+          tags: article.tags,
+        }
+      : profile
+        ? {
+            type: 'profile' as const,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            username: profile.username,
+          }
+        : { type: 'website' as const }),
+  };
 
   return {
     title,
@@ -151,7 +150,7 @@ export function buildPageMetadata({
     authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
     creator: siteConfig.author.name,
     publisher: siteConfig.author.name,
-    keywords: pageKeywords,
+    robots,
     alternates: {
       canonical: canonicalUrl,
       types: { 'application/atom+xml': siteConfig.feed.url },

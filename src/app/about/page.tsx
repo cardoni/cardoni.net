@@ -9,7 +9,11 @@ export const metadata: Metadata = buildPageMetadata({
   openGraphTitle: 'About Greg Cardoni',
   description,
   pathname: '/about',
-  keywords: ['Greg Cardoni biography', 'software engineer', 'philosophy graduate'],
+  profile: {
+    firstName: 'Greg',
+    lastName: 'Cardoni',
+    username: siteConfig.author.handle,
+  },
 });
 
 const profileJsonLd = {

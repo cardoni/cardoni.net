@@ -42,17 +42,15 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
           <Link href={`/${post.id}`} className="post-row-title-link">
             <h2 className="font-reading">{post.title}</h2>
             <p>{post.excerpt}</p>
+            <span className="read-more-label">
+              Read more
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
           </Link>
         </div>
-        <Link href={`/${post.id}`} className="post-read-more">
-          {post.readTime}
-          <span className="read-more-label">
-            Read more
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </span>
-        </Link>
+        <span className="post-read-more">{post.readTime}</span>
       </div>
     </motion.article>
   );

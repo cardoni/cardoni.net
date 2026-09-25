@@ -12,7 +12,6 @@ export const metadata: Metadata = buildPageMetadata({
   openGraphTitle: 'Writing by category',
   description,
   pathname: '/categories',
-  keywords: ['essay categories', 'software topics', 'technology topics'],
 });
 
 export default async function CategoriesPage() {
