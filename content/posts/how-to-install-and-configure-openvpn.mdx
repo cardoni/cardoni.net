@@ -1,5 +1,6 @@
 ---
 title: "Making DigitalOcean's Private Networking Secure"
+description: "Secure DigitalOcean's shared private networking with OpenVPN: server setup guide covering keys, Diffie-Hellman params, client configs, and static IPs."
 tags:
   - openvpn
   - vpn
@@ -11,9 +12,9 @@ keywords: [ 'vpn', 'openvpn', 'open vpn', 'digital ocean', 'private networking',
 date: 2014-11-13 10:00:00
 ---
 
-A few weeks ago here at [Hone](http://gohone.com/ "Hone"), we decided to spin a new server cluster in DigitalOcean's NYC3 data center. [DigitalOcean introduced 'private' networking](https://www.digitalocean.com/company/blog/introducing-private-networking/ "DigitalOcean: Introducing Private Networking") just over a year ago. However, it turns out that DigitalOcean actually refers to this as _Shared Private Networking_—and many of the comments under their announcement point out that their private networking [isn't](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1160313645) [really](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1067364221) [too](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1038459686) [private](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1037153678).
+A few weeks ago here at Hone, we decided to spin a new server cluster in DigitalOcean's NYC3 data center. [DigitalOcean introduced 'private' networking](https://www.digitalocean.com/company/blog/introducing-private-networking/ "DigitalOcean: Introducing Private Networking") just over a year ago. However, it turns out that DigitalOcean actually refers to this as _Shared Private Networking_—and many of the comments under their announcement point out that their private networking [isn't](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1160313645) [really](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1067364221) [too](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1038459686) [private](https://www.digitalocean.com/company/blog/introducing-private-networking/#comment-1037153678).
 
-We decided to use [OpenVPN](http://openvpn.net/ "OpenVPN: An open source VPN daemon") to layer a secure network on top of DigitalOcean's shared private networking.
+We decided to use [OpenVPN](https://openvpn.net/ "OpenVPN: An open source VPN daemon") to layer a secure network on top of DigitalOcean's shared private networking.
 
 ### What we wanted to accomplish:
 1. Install an OpenVPN _server_ on our load balancer
@@ -66,7 +67,7 @@ Generate a certificate and private key for the server:
 ./build-key-server <vpn_server_name>
 ```
 
-Generate some [Diffie–Hellman–Merkle parameters](http://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange "Diffie–Hellman–Merkle Parameters [Wikipedia]") for the OpenVPN server (**This will take a minute or two**):
+Generate some [Diffie–Hellman–Merkle parameters](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange "Diffie–Hellman–Merkle Parameters [Wikipedia]") for the OpenVPN server (**This will take a minute or two**):
 
 ```bash
 ./build-dh
@@ -196,7 +197,7 @@ You can grab this IP quickly by running (on the OpenVPN server itself): `ifconfi
 If you can't ping the OpenVPN server, then something is wrong with your config. Consider re-reading all of the above.
 
 ## Assign Static IPs to VPN Clients
-You may desire to assign static IP addresses to some or all of your client machines. ([Hat-tip to Michael Albert](http://michlstechblog.info/blog/openvpn-set-a-static-ip-address-for-a-client/ "Michael Albert: 'OpenVPN: Set a static IP Address for a client'") for a great post which helped here.)
+You may desire to assign static IP addresses to some or all of your client machines. ([Hat-tip to Michael Albert](https://michlstechblog.info/blog/openvpn-set-a-static-ip-address-for-a-client/ "Michael Albert: 'OpenVPN: Set a static IP Address for a client'") for a great post which helped here.)
 
 On your OpenVPN server, create a folder in which to save the information of your static clients.
 In this example, we'll name our folder `static_clients`:
@@ -251,8 +252,8 @@ Here's an example `iptables` config that would restrict traffic in the way I men
 COMMIT
 ```
 
-## [Hone](http://gohone.com/ "Hone") is Hiring!
-[Check out all of the positions for which we're currently hiring](http://gohone.com/jobs/ "Hone, Inc. Job Listings").
+## Hone is Hiring!
+Check out all of the positions for which we were hiring.
 
 ## Credit Where Credit Is Due
 While figuring out how to do everything above—and while I was writing this tutorial—I was reading and consulting with the following sources:

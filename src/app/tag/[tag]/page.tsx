@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraphTitle: `${term.name} writing by Greg Cardoni`,
     description,
     pathname: term.href,
-    keywords: [term.name],
+    // Thin single-post tag archives stay crawlable but out of the index.
+    robots: term.count <= 1 ? { index: false, follow: true } : undefined,
   });
 }
 

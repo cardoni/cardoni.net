@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     template: `%s — ${siteConfig.author.name}`,
   },
   description: siteConfig.description,
-  keywords: [...siteConfig.keywords],
   authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
   creator: siteConfig.author.name,
   publisher: siteConfig.author.name,
@@ -128,7 +127,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <EditorialProviders>
             <a className="skip-link" href="#main-content">
-              Skip to the writing
+              Skip to content
             </a>
             <DynamicNavigation />
             <main id="main-content">{children}</main>

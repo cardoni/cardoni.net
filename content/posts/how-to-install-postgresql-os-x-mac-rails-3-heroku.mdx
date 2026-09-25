@@ -1,9 +1,9 @@
 ---
 title: Setting up PostgreSQL on Mac OS X
+description: "Install PostgreSQL on Mac OS X with Homebrew for Rails development and Heroku deployment - replace local SQLite with Postgres, step by step."
 tags:
-  - brew
-  - databases
   - homebrew
+  - database
   - postgresql
   - rails
   - sql
@@ -19,7 +19,7 @@ What's that? You're making a Rails app, planning on eventually pushing it to Her
 You've got to install Postgres locally! The good news is: It's super easy.
 
 ## First Things First
-You'll first need to install PostgreSQL.  For this tutorial, we'll use  _[Homebrew](http://brew.sh/ "Homebrew")_ to help us do that quickly.
+You'll first need to install PostgreSQL.  For this tutorial, we'll use  _[Homebrew](https://brew.sh/ "Homebrew")_ to help us do that quickly.
 
 Open _terminal_ and type: `brew -v`
 This will return the current version of brew (if you have it installed).
@@ -40,7 +40,7 @@ With _brew_ installed, you're golden. Time to install PostgreSQL!
 
 ## Install PostgreSQL and Configure
 
-With Brew, you can install _[PostgreSQL](http://www.postgresql.org/ "PostgreSQL")_ with the following command in _Terminal_:
+With Brew, you can install _[PostgreSQL](https://www.postgresql.org/ "PostgreSQL")_ with the following command in _Terminal_:
 
 ```bash
 brew install postgresql
@@ -103,8 +103,8 @@ If you want to run Postgres in your production environment as well as your devel
 Finally, you'll want to create a new database: `rake db:create` and you'll probably want to run the following command to delete your tables, recreate them, and seed them with any data you may have in your `seeds.db` file with the following command: `rake db:reset`
 
 ## Trying to install PostgreSQL on your Linux machine instead?
-My buddy—[Eric MacAdie](http://www.macadie.net/ "Eric MacAdie, Software Developer")—offers these helpful [instructions for setting up a Postgres server for Rails on a Linux machine](http://www.macadie.net/2012/03/12/connecting-rails-and-postgres/ "How to set up PostgreSQL on Linux for your Rails app during development") instead of OS X.
+My buddy—[Eric MacAdie](https://www.macadie.net/ "Eric MacAdie, Software Developer")—offers these helpful [instructions for setting up a Postgres server for Rails on a Linux machine](https://www.macadie.net/2012/03/12/connecting-rails-and-postgres/ "How to set up PostgreSQL on Linux for your Rails app during development") instead of OS X.
 
 ## Credit Where Credit Is Due:
-[Dan Manges](https://twitter.com/#!/dan_manges "Dan Manges") is crazy-smart, the CTO of [Braintree](http://www.braintreepayments.com/ "Braintree Payments"), and happens to be my mentor while at ~~[Code Academy](http://codeacademy.org/ "Code Academy in Chicago, IL")~~ [The Starter League](http://www.starterleague.com/ "The Starter League in Chicago, IL"). He saved me about three hours of chin-scratching, by teaching me everything below today (in about 15 minutes). Thanks man!
+[Dan Manges](https://twitter.com/#!/dan_manges "Dan Manges") is crazy-smart, the CTO of [Braintree](https://www.braintreepayments.com/ "Braintree Payments"), and happens to be my mentor while at ~~[Code Academy](https://www.fullstackacademy.com/ "Code Academy in Chicago, IL")~~ [The Starter League](https://www.fullstackacademy.com/ "The Starter League in Chicago, IL"). He saved me about three hours of chin-scratching, by teaching me everything below today (in about 15 minutes). Thanks man!
 (Probably worth noting that any errors below are courtesy of yours truly—and not Dan :)

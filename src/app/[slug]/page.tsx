@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const description = post.excerpt || siteConfig.description;
+  const description = post.description || post.excerpt || siteConfig.description;
   const imageAlt = post.imageAlt || `Editorial card for “${post.title}” by Greg Cardoni.`;
   const image = metadataImage(post.image || `/${post.id}/opengraph-image`, imageAlt);
 
@@ -46,7 +46,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraphTitle: post.title,
     description,
     pathname: `/${post.id}`,
-    keywords: Array.from(new Set([...post.keywords, ...post.tags, ...post.categories, 'Greg Cardoni'])),
     image,
     article: {
       publishedTime: post.date,
@@ -98,7 +97,7 @@ export default async function PostPage({ params }: Props) {
     '@type': 'BlogPosting',
     '@id': `${absoluteUrl(`/${post.id}`)}#article`,
     headline: post.title,
-    description: post.excerpt,
+    description: post.description || post.excerpt || siteConfig.description,
     url: absoluteUrl(`/${post.id}`),
     mainEntityOfPage: absoluteUrl(`/${post.id}`),
     image: versionedSocialImageUrl(headlineImage),

@@ -68,21 +68,22 @@ describe('AnimatedCard', () => {
     expect(screen.getByText('personal pivot')).toBeInTheDocument()
   })
 
-  it('creates correct post links', () => {
+  it('creates a single post link per card', () => {
     render(<AnimatedCard post={mockPost} />)
 
-    const titleLinks = screen.getAllByRole('link', { name: /Test Blog Post Title/i })
-    const excerptLinks = screen.getAllByRole('link', { name: /This is a test excerpt/i })
-    const readMoreLink = screen.getByRole('link', { name: /Read more/i })
+    // Only one link in the card points at the post (category badges link elsewhere)
+    const linksToPost = screen
+      .getAllByRole('link')
+      .filter((link) => link.getAttribute('href') === '/test-post')
+    expect(linksToPost).toHaveLength(1)
 
-    // Title should be a link
-    expect(titleLinks[0]).toHaveAttribute('href', '/test-post')
-    
-    // Excerpt should be a link  
-    expect(excerptLinks[0]).toHaveAttribute('href', '/test-post')
-    
-    // Read more should be a link
-    expect(readMoreLink).toHaveAttribute('href', '/test-post')
+    const postLink = linksToPost[0]
+    expect(postLink).toHaveAttribute('href', '/test-post')
+
+    // Title, excerpt, and the read-more affordance all live inside that one link
+    expect(postLink).toHaveTextContent('Test Blog Post Title')
+    expect(postLink).toHaveTextContent('This is a test excerpt')
+    expect(postLink).toHaveTextContent('Read more')
   })
 
   it('handles posts with no categories', () => {

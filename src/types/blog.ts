@@ -1,6 +1,7 @@
 export interface BlogPost {
   id: string;
   title: string;
+  description?: string; // Hand-written SEO meta description from frontmatter
   tags: string[];
   categories: string[];
   keywords: string[];

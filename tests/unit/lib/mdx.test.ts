@@ -94,6 +94,17 @@ Basic content here.`
       expect(post.tags).toEqual([])
       expect(post.categories).toEqual([])
       expect(post.keywords).toEqual([])
+      expect(post.description).toBeUndefined()
+    })
+
+    it('parses the frontmatter description when present', async () => {
+      const mockFileContent = `---\ntitle: Described Post\ndate: 2023-12-01\ndescription: A hand-written summary used for the meta description.\n---\n\nBasic content here.`
+
+      mockFs.readdirSync.mockReturnValue(['described.mdx'] as any)
+      mockFs.readFileSync.mockReturnValue(mockFileContent)
+
+      const posts = await getAllPosts()
+      expect(posts[0].description).toBe('A hand-written summary used for the meta description.')
     })
 
     it('sorts posts by date in descending order', async () => {
