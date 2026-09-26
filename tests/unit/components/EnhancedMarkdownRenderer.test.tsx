@@ -20,8 +20,39 @@ This is the actual content.`;
     render(<EnhancedMarkdownRenderer content={'# Main heading\n\n## Section heading'} />);
 
     expect(screen.getByRole('heading', { level: 2, name: 'Main heading' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Section heading' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Section heading' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
+  });
+
+  it('never skips heading levels, clamping jumps to the previous level + 1', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'### Deep start\n\n## Back up\n\n#### Jump down\n\n## Level again'}
+      />,
+    );
+
+    // ### first: clamped to h2 (no h1 -> h3 skip); ## stays h2;
+    // #### after h2: clamped to h3 (no h2 -> h4 skip).
+    expect(screen.getByRole('heading', { level: 2, name: 'Deep start' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Back up' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Jump down' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Level again' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 4 })).not.toBeInTheDocument();
+  });
+
+  it('preserves each heading’s original visual size with a tier class', () => {
+    render(
+      <EnhancedMarkdownRenderer
+        content={'# Big\n\n## Medium\n\n### Small\n\n#### Tiny'}
+      />,
+    );
+
+    // Authored `#`/`##` keep the two largest looks; `###`/`####` keep theirs,
+    // even though the elements are re-leveled for a clean outline.
+    expect(screen.getByRole('heading', { name: 'Big' })).toHaveClass('ht-2');
+    expect(screen.getByRole('heading', { name: 'Medium' })).toHaveClass('ht-3');
+    expect(screen.getByRole('heading', { name: 'Small' })).toHaveClass('ht-4');
+    expect(screen.getByRole('heading', { name: 'Tiny' })).toHaveClass('ht-5');
   });
 
   it('renders semantic lists and blockquotes', () => {

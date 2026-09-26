@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import DefinitionTerm from './DefinitionTerm';
+import { remarkRelevelHeadings } from '@/lib/remark-relevel-headings';
 
 interface EnhancedMarkdownRendererProps {
   content: string;
@@ -19,13 +20,54 @@ function prepareMarkdown(content: string) {
     });
 }
 
+type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+function ArticleHeading({
+  level,
+  className,
+  children,
+}: {
+  level: HeadingLevel;
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  const Tag = `h${level}` as const;
+  // className carries the visual tier assigned by remarkRelevelHeadings, so
+  // the heading keeps its original size even when its level was adjusted.
+  return <Tag className={className}>{children}</Tag>;
+}
+
 const markdownComponents: Components = {
-  h1: ({ children }) => <h2>{children}</h2>,
-  h2: ({ children }) => <h3>{children}</h3>,
-  h3: ({ children }) => <h4>{children}</h4>,
-  h4: ({ children }) => <h5>{children}</h5>,
-  h5: ({ children }) => <h6>{children}</h6>,
-  h6: ({ children }) => <h6>{children}</h6>,
+  h1: ({ className, children }) => (
+    <ArticleHeading level={2} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
+  h2: ({ className, children }) => (
+    <ArticleHeading level={2} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
+  h3: ({ className, children }) => (
+    <ArticleHeading level={3} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
+  h4: ({ className, children }) => (
+    <ArticleHeading level={4} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
+  h5: ({ className, children }) => (
+    <ArticleHeading level={5} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
+  h6: ({ className, children }) => (
+    <ArticleHeading level={6} className={className}>
+      {children}
+    </ArticleHeading>
+  ),
   a: ({ href = '', title, children }) => {
     if (href === '#definition' && title) {
       return <DefinitionTerm definition={title}>{children}</DefinitionTerm>;
@@ -83,7 +125,7 @@ const markdownComponents: Components = {
 export default function EnhancedMarkdownRenderer({ content }: EnhancedMarkdownRendererProps) {
   return (
     <div className="article-prose font-reading">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkRelevelHeadings]} components={markdownComponents}>
         {prepareMarkdown(content)}
       </ReactMarkdown>
     </div>
