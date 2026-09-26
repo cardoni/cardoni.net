@@ -42,6 +42,16 @@ const nextConfig: NextConfig = {
         destination: '/tag/wordpos',
         permanent: true,
       },
+      {
+        source: '/tag/button-to',
+        destination: '/tag/button_to',
+        permanent: true,
+      },
+      {
+        source: '/tag/link-to',
+        destination: '/tag/link_to',
+        permanent: true,
+      },
     ];
   },
 };
