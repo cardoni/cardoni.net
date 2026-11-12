@@ -8,3 +8,4 @@
 - `npm run build` runs `next build --webpack` on purpose. Don't switch it to Turbopack without checking that the build still works.
 - Before calling a change done, run `npm run lint` and `npx vitest run` (plain `npm test` starts in watch mode when attached to a terminal).
 - In Markdown, keep code fences and their contents flush left (no indentation).
+- After opening a pull request, subscribe to its activity right away (no need to ask) and handle CI failures and review comments until it is merged or closed.
