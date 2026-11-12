@@ -15,10 +15,26 @@ function escapeHtml(text: string): string {
 }
 
 /**
+ * Strip HTML tags from text, looping until no tags remain.
+ * This handles nested/malformed patterns like <<script>script> that
+ * could bypass single-pass stripping.
+ */
+function stripHtmlTags(text: string): string {
+  const htmlTagRegex = /<[^>]+>/g;
+  let result = text;
+  let previous: string;
+  do {
+    previous = result;
+    result = result.replace(htmlTagRegex, '');
+  } while (result !== previous);
+  return result;
+}
+
+/**
  * Strip markdown formatting from text to create clean excerpts
  */
 export function stripMarkdown(text: string): string {
-  return text
+  const withoutMarkdown = text
     // Remove frontmatter
     .replace(/^---[\s\S]*?---\n?/g, '')
     // Remove fenced code blocks before processing inline code
@@ -40,13 +56,11 @@ export function stripMarkdown(text: string): string {
     .replace(/^>\s+/gm, '')
     // Remove list markers (- item, 1. item)
     .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '')
-    // Remove HTML tags
-    .replace(/<[^>]+>/g, '')
-    // Clean up multiple whitespace
-    .replace(/\s+/g, ' ')
-    // Remove leading/trailing whitespace
-    .trim();
+    .replace(/^[\s]*\d+\.\s+/gm, '');
+  // Remove HTML tags (loop until none remain to handle nested patterns)
+  const noHtml = stripHtmlTags(withoutMarkdown);
+  // Clean up multiple whitespace and trim
+  return noHtml.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -76,7 +90,7 @@ export function generateExcerpt(content: string, maxLength: number = 150): strin
  * Output is HTML-escaped except for the allowed tags.
  */
 export function renderInlineMarkdown(text: string): string {
-  const stripped = text
+  const withoutMarkdown = text
     // Remove frontmatter
     .replace(/^---[\s\S]*?---\n?/g, '')
     // Remove fenced code blocks
@@ -96,12 +110,11 @@ export function renderInlineMarkdown(text: string): string {
     .replace(/^>\s+/gm, '')
     // Remove list markers
     .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '')
-    // Remove HTML tags
-    .replace(/<[^>]+>/g, '')
-    // Clean up whitespace
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/^[\s]*\d+\.\s+/gm, '');
+  // Remove HTML tags (loop until none remain to handle nested patterns)
+  const noHtml = stripHtmlTags(withoutMarkdown);
+  // Clean up whitespace
+  const stripped = noHtml.replace(/\s+/g, ' ').trim();
 
   // Now render strikethrough safely:
   // 1. Split on strikethrough pattern

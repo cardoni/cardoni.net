@@ -294,6 +294,16 @@ This will start the development server on [http://localhost:3000](http://localho
       expect(result).not.toContain('<script>')
     })
 
+    it('handles nested/malformed HTML tags that could bypass single-pass stripping', () => {
+      const input = '<<script>script>alert("xss")<</script>/script>'
+      const result = renderInlineMarkdown(input)
+      // Should not contain any executable script tags after stripping + escaping
+      expect(result).not.toContain('<script>')
+      expect(result).not.toContain('</script>')
+      // Remaining > characters are escaped, making the output safe
+      expect(result).toContain('&gt;')
+    })
+
     it('handles multiple strikethrough sections', () => {
       const input = '~~first~~ middle ~~second~~'
       const result = renderInlineMarkdown(input)
