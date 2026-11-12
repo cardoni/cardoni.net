@@ -282,25 +282,25 @@ This will start the development server on [http://localhost:3000](http://localho
     it('escapes HTML special characters for XSS safety', () => {
       const input = 'Test <script>alert("xss")</script> text'
       const result = renderInlineMarkdown(input)
-      expect(result).toBe('Test alert(&quot;xss&quot;) text')
+      // HTML is escaped, not stripped - this is safe and what CodeQL expects
+      expect(result).toBe('Test &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; text')
       expect(result).not.toContain('<script>')
     })
 
-    it('strips HTML tags inside strikethrough content', () => {
+    it('escapes HTML tags inside strikethrough content', () => {
       const input = '~~<script>evil</script>~~ safe'
       const result = renderInlineMarkdown(input)
-      // HTML tags are stripped (not escaped) for safety
-      expect(result).toBe('<del>evil</del> safe')
-      expect(result).not.toContain('<script>')
+      // HTML is escaped inside strikethrough, keeping it safe
+      expect(result).toBe('<del>&lt;script&gt;evil&lt;/script&gt;</del> safe')
+      expect(result).not.toContain('<script>evil')
     })
 
-    it('handles nested/malformed HTML tags that could bypass single-pass stripping', () => {
-      const input = '<<script>script>alert("xss")<</script>/script>'
+    it('escapes nested/malformed HTML patterns', () => {
+      const input = '<<script>script>alert("xss")'
       const result = renderInlineMarkdown(input)
-      // Should not contain any executable script tags after stripping + escaping
+      // All < and > are escaped, preventing any HTML injection
       expect(result).not.toContain('<script>')
-      expect(result).not.toContain('</script>')
-      // Remaining > characters are escaped, making the output safe
+      expect(result).toContain('&lt;')
       expect(result).toContain('&gt;')
     })
 

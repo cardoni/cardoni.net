@@ -15,19 +15,22 @@ function escapeHtml(text: string): string {
 }
 
 /**
- * Strip HTML tags from text, looping until no tags remain.
- * This handles nested/malformed patterns like <<script>script> that
- * could bypass single-pass stripping.
+ * Decode HTML entities back to characters for length calculation
+ */
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&');
+}
+
+/**
+ * Strip HTML tags from text for plain-text output.
  */
 function stripHtmlTags(text: string): string {
-  const htmlTagRegex = /<[^>]+>/g;
-  let result = text;
-  let previous: string;
-  do {
-    previous = result;
-    result = result.replace(htmlTagRegex, '');
-  } while (result !== previous);
-  return result;
+  return text.replace(/<[^>]+>/g, '');
 }
 
 /**
@@ -87,11 +90,15 @@ export function generateExcerpt(content: string, maxLength: number = 150): strin
 /**
  * Render inline markdown to safe HTML for display in excerpts/decks.
  * Only renders strikethrough; all other markdown is stripped to plain text.
- * Output is HTML-escaped except for the allowed tags.
+ * HTML is escaped FIRST to prevent XSS, then markdown is processed.
  */
 export function renderInlineMarkdown(text: string): string {
-  const withoutMarkdown = text
-    // Remove frontmatter
+  // SECURITY: Escape HTML first, before any other processing.
+  // This ensures no malicious HTML can survive, regardless of markdown processing.
+  const escaped = escapeHtml(text);
+
+  const withoutMarkdown = escaped
+    // Remove frontmatter (escaped --- becomes ---)
     .replace(/^---[\s\S]*?---\n?/g, '')
     // Remove fenced code blocks
     .replace(/```[\s\S]*?```/g, '')
@@ -101,46 +108,23 @@ export function renderInlineMarkdown(text: string): string {
     .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1')
     // Remove inline code (keep text)
     .replace(/`([^`]+)`/g, '$1')
-    // Remove images (keep alt text)
+    // Remove images (keep alt text) - note: [] and () are not escaped
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
     .replace(/!\[[^\]]*\]/g, '')
     // Remove links (keep link text)
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
     // Remove blockquotes
-    .replace(/^>\s+/gm, '')
+    .replace(/^&gt;\s+/gm, '') // > is now &gt;
     // Remove list markers
     .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '');
-  // Remove HTML tags (loop until none remain to handle nested patterns)
-  const noHtml = stripHtmlTags(withoutMarkdown);
-  // Clean up whitespace
-  const stripped = noHtml.replace(/\s+/g, ' ').trim();
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    // Clean up whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
 
-  // Now render strikethrough safely:
-  // 1. Split on strikethrough pattern
-  // 2. Escape all parts
-  // 3. Wrap strikethrough content in <del> tags
-  const parts: string[] = [];
-  let lastIndex = 0;
-  const strikethroughRegex = /~~([^~]+)~~/g;
-  let match;
-
-  while ((match = strikethroughRegex.exec(stripped)) !== null) {
-    // Add escaped text before this match
-    if (match.index > lastIndex) {
-      parts.push(escapeHtml(stripped.slice(lastIndex, match.index)));
-    }
-    // Add the strikethrough content wrapped in <del>
-    parts.push(`<del>${escapeHtml(match[1])}</del>`);
-    lastIndex = strikethroughRegex.lastIndex;
-  }
-
-  // Add any remaining text after the last match
-  if (lastIndex < stripped.length) {
-    parts.push(escapeHtml(stripped.slice(lastIndex)));
-  }
-
-  return parts.join('');
+  // Now render strikethrough: ~~ is not affected by HTML escaping
+  // Replace ~~text~~ with <del>text</del>
+  return withoutMarkdown.replace(/~~([^~]+)~~/g, '<del>$1</del>');
 }
 
 /**
@@ -150,60 +134,67 @@ export function renderInlineMarkdown(text: string): string {
 export function generateExcerptHtml(content: string, maxLength: number = 150): string {
   const rendered = renderInlineMarkdown(content);
   
-  // Calculate length without HTML tags for truncation
-  const textOnly = rendered.replace(/<[^>]+>/g, '');
+  // Calculate visual length (decode entities, strip tags)
+  const textOnly = decodeHtmlEntities(rendered.replace(/<[^>]+>/g, ''));
   
   if (textOnly.length <= maxLength) {
     return rendered;
   }
 
-  // Need to truncate while preserving HTML tags
-  let textLength = 0;
+  // Truncate while preserving HTML tags and counting entities as single chars
+  let visualLength = 0;
   let result = '';
-  let inTag = false;
-  let currentTag = '';
+  let i = 0;
   const openTags: string[] = [];
 
-  for (let i = 0; i < rendered.length; i++) {
+  while (i < rendered.length && visualLength < maxLength) {
     const char = rendered[i];
 
+    // Handle HTML tags
     if (char === '<') {
-      inTag = true;
-      currentTag = '<';
-      continue;
-    }
-
-    if (inTag) {
-      currentTag += char;
-      if (char === '>') {
-        inTag = false;
-        result += currentTag;
+      const tagEnd = rendered.indexOf('>', i);
+      if (tagEnd !== -1) {
+        const tag = rendered.slice(i, tagEnd + 1);
+        result += tag;
         // Track open/close tags
-        if (currentTag.startsWith('</')) {
+        if (tag.startsWith('</')) {
           openTags.pop();
-        } else if (!currentTag.endsWith('/>')) {
-          const tagName = currentTag.match(/<(\w+)/)?.[1];
+        } else if (!tag.endsWith('/>')) {
+          const tagName = tag.match(/<(\w+)/)?.[1];
           if (tagName) {
             openTags.push(tagName);
           }
         }
-        currentTag = '';
+        i = tagEnd + 1;
+        continue;
       }
-      continue;
     }
 
-    textLength++;
+    // Handle HTML entities (count as 1 visual character)
+    if (char === '&') {
+      const entityEnd = rendered.indexOf(';', i);
+      if (entityEnd !== -1 && entityEnd - i <= 8) {
+        const entity = rendered.slice(i, entityEnd + 1);
+        result += entity;
+        visualLength++;
+        i = entityEnd + 1;
+        continue;
+      }
+    }
+
+    // Regular character
     result += char;
+    visualLength++;
+    i++;
+  }
 
-    if (textLength >= maxLength) {
-      // Try to break at word boundary
-      const lastSpace = result.lastIndexOf(' ');
-      if (lastSpace > result.length * 0.8) {
-        result = result.slice(0, lastSpace).trimEnd();
-      }
-      result += ' ...';
-      break;
+  // Truncated - try to break at word boundary
+  if (visualLength >= maxLength) {
+    const lastSpace = result.lastIndexOf(' ');
+    if (lastSpace > result.length * 0.7) {
+      result = result.slice(0, lastSpace).trimEnd();
     }
+    result += ' ...';
   }
 
   // Close any open tags
