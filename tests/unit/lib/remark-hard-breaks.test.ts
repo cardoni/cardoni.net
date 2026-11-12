@@ -44,4 +44,27 @@ describe('remarkHardBreaks', () => {
     expect(paragraph.children?.[2]).toEqual({ type: 'text', value: 'no newline' });
     expect(code).toEqual({ type: 'code', value: 'line 1\nline 2' });
   });
+
+  it('only adds breaks inside paragraphs, not headings', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        { type: 'heading', children: [{ type: 'text', value: 'two line\nheading' }] },
+        {
+          type: 'blockquote',
+          children: [{ type: 'paragraph', children: [{ type: 'text', value: 'a\nb' }] }],
+        },
+      ],
+    };
+
+    remarkHardBreaks()(tree);
+
+    const [heading, blockquote] = tree.children;
+    expect(heading.children).toEqual([{ type: 'text', value: 'two line\nheading' }]);
+    expect(blockquote.children[0].children).toEqual([
+      { type: 'text', value: 'a' },
+      { type: 'break' },
+      { type: 'text', value: 'b' },
+    ]);
+  });
 });

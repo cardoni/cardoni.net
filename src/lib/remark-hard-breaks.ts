@@ -14,23 +14,27 @@ interface MdastNode {
  */
 export function remarkHardBreaks() {
   return (tree: MdastNode) => {
-    const visit = (node: MdastNode): void => {
+    const visit = (node: MdastNode, inParagraph: boolean): void => {
       if (!node.children) return;
 
-      node.children = node.children.flatMap((child) => {
-        if (child.type !== 'text' || typeof child.value !== 'string' || !/\r?\n/.test(child.value)) {
-          return [child];
-        }
+      const withinParagraph = inParagraph || node.type === 'paragraph';
 
-        return child.value.split(/\r?\n/).flatMap((line, index) => {
-          const text: MdastNode = { type: 'text', value: line };
-          return index === 0 ? [text] : [{ type: 'break' }, text];
+      if (withinParagraph) {
+        node.children = node.children.flatMap((child) => {
+          if (child.type !== 'text' || typeof child.value !== 'string' || !/\r?\n/.test(child.value)) {
+            return [child];
+          }
+
+          return child.value.split(/\r?\n/).flatMap((line, index) => {
+            const text: MdastNode = { type: 'text', value: line };
+            return index === 0 ? [text] : [{ type: 'break' }, text];
+          });
         });
-      });
+      }
 
-      node.children.forEach(visit);
+      node.children.forEach((child) => visit(child, withinParagraph));
     };
 
-    visit(tree);
+    visit(tree, false);
   };
 }
