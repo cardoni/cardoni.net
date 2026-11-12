@@ -90,8 +90,12 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# Next.js build output
+# Next.js build output and generated types
 .next/
+next-env.d.ts
+
+# TypeScript incremental build cache
+*.tsbuildinfo
 
 # Nuxt.js build / generate output
 .nuxt
