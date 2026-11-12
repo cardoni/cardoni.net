@@ -27,17 +27,12 @@ function decodeHtmlEntities(text: string): string {
 }
 
 /**
- * Strip HTML tags from text for plain-text output.
- */
-function stripHtmlTags(text: string): string {
-  return text.replace(/<[^>]+>/g, '');
-}
-
-/**
- * Strip markdown formatting from text to create clean excerpts
+ * Strip markdown formatting from text to create clean excerpts.
+ * Note: This function handles MDX content which doesn't contain raw HTML.
+ * Any HTML-like syntax in MDX is JSX components processed separately.
  */
 export function stripMarkdown(text: string): string {
-  const withoutMarkdown = text
+  return text
     // Remove frontmatter
     .replace(/^---[\s\S]*?---\n?/g, '')
     // Remove fenced code blocks before processing inline code
@@ -59,11 +54,10 @@ export function stripMarkdown(text: string): string {
     .replace(/^>\s+/gm, '')
     // Remove list markers (- item, 1. item)
     .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '');
-  // Remove HTML tags (loop until none remain to handle nested patterns)
-  const noHtml = stripHtmlTags(withoutMarkdown);
-  // Clean up multiple whitespace and trim
-  return noHtml.replace(/\s+/g, ' ').trim();
+    .replace(/^[\s]*\d+\.\s+/gm, '')
+    // Clean up multiple whitespace and trim
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**

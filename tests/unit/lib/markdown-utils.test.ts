@@ -75,9 +75,10 @@ Regular text`
       expect(stripMarkdown(input)).toBe('Item 1 Item 2 Numbered item Another numbered item')
     })
 
-    it('removes HTML tags', () => {
-      expect(stripMarkdown('This is <strong>bold</strong> text')).toBe('This is bold text')
-      expect(stripMarkdown('<div class="test">Content</div>')).toBe('Content')
+    it('preserves HTML-like syntax (MDX content has no raw HTML)', () => {
+      // stripMarkdown processes MDX content which doesn't have raw HTML
+      // Any HTML-like syntax would be JSX components handled by MDX
+      expect(stripMarkdown('This is <strong>bold</strong> text')).toBe('This is <strong>bold</strong> text')
     })
 
     it('normalizes whitespace', () => {
