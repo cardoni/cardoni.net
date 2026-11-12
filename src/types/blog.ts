@@ -8,7 +8,8 @@ export interface BlogPost {
   date: string;
   updated?: string;
   content: string;
-  excerpt?: string; // Generated from content
+  excerpt?: string; // Plain text excerpt for meta descriptions and feeds
+  excerptHtml?: string; // HTML excerpt with inline formatting (e.g. strikethrough)
   readTime?: string; // Generated from content
   image?: string;
   imageAlt?: string;

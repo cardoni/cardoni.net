@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { cache } from 'react';
-import { generateExcerpt } from './markdown-utils';
+import { generateExcerpt, generateExcerptHtml } from './markdown-utils';
 
 const postsDirectory = path.join(process.cwd(), 'content', 'posts');
 
@@ -44,6 +44,7 @@ export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
         updated: normalizeDate(data.updated),
         content,
         excerpt: generateExcerpt(content, 150),
+        excerptHtml: generateExcerptHtml(content, 150),
         readTime: `${Math.max(1, Math.ceil(content.split(/\s+/).length / 200))} min read`,
         image: data.image ? String(data.image) : undefined,
         imageAlt: data.imageAlt ? String(data.imageAlt) : undefined,

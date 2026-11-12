@@ -142,7 +142,14 @@ export default async function PostPage({ params }: Props) {
               ))}
             </div>
             <h1 className="font-reading">{post.title}</h1>
-            {post.excerpt && <p className="article-deck font-reading">{post.excerpt}</p>}
+            {post.excerptHtml ? (
+              <p
+                className="article-deck font-reading"
+                dangerouslySetInnerHTML={{ __html: post.excerptHtml }}
+              />
+            ) : post.excerpt ? (
+              <p className="article-deck font-reading">{post.excerpt}</p>
+            ) : null}
             <div className="article-byline">
               <span>
                 By <Link href="/about" rel="author">{siteConfig.author.name}</Link>

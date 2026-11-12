@@ -41,7 +41,11 @@ export default function PostListItem({ post, delay = 0, index }: PostListItemPro
           </div>
           <Link href={`/${post.slug}`} className="post-row-title-link">
             <h2 className="font-reading">{post.title}</h2>
-            <p>{post.excerpt}</p>
+            {post.excerptHtml ? (
+              <p dangerouslySetInnerHTML={{ __html: post.excerptHtml }} />
+            ) : (
+              <p>{post.excerpt}</p>
+            )}
             <span className="read-more-label">
               Read more
               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
