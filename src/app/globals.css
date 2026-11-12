@@ -829,6 +829,23 @@ a.category-badge:hover {
   padding-left: 1.35em;
 }
 
+.article-prose ul {
+  list-style: disc;
+}
+
+.article-prose ol {
+  list-style: decimal;
+}
+
+.article-prose ul ul {
+  list-style: circle;
+}
+
+.article-prose li > ul,
+.article-prose li > ol {
+  margin-block: 0.55em 0;
+}
+
 .article-prose li {
   margin-block: 0.55em;
   padding-left: 0.3em;

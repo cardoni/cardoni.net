@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import DefinitionTerm from './DefinitionTerm';
+import { remarkHardBreaks } from '@/lib/remark-hard-breaks';
 import { remarkRelevelHeadings } from '@/lib/remark-relevel-headings';
 
 interface EnhancedMarkdownRendererProps {
@@ -125,7 +126,7 @@ const markdownComponents: Components = {
 export default function EnhancedMarkdownRenderer({ content }: EnhancedMarkdownRendererProps) {
   return (
     <div className="article-prose font-reading">
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkRelevelHeadings]} components={markdownComponents}>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkHardBreaks, remarkRelevelHeadings]} components={markdownComponents}>
         {prepareMarkdown(content)}
       </ReactMarkdown>
     </div>
