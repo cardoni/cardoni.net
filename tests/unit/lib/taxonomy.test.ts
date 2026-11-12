@@ -9,7 +9,7 @@ import {
 
 const posts: BlogPost[] = [
   {
-    id: 'proper-nouns',
+    slug: 'proper-nouns',
     title: 'Parsing Proper Nouns',
     categories: ['regex', 'regex'],
     tags: ['regex', 'parsing', 'parsing'],
@@ -18,7 +18,7 @@ const posts: BlogPost[] = [
     content: '',
   },
   {
-    id: 'parsing-tools',
+    slug: 'parsing-tools',
     title: 'Parsing Tools',
     categories: ['personal pivot'],
     tags: ['parsing', 'tools'],
@@ -27,7 +27,7 @@ const posts: BlogPost[] = [
     content: '',
   },
   {
-    id: 'tooling',
+    slug: 'tooling',
     title: 'Tooling',
     categories: ['nginx'],
     tags: ['tools'],

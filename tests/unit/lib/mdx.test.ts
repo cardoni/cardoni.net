@@ -19,7 +19,7 @@ const mockFs = vi.mocked(fs)
 const mockPath = vi.mocked(path)
 
 // Import after mocking
-import { getAllPosts, getPostById } from '@/lib/mdx'
+import { getAllPosts, getPostBySlug } from '@/lib/mdx'
 
 describe('mdx', () => {
   beforeEach(() => {
@@ -59,7 +59,7 @@ This is a test post with **bold** text.`
       expect(posts).toHaveLength(2)
       
       const post = posts[0]
-      expect(post.id).toBe('test-post')
+      expect(post.slug).toBe('test-post')
       expect(post.title).toBe('Test Post')
       expect(post.categories).toEqual(['test'])
       expect(post.tags).toEqual(['sample'])
@@ -168,7 +168,7 @@ Content`)
     })
   })
 
-  describe('getPostById', () => {
+  describe('getPostBySlug', () => {
     it('returns post with matching ID', async () => {
       mockFs.readdirSync.mockReturnValue(['target-post.mdx', 'other-post.mdx'] as any)
       
@@ -190,11 +190,11 @@ Other content`
         }
       })
 
-      const post = await getPostById('target-post')
+      const post = await getPostBySlug('target-post')
 
       expect(post).toBeTruthy()
       expect(post?.title).toBe('Target Post')
-      expect(post?.id).toBe('target-post')
+      expect(post?.slug).toBe('target-post')
     })
 
     it('returns null for non-existent post', async () => {
@@ -205,7 +205,7 @@ date: 2023-12-01
 ---
 Content`)
 
-      const post = await getPostById('non-existent')
+      const post = await getPostBySlug('non-existent')
 
       expect(post).toBeNull()
     })
@@ -250,7 +250,7 @@ This will download and install Homebrew to \`/usr/local\`.`
       const posts = await getAllPosts()
       const post = posts[0]
 
-      expect(post.id).toBe('homebrew-install')
+      expect(post.slug).toBe('homebrew-install')
       expect(post.title).toBe('Installing Homebrew on Mac OS X 10.7')
       expect(post.categories).toEqual(['nginx'])
       expect(post.tags).toEqual(['homebrew', 'installation', 'mac'])

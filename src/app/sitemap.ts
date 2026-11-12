@@ -44,11 +44,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const postRoutes = posts.map((post) => ({
-    url: `${SITE_URL}/${post.id}`,
+    url: `${SITE_URL}/${post.slug}`,
     lastModified: new Date(post.updated || post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
-    images: [versionedSocialImageUrl(post.image || `/${post.id}/opengraph-image`)],
+    images: [versionedSocialImageUrl(post.image || `/${post.slug}/opengraph-image`)],
   }));
 
   const categoryRoutes = categories.map((term) => {

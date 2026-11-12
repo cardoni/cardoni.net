@@ -5,17 +5,12 @@ import { usePathname } from 'next/navigation';
 import SocialIcon from './SocialIcon';
 import ThemeToggle from './ThemeToggle';
 
-interface NavItem {
-  href: string;
-  label: string;
-  count?: number;
-}
+const NAV_ITEMS = [
+  { href: '/', label: 'Posts' },
+  { href: '/about', label: 'About' },
+];
 
-interface ClientNavigationProps {
-  navItems: NavItem[];
-}
-
-export default function ClientNavigation({ navItems }: ClientNavigationProps) {
+export default function SiteHeader() {
   const pathname = usePathname();
 
   return (
@@ -28,7 +23,7 @@ export default function ClientNavigation({ navItems }: ClientNavigationProps) {
 
           <div className="nav-actions">
             <div className="nav-links">
-              {navItems.map((item) => {
+              {NAV_ITEMS.map((item) => {
                 const isActive = pathname === item.href ||
                   (item.href !== '/' && pathname.startsWith(item.href));
 

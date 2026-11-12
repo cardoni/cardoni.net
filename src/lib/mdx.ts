@@ -5,7 +5,7 @@ import matter from 'gray-matter';
 import { cache } from 'react';
 import { generateExcerpt } from './markdown-utils';
 
-const contentDirectory = path.join(process.cwd(), 'content', 'posts');
+const postsDirectory = path.join(process.cwd(), 'content', 'posts');
 
 function normalizeDate(value: unknown): string | undefined {
   if (!value) {
@@ -23,18 +23,18 @@ function normalizeDate(value: unknown): string | undefined {
 }
 
 export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
-  const fileNames = fs.readdirSync(contentDirectory);
+  const fileNames = fs.readdirSync(postsDirectory);
   const posts = fileNames
     .filter(fileName => fileName.endsWith('.mdx'))
     .map((fileName) => {
-      const id = fileName.replace(/\.mdx$/, '');
-      const fullPath = path.join(contentDirectory, fileName);
+      const slug = fileName.replace(/\.mdx$/, '');
+      const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const { data, content } = matter(fileContents);
       const date = normalizeDate(data.date) || '';
       
       return {
-        id,
+        slug,
         title: data.title,
         description: data.description ? String(data.description) : undefined,
         tags: data.tags || [],
@@ -53,7 +53,7 @@ export const getAllPosts = cache(async (): Promise<BlogPost[]> => {
   return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 });
 
-export async function getPostById(id: string): Promise<BlogPost | null> {
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   const posts = await getAllPosts();
-  return posts.find(post => post.id === id) || null;
+  return posts.find(post => post.slug === slug) || null;
 }

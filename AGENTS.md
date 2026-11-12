@@ -21,7 +21,7 @@
 ## Coding Style & Naming Conventions
 - Language: TypeScript. Prefer functional React components.
 - Indentation: 2 spaces; include semicolons; single quotes.
-- Components: PascalCase (`AnimatedCard.tsx`). Pages follow App Router (`src/app/about/page.tsx`).
+- Components: PascalCase (`PostListItem.tsx`). Pages follow App Router (`src/app/about/page.tsx`).
 - Utilities: kebab-case (`url-utils.ts`). Tests mirror subject paths under `tests/` with `*.test.ts(x)`.
 - Linting: ESLint (`eslint.config.mjs`) using `next/core-web-vitals` + TypeScript. Run `npm run lint` before PRs.
 

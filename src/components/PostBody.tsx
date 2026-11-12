@@ -6,7 +6,7 @@ import DefinitionTerm from './DefinitionTerm';
 import { remarkHardBreaks } from '@/lib/remark-hard-breaks';
 import { remarkRelevelHeadings } from '@/lib/remark-relevel-headings';
 
-interface EnhancedMarkdownRendererProps {
+interface PostBodyProps {
   content: string;
 }
 
@@ -123,7 +123,7 @@ const markdownComponents: Components = {
   },
 };
 
-export default function EnhancedMarkdownRenderer({ content }: EnhancedMarkdownRendererProps) {
+export default function PostBody({ content }: PostBodyProps) {
   return (
     <div className="article-prose font-reading">
       <ReactMarkdown remarkPlugins={[remarkGfm, remarkHardBreaks, remarkRelevelHeadings]} components={markdownComponents}>

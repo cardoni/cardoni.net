@@ -1,5 +1,5 @@
 import type { BlogPost } from '@/types/blog';
-import { getCanonicalParam, stringToSlug } from '@/lib/url-utils';
+import { canonicalizeParam, slugify } from '@/lib/url-utils';
 
 export type TaxonomyKind = 'category' | 'tag';
 
@@ -17,7 +17,7 @@ function getPostTerms(post: BlogPost, kind: TaxonomyKind): string[] {
 
 export function getTaxonomyHref(kind: TaxonomyKind, term: string): string {
   const basePath = kind === 'category' ? '/categories' : '/tag';
-  return `${basePath}/${stringToSlug(term)}`;
+  return `${basePath}/${slugify(term)}`;
 }
 
 /**
@@ -32,7 +32,7 @@ export function getTaxonomyTerms(posts: BlogPost[], kind: TaxonomyKind): Taxonom
 
     getPostTerms(post, kind).forEach((value) => {
       const name = value.trim();
-      const slug = stringToSlug(name);
+      const slug = slugify(name);
 
       if (!slug || postTerms.has(slug)) {
         return;
@@ -63,7 +63,7 @@ export function getTaxonomyTermByParam(
   terms: TaxonomyTerm[],
   param: string,
 ): TaxonomyTerm | undefined {
-  const slug = getCanonicalParam(param);
+  const slug = canonicalizeParam(param);
   return terms.find((term) => term.slug === slug);
 }
 
@@ -71,7 +71,7 @@ export function getTaxonomyTermByName(
   terms: TaxonomyTerm[],
   name: string,
 ): TaxonomyTerm | undefined {
-  return terms.find((term) => term.slug === stringToSlug(name));
+  return terms.find((term) => term.slug === slugify(name));
 }
 
 /**
@@ -104,7 +104,7 @@ export function getRelatedTaxonomyTerms({
   const scores = new Map<string, number>();
 
   selectedTerm.posts.forEach((post) => {
-    const postTerms = new Set(getPostTerms(post, targetKind).map(stringToSlug));
+    const postTerms = new Set(getPostTerms(post, targetKind).map(slugify));
 
     postTerms.forEach((slug) => {
       if (sourceKind === targetKind && slug === sourceSlug) {
@@ -120,7 +120,7 @@ export function getRelatedTaxonomyTerms({
   // neighboring subjects instead of showing an arbitrary fallback.
   if (scores.size === 0 && sourceKind === 'category' && targetKind === 'category') {
     const sourceTagSlugs = new Set(
-      selectedTerm.posts.flatMap((post) => post.tags.map(stringToSlug)),
+      selectedTerm.posts.flatMap((post) => post.tags.map(slugify)),
     );
 
     targetTerms.forEach((term) => {
@@ -129,7 +129,7 @@ export function getRelatedTaxonomyTerms({
       }
 
       const candidateTagSlugs = new Set(
-        term.posts.flatMap((post) => post.tags.map(stringToSlug)),
+        term.posts.flatMap((post) => post.tags.map(slugify)),
       );
       const score = Array.from(candidateTagSlugs)
         .filter((tag) => sourceTagSlugs.has(tag))

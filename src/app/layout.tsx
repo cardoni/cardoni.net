@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import './globals.css';
-import DynamicNavigation from '@/components/DynamicNavigation';
+import SiteHeader from '@/components/SiteHeader';
 import SocialIcon from '@/components/SocialIcon';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import EditorialProviders from '@/components/EditorialProviders';
+import TooltipProvider from '@/components/TooltipProvider';
 import { siteConfig, SITE_URL, serializeJsonLd } from '@/lib/site';
 
 const newsreader = Newsreader({
@@ -125,11 +125,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(siteJsonLd) }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <EditorialProviders>
+          <TooltipProvider>
             <a className="skip-link" href="#main-content">
               Skip to content
             </a>
-            <DynamicNavigation />
+            <SiteHeader />
             <main id="main-content">{children}</main>
             <footer className="site-footer">
               <div className="site-shell footer-grid">
@@ -157,7 +157,7 @@ export default function RootLayout({
                 </p>
               </div>
             </footer>
-          </EditorialProviders>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
       {googleAnalyticsId ? <GoogleAnalytics gaId={googleAnalyticsId} /> : null}

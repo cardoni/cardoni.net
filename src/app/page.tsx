@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getAllPosts } from '@/lib/mdx';
-import AnimatedCard from '@/components/AnimatedCard';
+import PostListItem from '@/components/PostListItem';
 import ArchiveTimeline from '@/components/ArchiveTimeline';
 import DefinitionTerm from '@/components/DefinitionTerm';
 import { buildPageMetadata, siteConfig } from '@/lib/site';
@@ -102,7 +102,7 @@ export default async function HomePage() {
 
         <div className="post-list">
           {posts.map((post, index) => (
-            <AnimatedCard key={post.id} post={post} delay={index * 0.04} index={index + 1} />
+            <PostListItem key={post.slug} post={post} delay={index * 0.04} index={index + 1} />
           ))}
         </div>
       </section>

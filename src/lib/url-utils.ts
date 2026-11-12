@@ -5,7 +5,7 @@
 /**
  * Convert a string with spaces to a URL-friendly slug with dashes
  */
-export function stringToSlug(str: string): string {
+export function slugify(str: string): string {
   return str
     .trim()
     .replace(/[\\/]+/g, '-')
@@ -15,25 +15,17 @@ export function stringToSlug(str: string): string {
 }
 
 /**
- * Check if a URL parameter needs to be redirected to the canonical dash format
+ * Convert a URL parameter (raw, %20-encoded, or mixed case) to its canonical
+ * dash-format slug.
  */
-export function needsRedirect(param: string): boolean {
-  const decoded = decodeURIComponent(param);
-  const normalized = stringToSlug(decoded);
-  
-  // If the parameter contains %20 or spaces, it needs redirect
-  if (param.includes('%20') || decoded.includes(' ')) {
-    return true;
-  }
-  
-  // If it doesn't match the normalized version, it needs redirect
-  return param !== normalized;
+export function canonicalizeParam(param: string): string {
+  return slugify(decodeURIComponent(param));
 }
 
 /**
- * Get the canonical URL for a parameter (dash format)
+ * True when a URL parameter differs from its canonical slug and should be
+ * redirected, e.g. `personal%20pivot` or `Personal-Pivot`.
  */
-export function getCanonicalParam(param: string): string {
-  const decoded = decodeURIComponent(param);
-  return stringToSlug(decoded);
+export function isNonCanonicalParam(param: string): boolean {
+  return param !== canonicalizeParam(param);
 }

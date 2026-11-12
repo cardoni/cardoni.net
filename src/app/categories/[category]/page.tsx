@@ -3,8 +3,8 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import CollectionPageJsonLd from '@/components/CollectionPageJsonLd';
 import TaxonomyLinks from '@/components/TaxonomyLinks';
 import { getAllPosts } from '@/lib/mdx';
-import AnimatedCard from '@/components/AnimatedCard';
-import { getCanonicalParam, needsRedirect } from '@/lib/url-utils';
+import PostListItem from '@/components/PostListItem';
+import { canonicalizeParam, isNonCanonicalParam } from '@/lib/url-utils';
 import { buildPageMetadata } from '@/lib/site';
 import {
   getRelatedTaxonomyTerms,
@@ -47,8 +47,8 @@ export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
 
   // Check if this URL needs to be redirected to the canonical dash format
-  if (needsRedirect(category)) {
-    const canonicalParam = getCanonicalParam(category);
+  if (isNonCanonicalParam(category)) {
+    const canonicalParam = canonicalizeParam(category);
     permanentRedirect(`/categories/${canonicalParam}`);
   }
 
@@ -80,7 +80,7 @@ export default async function CategoryPage({ params }: Props) {
         name={`${term.name} writing by Greg Cardoni`}
         description={description}
         pathname={term.href}
-        items={posts.map((post) => ({ name: post.title, pathname: `/${post.id}` }))}
+        items={posts.map((post) => ({ name: post.title, pathname: `/${post.slug}` }))}
         breadcrumbs={[
           { name: 'Home', pathname: '/' },
           { name: 'Categories', pathname: '/categories' },
@@ -96,7 +96,7 @@ export default async function CategoryPage({ params }: Props) {
 
         <div className="post-list">
           {posts.map((post, index) => (
-            <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
+            <PostListItem key={post.slug} post={post} delay={index * 0.05} index={index + 1} />
           ))}
         </div>
         <TaxonomyLinks

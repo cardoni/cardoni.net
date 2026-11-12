@@ -39,7 +39,7 @@ export function buildAtomFeed(posts: BlogPost[]) {
     : new Date(0).toISOString();
 
   const entries = orderedPosts.map((post) => {
-    const url = `${SITE_URL}/${post.id}`;
+    const url = `${SITE_URL}/${post.slug}`;
     const content = marked.parse(post.content, { async: false, gfm: true }) as string;
     const summary = post.excerpt || `An essay by ${siteConfig.author.name}.`;
     const categories = categoryElements(post);

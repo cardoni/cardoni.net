@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 
 export const SITE_URL = 'https://cardoni.net';
-export const SOCIAL_IMAGE_ORIGIN = SITE_URL;
 export const SOCIAL_IMAGE_VERSION = '2026-08-08.1';
 export const SITE_LAST_MODIFIED = '2026-08-08';
 export const DISQUS_SHORTNAME = 'cardoni';
 
 export function versionedSocialImageUrl(pathname: string) {
-  const url = new URL(pathname, SOCIAL_IMAGE_ORIGIN);
+  const url = new URL(pathname, SITE_URL);
   url.searchParams.set('v', SOCIAL_IMAGE_VERSION);
   return url.toString();
 }
@@ -94,7 +93,7 @@ const SOCIAL_IMAGE_MIME_TYPES: Record<string, string> = {
   webp: 'image/webp',
 };
 
-export function metadataImage(pathname: string, alt: string): SocialImageMetadata {
+export function buildSocialImage(pathname: string, alt: string): SocialImageMetadata {
   const extension = pathname.split(/[?#]/, 1)[0].split('.').pop()?.toLowerCase();
   const type = SOCIAL_IMAGE_MIME_TYPES[extension || ''] || 'image/png';
 

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import AnimatedCard from '@/components/AnimatedCard';
+import PostListItem from '@/components/PostListItem';
 import CollectionPageJsonLd from '@/components/CollectionPageJsonLd';
 import TaxonomyLinks from '@/components/TaxonomyLinks';
 import { getAllPosts } from '@/lib/mdx';
 import { buildPageMetadata } from '@/lib/site';
-import { getCanonicalParam, needsRedirect } from '@/lib/url-utils';
+import { canonicalizeParam, isNonCanonicalParam } from '@/lib/url-utils';
 import {
   getRelatedTaxonomyTerms,
   getTaxonomyTermByParam,
@@ -45,8 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TagPage({ params }: Props) {
   const { tag } = await params;
 
-  if (needsRedirect(tag)) {
-    permanentRedirect(`/tag/${getCanonicalParam(tag)}`);
+  if (isNonCanonicalParam(tag)) {
+    permanentRedirect(`/tag/${canonicalizeParam(tag)}`);
   }
 
   const allPosts = await getAllPosts();
@@ -77,7 +77,7 @@ export default async function TagPage({ params }: Props) {
         name={`${term.name} writing by Greg Cardoni`}
         description={description}
         pathname={term.href}
-        items={posts.map((post) => ({ name: post.title, pathname: `/${post.id}` }))}
+        items={posts.map((post) => ({ name: post.title, pathname: `/${post.slug}` }))}
         breadcrumbs={[
           { name: 'Home', pathname: '/' },
           { name: 'Tags', pathname: '/tags' },
@@ -93,7 +93,7 @@ export default async function TagPage({ params }: Props) {
 
         <div className="post-list">
           {posts.map((post, index) => (
-            <AnimatedCard key={post.id} post={post} delay={index * 0.05} index={index + 1} />
+            <PostListItem key={post.slug} post={post} delay={index * 0.05} index={index + 1} />
           ))}
         </div>
         <TaxonomyLinks

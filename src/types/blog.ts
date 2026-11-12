@@ -1,5 +1,5 @@
 export interface BlogPost {
-  id: string;
+  slug: string; // Filename without .mdx; also the post URL path
   title: string;
   description?: string; // Hand-written SEO meta description from frontmatter
   tags: string[];
