@@ -33,6 +33,12 @@ public/
 !public/
 public/*
 !public/favicon.ico
+!public/favicon-16x16.png
+!public/favicon-32x32.png
+!public/favicon-48x48.png
+!public/icon-192.png
+!public/icon-512.png
+!public/apple-touch-icon.png
 !public/.well-known/
 !public/images/
 !public/media/
