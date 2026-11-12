@@ -1,103 +1,44 @@
-# [Cardoni.net](http://cardoni.net)
+# [cardoni.net](https://cardoni.net)
 
-Hi there, I'm Greg. This is my personal site and blog.
+Hi, I'm Greg. This is the source for my personal site and blog.
 
-**Project Status: Fully Operational (next-gen branch)**
+It's a Next.js app (App Router, TypeScript, Tailwind CSS v4) that renders MDX posts from the `content/` directory into static pages. It also serves an Atom feed at `/atom.xml`, keeps the old Disqus threads attached to their original post URLs, and can report to Google Analytics.
 
-A complete rebuild of cardoni.net using Next.js 16 with App Router. All content has been migrated and the site is fully functional with categories, posts, navigation, and responsive design.
-
-## Features
-
-- 📝 **Blog posts** with categories and tags
-- 🏷️ **Category and tag archives** with clean URLs and redirects
-- 📱 **Responsive design** with dark mode support
-- ⚡ **Static generation** for optimal performance
-- 🔍 **SEO-friendly** URLs and metadata
-- 🔗 **Canonical social metadata** shared across pages, with Open Graph, Twitter cards, and JSON-LD
-- 🛰️ **Full-content Atom feed** at `/atom.xml`
-- 💬 **Historical Disqus threads** reconnected to their original article URLs
-- 📈 **GA4-ready analytics** configured through an environment variable
-- 🎨 **Modern UI** with Tailwind CSS and animations
-- 🧪 **Comprehensive testing** with 90%+ coverage
-
-## Tech Stack
-
-- **Framework**: Next.js 16 with App Router
-- **Styling**: Tailwind CSS v4
-- **Content**: MDX with gray-matter frontmatter parsing
-- **Language**: TypeScript
-- **Testing**: Vitest with Testing Library
-- **Deployment**: Vercel/static hosting ready
-
-## Content Structure
-
-- `content/posts/` - MDX blog posts with YAML frontmatter
-- `content/media/` - Images and media files for posts
-- `src/` - Next.js application source code
-- `src/app/` - App Router pages and layouts
-- `src/components/` - Reusable React components
-- `src/lib/` - Utility functions and MDX processing
-- `tests/` - Test files for components and utilities
-
-## Development
+## Running it locally
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Lint code
-npm run lint
-
-# Run tests
-npm test
-
-# Run tests in watch mode  
-npm run test:watch
-
-# Run tests with UI
-npm run test:ui
-
-# Run tests with coverage
-npm run test:coverage
 ```
 
-The site will be available at `http://localhost:3000` (or next available port).
+```bash
+npm run dev
+```
+
+The dev server runs at `http://localhost:3000`. Other scripts:
+
+- `npm run build` / `npm run start`: production build and server
+- `npm run lint`: ESLint
+- `npm test`: Vitest (`test:watch`, `test:ui`, and `test:coverage` are also available)
+
+## Where things live
+
+- `content/posts/`: posts, as MDX with YAML frontmatter
+- `content/media/`: images and other files the posts reference
+- `src/app/`: routes (posts, category and tag archives, the feed, sitemap)
+- `src/components/`: React components
+- `src/lib/`: content loading, MDX processing, and URL helpers
+- `tests/`: unit and component tests
+
+To publish a post, add an `.mdx` file to `content/posts/`. Categories and tags come from frontmatter, and their archive pages are generated automatically.
+
+## URLs
+
+Categories and tags with spaces use dashes in their URLs, so `personal pivot` lives at `/categories/personal-pivot`. The URL-encoded form (`/categories/personal%20pivot`) redirects there. Tag archives stay at the old `/tag/[tag]` path, and `/tags/[tag]` redirects to it.
 
 ## Analytics
 
-Create a GA4 web data stream and set its `G-XXXXXXXXXX` Measurement ID as
-`NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`. Configure the variable in Vercel for Production and Preview,
-then redeploy so the public value is included in the client bundle. Copy `.env.example` to
-`.env.local` to enable analytics during local development.
-
-## Content Management
-
-All blog posts are stored as MDX files in `content/posts/`. The system automatically:
-- Parses YAML frontmatter for metadata
-- Generates category and tag pages from post metadata
-- Creates clean excerpts by stripping markdown formatting
-- Handles URL encoding for taxonomy terms with spaces (e.g., `personal pivot` ↔ `personal-pivot`)
-- Supports automatic redirects from URL-encoded category and tag URLs to canonical dash formats
-- Preserves canonical legacy tag URLs at `/tag/[tag]`, with `/tags/[tag]` permanently redirected
-
-## Testing
-
-The project includes comprehensive test coverage:
-- **Unit tests** for utilities (URL handling, markdown processing)
-- **Component tests** for React components (rendering, interactions, accessibility)  
-- **Integration tests** with realistic blog data
-- **Mocking** for Next.js router and motion components
-- Run tests with `npm test` or use `npm run test:watch` for development
+Analytics are off unless `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is set to a GA4 Measurement ID (`G-XXXXXXXXXX`). Set it in Vercel for Production and Preview, then redeploy, since the value is baked into the client bundle at build time. For local development, copy `.env.example` to `.env.local` and fill it in.
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
