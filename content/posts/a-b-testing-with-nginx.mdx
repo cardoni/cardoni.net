@@ -24,7 +24,7 @@ Using our Nginx load-balancer, we decided to split incoming traffic in half: 50%
 ```nginx
 split_clients "abtest${remote_addr}${http_user_agent}${date_gmt}" $variant {
     50%                 "abtest.your_domain.com/a_test.html";
-        *                 "abtest.your_domain.com/b_test.html";
+      *                 "abtest.your_domain.com/b_test.html";
 }
 
 server {
