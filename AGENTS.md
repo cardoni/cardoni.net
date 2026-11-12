@@ -11,12 +11,12 @@
 
 ## Build, Test, and Development Commands
 - `npm run dev` – Start dev server with Turbopack.
-- `npm run build` – Production build with profiling/debug.
+- `npm run build` – Production build (webpack).
 - `npm run start` – Serve production build.
 - `npm run lint` – ESLint (Next.js config, TS aware).
 - `npm test` / `npm run test:watch` – Run Vitest once / in watch mode.
 - `npm run test:ui` – Vitest UI.
-- `npm run test:coverage` – Coverage report (target ≥90%).
+- `npm run test:coverage` – Coverage report.
 
 ## Coding Style & Naming Conventions
 - Language: TypeScript. Prefer functional React components.
@@ -29,7 +29,7 @@
 - Framework: Vitest + Testing Library (`jsdom`). Global setup: `tests/setup.ts` mocks Next.js navigation and `motion`.
 - Write unit tests for utilities and component tests for rendering, a11y, and interactions.
 - Name tests `*.test.ts` or `*.test.tsx`. Keep tests deterministic; avoid network and real timers.
-- Aim for ≥90% coverage; add meaningful assertions over snapshots.
+- Prefer meaningful assertions over snapshots.
 
 ## Commit & Pull Request Guidelines
 - Commits: small, focused, imperative subject (≤72 chars). Example: `fix(lib): normalize URL slugs with spaces`.

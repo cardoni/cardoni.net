@@ -41,4 +41,4 @@ Analytics are off unless `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is set to a GA4 Measu
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
