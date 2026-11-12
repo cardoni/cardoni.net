@@ -1,0 +1,6 @@
+Contact: mailto:greg@cardoni.net
+Contact: https://github.com/cardoni/cardoni.net/security/advisories/new
+Expires: 2027-11-01T00:00:00.000Z
+Policy: https://github.com/cardoni/cardoni.net/blob/master/SECURITY.md
+Preferred-Languages: en
+Canonical: https://cardoni.net/.well-known/security.txt

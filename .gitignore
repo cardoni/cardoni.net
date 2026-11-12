@@ -33,6 +33,7 @@ public/
 !public/
 public/*
 !public/favicon.ico
+!public/.well-known/
 !public/images/
 !public/media/
 public/images/*

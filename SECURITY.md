@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Only the latest release on the `main` branch receives security fixes.
+Only the latest release on the `master` branch receives security fixes.
 Older versions are not patched; please upgrade.
 
 ## Reporting a Vulnerability
