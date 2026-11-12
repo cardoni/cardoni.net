@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import AnimatedCard from '@/components/AnimatedCard'
+import PostListItem from '@/components/PostListItem'
 import { BlogPost } from '@/types/blog'
 
 // Mock data
 const mockPost: BlogPost = {
-  id: 'test-post',
+  slug: 'test-post',
   title: 'Test Blog Post Title',
   date: '2023-12-01',
   categories: ['test', 'example'],
@@ -18,14 +18,14 @@ const mockPost: BlogPost = {
 
 const mockPostSingleCategory: BlogPost = {
   ...mockPost,
-  id: 'single-category-post',
+  slug: 'single-category-post',
   title: 'Single Category Post',
   categories: ['nginx'],
 }
 
-describe('AnimatedCard', () => {
+describe('PostListItem', () => {
   it('renders blog post information correctly', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
 
     expect(screen.getByText('Test Blog Post Title')).toBeInTheDocument()
     expect(screen.getByText('This is a test excerpt for the blog post.')).toBeInTheDocument()
@@ -34,7 +34,7 @@ describe('AnimatedCard', () => {
   })
 
   it('formats date correctly', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
     
     // Check for time element with correct datetime attribute
     const timeElement = document.querySelector('time[datetime="2023-12-01"]')
@@ -45,7 +45,7 @@ describe('AnimatedCard', () => {
   })
 
   it('links category badges to their category archive without nesting links', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
 
     const testCategory = screen.getByText('test')
     const exampleCategory = screen.getByText('example')
@@ -63,13 +63,13 @@ describe('AnimatedCard', () => {
       categories: ['personal pivot']
     }
     
-    render(<AnimatedCard post={postWithSpacedCategory} />)
+    render(<PostListItem post={postWithSpacedCategory} />)
     
     expect(screen.getByText('personal pivot')).toBeInTheDocument()
   })
 
   it('creates a single post link per card', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
 
     // Only one link in the card points at the post (category badges link elsewhere)
     const linksToPost = screen
@@ -92,7 +92,7 @@ describe('AnimatedCard', () => {
       categories: []
     }
     
-    render(<AnimatedCard post={postWithNoCategories} />)
+    render(<PostListItem post={postWithNoCategories} />)
 
     // Should still render without errors
     expect(screen.getByText('Test Blog Post Title')).toBeInTheDocument()
@@ -103,28 +103,28 @@ describe('AnimatedCard', () => {
   })
 
   it('handles single category correctly', () => {
-    render(<AnimatedCard post={mockPostSingleCategory} />)
+    render(<PostListItem post={mockPostSingleCategory} />)
 
     expect(screen.getByText('nginx')).toBeInTheDocument()
     expect(screen.getByText('nginx').closest('a')).toHaveAttribute('href', '/categories/nginx')
   })
 
   it('renders with custom delay prop', () => {
-    const { container } = render(<AnimatedCard post={mockPost} delay={0.5} />)
+    const { container } = render(<PostListItem post={mockPost} delay={0.5} />)
     
     // Should render without errors (motion props are handled by mocked motion components)
     expect(container.firstChild).toBeInTheDocument()
   })
 
   it('renders default delay when none provided', () => {
-    const { container } = render(<AnimatedCard post={mockPost} />)
+    const { container } = render(<PostListItem post={mockPost} />)
     
     // Should render without errors
     expect(container.firstChild).toBeInTheDocument()
   })
 
   it('has proper accessibility attributes', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
 
     // Check for semantic HTML elements
     const article = screen.getByRole('article')
@@ -148,7 +148,7 @@ describe('AnimatedCard', () => {
       excerpt: 'This is a very long excerpt that goes on and on and should be handled properly by the component. It contains multiple sentences and should demonstrate how the component handles longer text content that might overflow or need truncation.'
     }
 
-    render(<AnimatedCard post={longContentPost} />)
+    render(<PostListItem post={longContentPost} />)
 
     // Should render without layout issues
     expect(screen.getByText(longContentPost.title)).toBeInTheDocument()
@@ -156,7 +156,7 @@ describe('AnimatedCard', () => {
   })
 
   it('includes read more arrow icon', () => {
-    render(<AnimatedCard post={mockPost} />)
+    render(<PostListItem post={mockPost} />)
 
     // Check for the SVG arrow icon in read more link
     const readMoreLink = screen.getByRole('link', { name: /Read more/i })
@@ -169,7 +169,7 @@ describe('AnimatedCard', () => {
   // Integration test with real-world data
   it('handles realistic blog post data', () => {
     const realisticPost: BlogPost = {
-      id: 'install-homebrew-on-mac-os-x-10-7',
+      slug: 'install-homebrew-on-mac-os-x-10-7',
       title: 'Installing Homebrew on Mac OS X 10.7',
       date: '2013-03-15',
       categories: ['nginx'],
@@ -180,7 +180,7 @@ describe('AnimatedCard', () => {
       readTime: '3 min read'
     }
 
-    render(<AnimatedCard post={realisticPost} />)
+    render(<PostListItem post={realisticPost} />)
 
     expect(screen.getByText('Installing Homebrew on Mac OS X 10.7')).toBeInTheDocument()
     expect(screen.getByText('Homebrew is the missing package manager for Mac OS X. Learn how to install it on Mac OS X 10.7 Lion.')).toBeInTheDocument()

@@ -3,7 +3,7 @@ import { buildAtomFeed } from '@/lib/atom';
 import type { BlogPost } from '@/types/blog';
 
 const olderPost: BlogPost = {
-  id: 'older-post',
+  slug: 'older-post',
   title: 'Older & wiser',
   tags: ['systems'],
   categories: ['philosophy'],
@@ -14,7 +14,7 @@ const olderPost: BlogPost = {
 };
 
 const newerPost: BlogPost = {
-  id: 'newer-post',
+  slug: 'newer-post',
   title: 'Newer post',
   tags: ['typescript'],
   categories: ['technology'],

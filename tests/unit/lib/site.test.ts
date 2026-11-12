@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   SITE_URL,
-  SOCIAL_IMAGE_ORIGIN,
   SOCIAL_IMAGE_VERSION,
   absoluteUrl,
   buildPageMetadata,
   legacyDisqusThreadUrl,
-  metadataImage,
+  buildSocialImage,
   siteConfig,
   versionedSocialImageUrl,
 } from '@/lib/site';
@@ -17,15 +16,14 @@ describe('site URL helpers', () => {
   });
 
   it('serves versioned social images from the canonical domain', () => {
-    expect(SOCIAL_IMAGE_ORIGIN).toBe(SITE_URL);
     expect(versionedSocialImageUrl('/an-essay/opengraph-image')).toBe(
-      `${SOCIAL_IMAGE_ORIGIN}/an-essay/opengraph-image?v=${SOCIAL_IMAGE_VERSION}`,
+      `${SITE_URL}/an-essay/opengraph-image?v=${SOCIAL_IMAGE_VERSION}`,
     );
   });
 
   it('replaces an existing image version', () => {
     expect(versionedSocialImageUrl('/images/editorial-hero.jpg?v=old')).toBe(
-      `${SOCIAL_IMAGE_ORIGIN}/images/editorial-hero.jpg?v=${SOCIAL_IMAGE_VERSION}`,
+      `${SITE_URL}/images/editorial-hero.jpg?v=${SOCIAL_IMAGE_VERSION}`,
     );
   });
 
@@ -104,8 +102,8 @@ describe('site URL helpers', () => {
   });
 
   it('sets the correct social image MIME type', () => {
-    expect(metadataImage('/images/card.jpg', 'JPEG card').type).toBe('image/jpeg');
-    expect(metadataImage('/images/card.webp', 'WebP card').type).toBe('image/webp');
-    expect(metadataImage('/an-essay/opengraph-image', 'Generated card').type).toBe('image/png');
+    expect(buildSocialImage('/images/card.jpg', 'JPEG card').type).toBe('image/jpeg');
+    expect(buildSocialImage('/images/card.webp', 'WebP card').type).toBe('image/webp');
+    expect(buildSocialImage('/an-essay/opengraph-image', 'Generated card').type).toBe('image/png');
   });
 });

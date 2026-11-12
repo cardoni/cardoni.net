@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import CategoryBadge from '@/components/CategoryBadge';
 import DisqusComments from '@/components/DisqusComments';
-import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
+import PostBody from '@/components/PostBody';
 import TaxonomyLinks from '@/components/TaxonomyLinks';
-import { getAllPosts, getPostById } from '@/lib/mdx';
+import { getAllPosts, getPostBySlug } from '@/lib/mdx';
 import {
   absoluteUrl,
   buildPageMetadata,
-  metadataImage,
+  buildSocialImage,
   serializeJsonLd,
   siteConfig,
   versionedSocialImageUrl,
@@ -23,12 +23,12 @@ interface Props {
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
-  return posts.map((post) => ({ slug: post.id }));
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostById(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
@@ -39,13 +39,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = post.description || post.excerpt || siteConfig.description;
   const imageAlt = post.imageAlt || `Editorial card for “${post.title}” by Greg Cardoni.`;
-  const image = metadataImage(post.image || `/${post.id}/opengraph-image`, imageAlt);
+  const image = buildSocialImage(post.image || `/${post.slug}/opengraph-image`, imageAlt);
 
   return buildPageMetadata({
     title: post.title,
     openGraphTitle: post.title,
     description,
-    pathname: `/${post.id}`,
+    pathname: `/${post.slug}`,
     image,
     article: {
       publishedTime: post.date,
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
-  const [post, allPosts] = await Promise.all([getPostById(slug), getAllPosts()]);
+  const [post, allPosts] = await Promise.all([getPostBySlug(slug), getAllPosts()]);
 
   if (!post) {
     notFound();
@@ -76,7 +76,7 @@ export default async function PostPage({ params }: Props) {
     return term ? [term] : [];
   });
   const relatedPosts = allPosts
-    .filter((candidate) => candidate.id !== post.id)
+    .filter((candidate) => candidate.slug !== post.slug)
     .map((candidate) => ({
       post: candidate,
       score: (
@@ -88,18 +88,18 @@ export default async function PostPage({ params }: Props) {
     .sort((a, b) => b.score - a.score || new Date(b.post.date).getTime() - new Date(a.post.date).getTime())
     .map(({ post: candidate }) => candidate)
     .slice(0, 3);
-  const headlineImage = post.image || `/${post.id}/opengraph-image`;
+  const headlineImage = post.image || `/${post.slug}/opengraph-image`;
   const headlineAlt = post.imageAlt || `Editorial illustration for ${post.title}.`;
   const wordCount = post.content.trim().split(/\s+/).length;
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
-    '@id': `${absoluteUrl(`/${post.id}`)}#article`,
+    '@id': `${absoluteUrl(`/${post.slug}`)}#article`,
     headline: post.title,
     description: post.description || post.excerpt || siteConfig.description,
-    url: absoluteUrl(`/${post.id}`),
-    mainEntityOfPage: absoluteUrl(`/${post.id}`),
+    url: absoluteUrl(`/${post.slug}`),
+    mainEntityOfPage: absoluteUrl(`/${post.slug}`),
     image: versionedSocialImageUrl(headlineImage),
     datePublished: post.date,
     dateModified: post.updated || post.date,
@@ -173,7 +173,7 @@ export default async function PostPage({ params }: Props) {
             />
           </figure>
 
-          <EnhancedMarkdownRenderer content={post.content} />
+          <PostBody content={post.content} />
 
           <TaxonomyLinks
             className="article-tags"
@@ -194,7 +194,7 @@ export default async function PostPage({ params }: Props) {
             </div>
           </footer>
 
-          <DisqusComments slug={post.id} title={post.title} />
+          <DisqusComments slug={post.slug} title={post.title} />
         </article>
       </div>
 
@@ -206,7 +206,7 @@ export default async function PostPage({ params }: Props) {
           </div>
           <div className="related-links">
             {relatedPosts.map((related) => (
-              <article key={related.id} className="related-link">
+              <article key={related.slug} className="related-link">
                 {related.categories[0] && (
                   <Link
                     href={getTaxonomyHref('category', related.categories[0])}
@@ -215,7 +215,7 @@ export default async function PostPage({ params }: Props) {
                     {related.categories[0]}
                   </Link>
                 )}
-                <Link href={`/${related.id}`} className="related-post-link">
+                <Link href={`/${related.slug}`} className="related-post-link">
                   <strong className="font-reading">{related.title}</strong>
                   <small>{related.readTime}</small>
                 </Link>

@@ -2,7 +2,7 @@
 
 import { Tooltip } from '@base-ui/react/tooltip';
 
-export default function EditorialProviders({ children }: { children: React.ReactNode }) {
+export default function TooltipProvider({ children }: { children: React.ReactNode }) {
   return (
     <Tooltip.Provider delay={260} closeDelay={80}>
       {children}

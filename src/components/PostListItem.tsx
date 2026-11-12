@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
 import CategoryBadge from './CategoryBadge';
 
-interface AnimatedCardProps {
+interface PostListItemProps {
   post: BlogPost;
   delay?: number;
   index?: number;
 }
 
-export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardProps) {
+export default function PostListItem({ post, delay = 0, index }: PostListItemProps) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -39,7 +39,7 @@ export default function AnimatedCard({ post, delay = 0, index }: AnimatedCardPro
               })}
             </time>
           </div>
-          <Link href={`/${post.id}`} className="post-row-title-link">
+          <Link href={`/${post.slug}`} className="post-row-title-link">
             <h2 className="font-reading">{post.title}</h2>
             <p>{post.excerpt}</p>
             <span className="read-more-label">

@@ -19,14 +19,7 @@ const mockFs = vi.mocked(fs)
 const mockPath = vi.mocked(path)
 
 // Import after mocking
-import {
-  getAllCategories,
-  getAllPosts,
-  getAllTags,
-  getPostById,
-  getPostsByCategory,
-  getPostsByTag,
-} from '@/lib/mdx'
+import { getAllPosts, getPostBySlug } from '@/lib/mdx'
 
 describe('mdx', () => {
   beforeEach(() => {
@@ -66,7 +59,7 @@ This is a test post with **bold** text.`
       expect(posts).toHaveLength(2)
       
       const post = posts[0]
-      expect(post.id).toBe('test-post')
+      expect(post.slug).toBe('test-post')
       expect(post.title).toBe('Test Post')
       expect(post.categories).toEqual(['test'])
       expect(post.tags).toEqual(['sample'])
@@ -175,7 +168,7 @@ Content`)
     })
   })
 
-  describe('getPostById', () => {
+  describe('getPostBySlug', () => {
     it('returns post with matching ID', async () => {
       mockFs.readdirSync.mockReturnValue(['target-post.mdx', 'other-post.mdx'] as any)
       
@@ -197,11 +190,11 @@ Other content`
         }
       })
 
-      const post = await getPostById('target-post')
+      const post = await getPostBySlug('target-post')
 
       expect(post).toBeTruthy()
       expect(post?.title).toBe('Target Post')
-      expect(post?.id).toBe('target-post')
+      expect(post?.slug).toBe('target-post')
     })
 
     it('returns null for non-existent post', async () => {
@@ -212,184 +205,9 @@ date: 2023-12-01
 ---
 Content`)
 
-      const post = await getPostById('non-existent')
+      const post = await getPostBySlug('non-existent')
 
       expect(post).toBeNull()
-    })
-  })
-
-  describe('getPostsByCategory', () => {
-    it('returns posts with matching category', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx', 'post3.mdx'] as any)
-      
-      let callCount = 0
-      mockFs.readFileSync.mockImplementation(() => {
-        callCount++
-        switch (callCount) {
-          case 1:
-            return `---
-title: Post 1
-date: 2023-12-01
-categories: [test, example]
----
-Content 1`
-          case 2:
-            return `---
-title: Post 2
-date: 2023-11-01
-categories: [other]
----
-Content 2`
-          case 3:
-            return `---
-title: Post 3
-date: 2023-10-01
-categories: [test]
----
-Content 3`
-          default:
-            return ''
-        }
-      })
-
-      const posts = await getPostsByCategory('test')
-
-      expect(posts).toHaveLength(2)
-      expect(posts[0].title).toBe('Post 1') // Most recent first
-      expect(posts[1].title).toBe('Post 3')
-    })
-
-    it('returns empty array for non-existent category', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx'] as any)
-      mockFs.readFileSync.mockReturnValue(`---
-title: Post 1
-date: 2023-12-01
-categories: [other]
----
-Content`)
-
-      const posts = await getPostsByCategory('non-existent')
-
-      expect(posts).toEqual([])
-    })
-  })
-
-  describe('getAllCategories', () => {
-    it('returns unique categories from all posts', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
-      
-      let callCount = 0
-      mockFs.readFileSync.mockImplementation(() => {
-        callCount++
-        if (callCount === 1) {
-          return `---
-title: Post 1
-date: 2023-12-01
-categories: [web, javascript, react]
----
-Content 1`
-        } else {
-          return `---
-title: Post 2
-date: 2023-11-01
-categories: [web, python]
----
-Content 2`
-        }
-      })
-
-      const categories = await getAllCategories()
-
-      expect(categories).toEqual(['javascript', 'python', 'react', 'web']) // Sorted alphabetically
-      expect(categories).toHaveLength(4)
-    })
-
-    it('handles posts with no categories', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
-      
-      let callCount = 0
-      mockFs.readFileSync.mockImplementation(() => {
-        callCount++
-        if (callCount === 1) {
-          return `---
-title: Post 1
-date: 2023-12-01
-categories: [test]
----
-Content 1`
-        } else {
-          return `---
-title: Post 2
-date: 2023-11-01
----
-Content 2`
-        }
-      })
-
-      const categories = await getAllCategories()
-
-      expect(categories).toEqual(['test'])
-    })
-
-    it('returns empty array when no posts exist', async () => {
-      mockFs.readdirSync.mockReturnValue([] as any)
-
-      const categories = await getAllCategories()
-
-      expect(categories).toEqual([])
-    })
-  })
-
-  describe('tag helpers', () => {
-    it('returns unique sorted tags from all posts', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
-
-      let callCount = 0
-      mockFs.readFileSync.mockImplementation(() => {
-        callCount++
-        return callCount === 1
-          ? `---
-title: Post 1
-date: 2023-12-01
-tags: [wordpos, wordpos module]
----
-Content 1`
-          : `---
-title: Post 2
-date: 2023-11-01
-tags: [parsing, wordpos]
----
-Content 2`
-      })
-
-      expect(await getAllTags()).toEqual(['parsing', 'wordpos', 'wordpos module'])
-    })
-
-    it('returns posts with the exact requested tag', async () => {
-      mockFs.readdirSync.mockReturnValue(['post1.mdx', 'post2.mdx'] as any)
-
-      let callCount = 0
-      mockFs.readFileSync.mockImplementation(() => {
-        callCount++
-        return callCount === 1
-          ? `---
-title: Matching Post
-date: 2023-12-01
-tags: [wordpos module]
----
-Content 1`
-          : `---
-title: Other Post
-date: 2023-11-01
-tags: [wordpos]
----
-Content 2`
-      })
-
-      const posts = await getPostsByTag('wordpos module')
-
-      expect(posts).toHaveLength(1)
-      expect(posts[0].title).toBe('Matching Post')
     })
   })
 
@@ -432,7 +250,7 @@ This will download and install Homebrew to \`/usr/local\`.`
       const posts = await getAllPosts()
       const post = posts[0]
 
-      expect(post.id).toBe('homebrew-install')
+      expect(post.slug).toBe('homebrew-install')
       expect(post.title).toBe('Installing Homebrew on Mac OS X 10.7')
       expect(post.categories).toEqual(['nginx'])
       expect(post.tags).toEqual(['homebrew', 'installation', 'mac'])

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import EnhancedMarkdownRenderer from '@/components/EnhancedMarkdownRenderer';
+import PostBody from '@/components/PostBody';
 
-describe('EnhancedMarkdownRenderer', () => {
+describe('PostBody', () => {
   it('renders paragraphs and removes frontmatter', () => {
     const content = `---
 title: Test Post
@@ -10,14 +10,14 @@ date: 2023-12-01
 ---
 This is the actual content.`;
 
-    render(<EnhancedMarkdownRenderer content={content} />);
+    render(<PostBody content={content} />);
 
     expect(screen.getByText('This is the actual content.')).toBeInTheDocument();
     expect(screen.queryByText('title: Test Post')).not.toBeInTheDocument();
   });
 
   it('demotes article headings so the page title remains the only h1', () => {
-    render(<EnhancedMarkdownRenderer content={'# Main heading\n\n## Section heading'} />);
+    render(<PostBody content={'# Main heading\n\n## Section heading'} />);
 
     expect(screen.getByRole('heading', { level: 2, name: 'Main heading' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Section heading' })).toBeInTheDocument();
@@ -26,7 +26,7 @@ This is the actual content.`;
 
   it('never skips heading levels, clamping jumps to the previous level + 1', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'### Deep start\n\n## Back up\n\n#### Jump down\n\n## Level again'}
       />,
     );
@@ -42,7 +42,7 @@ This is the actual content.`;
 
   it('preserves each heading’s original visual size with a tier class', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'# Big\n\n## Medium\n\n### Small\n\n#### Tiny'}
       />,
     );
@@ -57,7 +57,7 @@ This is the actual content.`;
 
   it('renders semantic lists and blockquotes', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'- First item\n- Second item\n\n1. First step\n2. Second step\n\n> A useful quotation.'}
       />,
     );
@@ -69,7 +69,7 @@ This is the actual content.`;
 
   it('renders fenced code with language metadata', () => {
     const { container } = render(
-      <EnhancedMarkdownRenderer content={'```javascript\nconst answer = 42;\n```'} />,
+      <PostBody content={'```javascript\nconst answer = 42;\n```'} />,
     );
 
     const code = container.querySelector('code');
@@ -79,7 +79,7 @@ This is the actual content.`;
   });
 
   it('renders standard inline Markdown formatting', () => {
-    render(<EnhancedMarkdownRenderer content={'**bold** and *italic* with `inline code` and ~~removed~~'} />);
+    render(<PostBody content={'**bold** and *italic* with `inline code` and ~~removed~~'} />);
 
     expect(screen.getByText('bold').tagName).toBe('STRONG');
     expect(screen.getByText('italic').tagName).toBe('EM');
@@ -88,7 +88,7 @@ This is the actual content.`;
   });
 
   it('opens external links in a separate browsing context', () => {
-    render(<EnhancedMarkdownRenderer content={'Read [the source](https://example.com).'} />);
+    render(<PostBody content={'Read [the source](https://example.com).'} />);
 
     const link = screen.getByRole('link', { name: 'the source' });
     expect(link).toHaveAttribute('href', 'https://example.com');
@@ -97,7 +97,7 @@ This is the actual content.`;
   });
 
   it('keeps internal links in the same browsing context', () => {
-    render(<EnhancedMarkdownRenderer content={'Read [another essay](/another-essay).'} />);
+    render(<PostBody content={'Read [another essay](/another-essay).'} />);
 
     const link = screen.getByRole('link', { name: 'another essay' });
     expect(link).toHaveAttribute('href', '/another-essay');
@@ -106,7 +106,7 @@ This is the actual content.`;
 
   it('supports author-defined hover definitions', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'The Greeks called practical craft [[technē|art, craft, or practical know-how]].'}
       />,
     );
@@ -118,7 +118,7 @@ This is the actual content.`;
 
   it('preserves text inside legacy span markup without injecting raw HTML', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'Keep <span style="text-decoration: underline">this text</span>. <script>alert(1)</script>'}
       />,
     );
@@ -130,7 +130,7 @@ This is the actual content.`;
 
   it('renders GFM tables', () => {
     render(
-      <EnhancedMarkdownRenderer
+      <PostBody
         content={'| Idea | Tool |\n| --- | --- |\n| Logic | Types |'}
       />,
     );
@@ -141,7 +141,7 @@ This is the actual content.`;
   });
 
   it('keeps an empty semantic wrapper for empty content', () => {
-    const { container } = render(<EnhancedMarkdownRenderer content="" />);
+    const { container } = render(<PostBody content="" />);
 
     const wrapper = container.querySelector('.article-prose');
     expect(wrapper).toBeInTheDocument();
