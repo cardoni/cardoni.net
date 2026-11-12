@@ -13,7 +13,7 @@ Report privately via GitHub's
 [private vulnerability reporting](../../security/advisories/new)
 ("Report a vulnerability" under the Security tab).
 
-If that's unavailable, email **security@yourdomain.com**.
+If that's unavailable, email **greg@cardoni.net**.
 
 Helpful details to include:
 - Affected component, endpoint, or file
@@ -41,7 +41,7 @@ you'll be credited in the advisory.
 
 In scope:
 - Code in this repository
-- The production deployment at https://yourapp.example.com
+- The production deployment at https://cardoni.net
 
 Out of scope:
 - Third-party services and dependencies (report those upstream)
