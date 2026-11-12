@@ -27,6 +27,11 @@ This is content`
       expect(stripMarkdown('This is ***bold italic*** text')).toBe('This is *bold italic* text')
     })
 
+    it('removes strikethrough formatting', () => {
+      expect(stripMarkdown('This is ~~deleted~~ text')).toBe('This is deleted text')
+      expect(stripMarkdown('Remember ~~Code Academy~~ The Starter League')).toBe('Remember Code Academy The Starter League')
+    })
+
     it('removes inline code', () => {
       expect(stripMarkdown('Use the `npm install` command')).toBe('Use the npm install command')
     })
@@ -85,7 +90,7 @@ title: Complex Post
 ---
 # Main Title
 
-This is a **complex** post with *formatting*. Here's some code:
+This is a **complex** post with *formatting* and ~~strikethrough~~. Here's some code:
 
 \`\`\`bash
 npm install express
@@ -103,7 +108,7 @@ And a [link to Google](https://google.com).
 
       const result = stripMarkdown(input)
       expect(result).toContain('Main Title')
-      expect(result).toContain('complex post with formatting')
+      expect(result).toContain('complex post with formatting and strikethrough')
       expect(result).toContain('link to Google')
       expect(result).toContain('blockquote with important information')
       expect(result).toContain('First item')
@@ -112,6 +117,7 @@ And a [link to Google](https://google.com).
       expect(result).not.toContain('```')
       expect(result).not.toContain('npm install')
       expect(result).not.toContain('**')
+      expect(result).not.toContain('~~')
       expect(result).not.toContain('https://')
     })
 

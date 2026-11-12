@@ -15,6 +15,8 @@ export function stripMarkdown(text: string): string {
     .replace(/^#{1,6}\s+/gm, '')
     // Remove bold/italic (**text** *text*)
     .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1')
+    // Remove strikethrough (~~text~~)
+    .replace(/~~([^~]+)~~/g, '$1')
     // Remove inline code (`code`)
     .replace(/`([^`]+)`/g, '$1')
     // Remove images before links so the leading ! is not left behind
