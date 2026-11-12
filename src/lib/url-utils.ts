@@ -15,29 +15,6 @@ export function stringToSlug(str: string): string {
 }
 
 /**
- * Convert a slug with dashes back to a string with spaces
- */
-export function slugToString(slug: string): string {
-  return slug.replace(/-/g, ' ');
-}
-
-/**
- * Check if a URL parameter contains URL-encoded spaces (%20)
- */
-export function hasUrlEncodedSpaces(param: string): boolean {
-  return param.includes('%20') || decodeURIComponent(param).includes(' ');
-}
-
-/**
- * Normalize a URL parameter to the preferred dash format
- * Handles both %20 encoded and dash formats, returns dash format
- */
-export function normalizeUrlParam(param: string): string {
-  const decoded = decodeURIComponent(param);
-  return stringToSlug(decoded);
-}
-
-/**
  * Check if a URL parameter needs to be redirected to the canonical dash format
  */
 export function needsRedirect(param: string): boolean {
@@ -59,12 +36,4 @@ export function needsRedirect(param: string): boolean {
 export function getCanonicalParam(param: string): string {
   const decoded = decodeURIComponent(param);
   return stringToSlug(decoded);
-}
-
-/**
- * Find the original taxonomy term represented by a URL parameter.
- */
-export function findTermByParam(terms: string[], param: string): string | undefined {
-  const canonicalParam = getCanonicalParam(param);
-  return terms.find((term) => stringToSlug(term) === canonicalParam);
 }
