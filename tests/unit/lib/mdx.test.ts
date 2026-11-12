@@ -8,6 +8,11 @@ vi.mock('@/lib/markdown-utils', () => ({
     // Simple mock implementation
     const clean = content.replace(/[#*`]/g, '').trim()
     return clean.length > length ? clean.substring(0, length) + '...' : clean
+  }),
+  generateExcerptHtml: vi.fn((content: string, length: number) => {
+    // Simple mock implementation that renders strikethrough as <del>
+    const clean = content.replace(/[#*`]/g, '').replace(/~~([^~]+)~~/g, '<del>$1</del>').trim()
+    return clean.length > length ? clean.substring(0, length) + '...' : clean
   })
 }))
 

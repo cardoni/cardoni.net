@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { stripMarkdown, generateExcerpt } from '@/lib/markdown-utils'
+import { stripMarkdown, generateExcerpt, renderInlineMarkdown, generateExcerptHtml } from '@/lib/markdown-utils'
 
 describe('markdown-utils', () => {
   describe('stripMarkdown', () => {
@@ -261,6 +261,124 @@ This will start the development server on [http://localhost:3000](http://localho
       
       // Should be within length limit
       expect(excerpt.length).toBeLessThanOrEqual(103)
+    })
+  })
+
+  describe('renderInlineMarkdown', () => {
+    it('renders strikethrough as del tags', () => {
+      expect(renderInlineMarkdown('This is ~~deleted~~ text'))
+        .toBe('This is <del>deleted</del> text')
+    })
+
+    it('renders the Code Academy example correctly', () => {
+      const input = 'Remember ~~[Code Academy](url)~~ [The Starter League](url)? Great!'
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('Remember <del>Code Academy</del> The Starter League? Great!')
+      expect(result).toContain('<del>Code Academy</del>')
+      expect(result).not.toContain('~~')
+      expect(result).not.toContain('[')
+    })
+
+    it('escapes HTML special characters for XSS safety', () => {
+      const input = 'Test <script>alert("xss")</script> text'
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('Test alert(&quot;xss&quot;) text')
+      expect(result).not.toContain('<script>')
+    })
+
+    it('strips HTML tags inside strikethrough content', () => {
+      const input = '~~<script>evil</script>~~ safe'
+      const result = renderInlineMarkdown(input)
+      // HTML tags are stripped (not escaped) for safety
+      expect(result).toBe('<del>evil</del> safe')
+      expect(result).not.toContain('<script>')
+    })
+
+    it('handles multiple strikethrough sections', () => {
+      const input = '~~first~~ middle ~~second~~'
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('<del>first</del> middle <del>second</del>')
+    })
+
+    it('strips other markdown but keeps strikethrough', () => {
+      const input = '**bold** and ~~struck~~ and *italic*'
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('bold and <del>struck</del> and italic')
+      expect(result).not.toContain('**')
+      expect(result).not.toContain('*')
+    })
+
+    it('handles empty strings', () => {
+      expect(renderInlineMarkdown('')).toBe('')
+    })
+
+    it('handles text with no strikethrough', () => {
+      expect(renderInlineMarkdown('Plain text')).toBe('Plain text')
+    })
+
+    it('handles ampersand in plain text', () => {
+      const input = 'Tom & Jerry are friends'
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('Tom &amp; Jerry are friends')
+    })
+
+    it('handles quotes in plain text', () => {
+      const input = 'He said "hello" and \'goodbye\''
+      const result = renderInlineMarkdown(input)
+      expect(result).toBe('He said &quot;hello&quot; and &#39;goodbye&#39;')
+    })
+  })
+
+  describe('generateExcerptHtml', () => {
+    it('returns HTML with strikethrough rendered', () => {
+      const input = 'Start ~~old~~ new text here'
+      const result = generateExcerptHtml(input, 150)
+      expect(result).toBe('Start <del>old</del> new text here')
+    })
+
+    it('generates the Code Academy deck correctly', () => {
+      const input = `Remember that one time when I moved to Chicago to start ~~[Code Academy](https://example.com)~~ [The Starter League](https://example.com)? Oh wait, that just happened!`
+      const result = generateExcerptHtml(input, 150)
+      expect(result).toContain('<del>Code Academy</del>')
+      expect(result).toContain('The Starter League')
+      expect(result).not.toContain('~~')
+      expect(result).not.toContain('[')
+      expect(result).not.toContain('](')
+    })
+
+    it('truncates long content while preserving tags', () => {
+      const input = 'Start ~~deleted~~ and then a lot more text that will need to be truncated at some point'
+      const result = generateExcerptHtml(input, 40)
+      expect(result).toContain('<del>deleted</del>')
+      expect(result).toContain('...')
+      // Ensure del tag is properly closed even if truncated
+      expect(result.match(/<del>/g)?.length || 0).toBe(result.match(/<\/del>/g)?.length || 0)
+    })
+
+    it('truncates content that needs tag closure', () => {
+      const input = '~~This is a very long strikethrough text that exceeds the limit~~'
+      const result = generateExcerptHtml(input, 30)
+      expect(result).toContain('<del>')
+      expect(result).toContain('</del>')
+      expect(result).toContain('...')
+    })
+
+    it('escapes HTML for XSS safety', () => {
+      const input = '<script>alert("xss")</script> ~~safe~~'
+      const result = generateExcerptHtml(input, 150)
+      expect(result).not.toContain('<script>')
+      expect(result).toContain('<del>safe</del>')
+    })
+
+    it('handles content under max length', () => {
+      const input = 'Short ~~text~~'
+      const result = generateExcerptHtml(input, 150)
+      expect(result).toBe('Short <del>text</del>')
+      expect(result).not.toContain('...')
+    })
+
+    it('handles empty content', () => {
+      expect(generateExcerptHtml('', 150)).toBe('')
     })
   })
 })
